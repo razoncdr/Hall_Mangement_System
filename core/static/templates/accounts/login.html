@@ -1,0 +1,52 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}User Login{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+
+{% block body %}
+    {% load crispy_forms_tags %}
+
+	<section  class="py-5 px-4">
+		<div class="row">
+			<div class="col-sm-6 p-3 border mx-auto bg-light">
+				<div class="text-center pb-2 border-bottom">
+					<h3 class="m-0">Login User</h3>
+				</div>
+
+                {% if messages %}
+                    {% for message in messages %}
+						{% if message.tags == "success" %}
+							<div class="alert alert-success p-2 mx-2 mt-3 mb-1"><b>{{ message }}</b></div>
+						{% else %}
+							<div class="alert alert-danger p-2 mx-2 mt-3 mb-1"><b>{{ message }}</b></div>
+						{% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <div class="p-2">
+                    <form method="POST" action="" class="row g3 pt-1">
+                        {% csrf_token %}
+                        {{ form|crispy }}
+
+                        <div class="col-md-12 text-center pt-2">
+                            <input class="btn btn-success" type="submit" value="Login">
+                            <a class="btn btn-primary ms-2" href="{% url 'companylist' %}"><i class="bi bi-arrow-return-left"></i> Back To List</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}
+
+{% block site_js %}
+<script>
+
+</script>
+{% endblock %}

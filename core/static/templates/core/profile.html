@@ -1,0 +1,162 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}Profile{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+{% load static %}
+
+{% block body %}
+
+<section class="py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="row gx-4 gx-lg-5 mb-3">
+            <div class="col-md-2 border-end">
+                <div class="d-flex flex-column align-items-center text-center mb-5">
+                    <img src="{% static 'core\images\profile.jpg' %}" class="rounded-circle mt-sm-5" width="115px" />
+                    <span class="fw-bold alert alert-warning my-2 p-2">{{userinfo.fullName}}</span>
+                    <span class="text-black-50 small fw-bold">{{user.email}}</span>
+                    <span class="text-black-50 small fw-bold" style="font-size: 11px;">Entry Date: {{userinfo.entryDate}}</span>
+                    <span> </span>
+                </div>
+            </div>
+            <div class="col-md-6 border-end">
+                <form class="" action="." method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="text-right">Profile Settings</h4>
+                    </div>
+                    <hr class="m-0 mb-3"/>
+                    <div class="row">
+                        <div class="form-group ">
+                            <label class="form-label" for="fullName" required><b>Name:</b></label>
+                            <input class="form-control" type="text" name="fullName" maxlength="200" required="" id="fullName" value="{{userinfo.fullName}}">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6 py-2">
+                            <div class="form-group">
+                                <label class="form-label" for="birthdate"><b>Birthdate:</b></label>
+                                <input class="form-control" type="date" name="birthdate" required="" id="birthdate" value="{{birthdate}}">
+                            </div>
+                        </div>
+                        <div class="col-sm-6 py-2">
+                            <div class="form-group">
+                                <label class="form-label" for="gender"><b>Gender:</b></label>
+                                <select class="form-select" name="gender" id="gender" required>
+                                    {% if userinfo.gender == 'M' %}
+                                        <option value="M" selected>Male</option>
+                                        <option value="F" >Female</option>
+                                    {% elif userinfo.gender == 'F' %}
+                                        <option value="M" >Male</option>
+                                        <option value="F" selected>Female</option>
+                                    {% else %}
+                                        <option value="M" >Male</option>
+                                        <option value="F" >Female</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 py-2">
+                            <div class="form-group">
+                                <label class="form-label" for="phone" required><b>Phone:</b></label>
+                                <div class="input-group ">
+                                    <span class="input-group-text" id="basic-addon1" style="font-weight: 500;">+88</span>
+                                    <input class="form-control" type="tel" pattern="[0-9]{11}" name="phone" id="phone" value="{{userinfo.phone}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <button class="btn btn-warning profile-button" type="submit">Save Profile</button>
+                        </div>
+                    </div>
+                </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <div class="">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="text-right">Addresses</h4>
+                    </div>
+                    <hr class="m-0 mb-3"/>
+                    <div class="row flex-column align-items-center">
+                        {% with sl=1 %}
+                        {% for address in addresses %}
+                            <div class="d-flex rounded bg-light mb-3 p-2 col-sm-11 border">
+                                <div class="col-sm-10 text-cener d-flex flex-column border-end ps-3">
+                                    <span class="p-1 border-bottom"><b>{{ forloop.counter }}. {{ address.addressName }}</b></span>
+                                    <div class="col-sm-12 py-1 ps-1 font-monospace" style="font-size: 14px;">
+                                        <span class="">{{address}}</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-2 d-flex justify-content-center">
+                                    <form action="{% url 'address_delete' address.id %}" method="post" class="d-flex" onsubmit="return confirm('Do you really want to delete the address?');">
+                                    {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger btn-sm my-auto"><i class="bi bi-trash-fill"></i></button>
+                                    </form>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <div class="d-flex">
+                        <button type="button" class="btn btn-primary mx-auto" data-bs-toggle="modal" data-bs-target="#exampleModal">New Address</button>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <form class="" action="createaddress/" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">New Address</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row justify-content-center align-items-center">
+                                        <div class="form-group col-sm-6">
+                                            <label class="form-label" for="addressName"><b>Address Name:</b></label>
+                                            <input class="form-control" type="text" name="addressName" maxlength="200" required="" id="addressName">
+                                        </div>
+                                        <div class="form-group col-sm-6">
+                                            <label class="form-label" for="country"><b>Country:</b></label>
+                                            <input class="form-control" type="text" name="country" maxlength="200" required="" id="country">
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center align-items-center py-2">
+                                        <div class="form-group col-sm-4">
+                                            <label class="form-label" for="city"><b>City:</b></label>
+                                            <input class="form-control" type="text" name="city" maxlength="200" required="" id="city">
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <label class="form-label" for="area"><b>Area:</b></label>
+                                            <input class="form-control" type="text" name="area" maxlength="200" required="" id="area">
+                                        </div>
+                                        <div class="form-group col-sm-4">
+                                            <label class="form-label" for="streetaddress"><b>Street:</b></label>
+                                            <input class="form-control" type="text" name="streetaddress" maxlength="200" required="" id="streetaddress">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button type="submit" class="btn btn-success">Create</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block site_js %}
+    <script>
+    </script>
+{% endblock %}

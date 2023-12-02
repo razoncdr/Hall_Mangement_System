@@ -1,0 +1,176 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}Edit User{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+
+{% block body %}
+
+    <section  class="py-5 px-4">
+        <div class="row">
+            <div class="col-sm-6 p-3 border mx-auto bg-light">
+                <div class="text-center pb-2 border-bottom">
+                    <h3 class="m-0">User Edit</h3>
+                </div>
+
+                {% comment %} {% if form.errors %}
+                    <div class="m-2">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <div class="alert alert-danger p-2 my-1">
+                                    <div>{{ error|escape }}</div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger p-2 my-1">
+                                <div>{{ error|escape }}</div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %} {% endcomment %}
+
+                {% if messages %}
+                    {% for message in messages %}
+                        {% if message.tags == "success" %}
+                            <div class="alert alert-success p-2 mx-3 mt-3 mb-1"><b>{{ message }}</b></div>
+                        {% else %}
+                            <div class="alert alert-danger p-2 mx-3 mt-3 mb-1"><b>{{ message }}</b></div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                <div class="p-2">
+                    <form method="POST" action="" class="row g-3 pt-1">
+                        {% csrf_token %}
+                        <input type="text" value="{{userinfo.user.id}}" name="id" class="d-none">
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">First Name:</label>
+                            <input type="text" required class="form-control" id="first_name" value="{{userinfo.user.first_name}}" name="first_name" placeholder="">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Last Name:</label>
+                            <input type="text" required class="form-control" id="last_name" value="{{userinfo.user.last_name}}" name="last_name" placeholder="">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="username" class="form-label">Username:</label>
+                            <input type="text" required class="form-control" id="username" value="{{userinfo.user.username}}" name="username" placeholder="">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email:</label>
+                            <input type="email" required class="form-control" id="email" value="{{userinfo.user.email}}" name="email">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="password1" class="form-label">Password:</label>
+                            <input type="password" required class="form-control" id="password1" name="password1">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="password2" class="form-label">Confirm Password:</label>
+                            <input type="password" required class="form-control" id="password2" name="password2">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="group" class="form-label">Group:</label>
+                            <select name="group" required id="group" class="form-select">
+                                {% for group in groups %}
+                                    {% if userinfo.group.id == group.id %}
+                                        <option value="{{group.id}}" selected>{{group.name}}</option>
+                                    {% else %}
+                                        <option value="{{group.id}}" >{{group.name}}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-6 d-flex">
+                            <div class="form-check form-switch mt-auto m-2 ms-5 fs-5" style="">
+                                <label class="form-check-label" for="flexSwitchCheckDefault" style="font-size: 16px;">Is Active</label>
+                                {% if userinfo.user.is_active == 1 %}
+                                    <input class="form-check-input mt-2" id="flexSwitchCheckDefault" name="is_active" type="checkbox" role="switch" checked>
+                                {% else %}
+                                    <input class="form-check-input mt-2" id="flexSwitchCheckDefault" name="is_active" type="checkbox" role="switch">
+                                {% endif %}
+                            </div>
+                        </div>
+
+
+                        {% comment %} <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            {{form.username}}
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            {{form.first_name}}
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            {{form.last_name}}
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-envelope-square"></i></span>
+                            </div>
+                            {{form.email}}
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            {{form.role}}
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            {{form.password1}}
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            {{form.password2}}
+                        </div> {% endcomment %}
+
+                        <div class="col-md-12 text-center pt-2">
+                            <input class="btn btn-primary" type="submit" value="Edit Account">
+                            <a class="btn btn-success ms-2" href="{% url 'userlist' %}" class="">Back To Home</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+{% endblock %}
+
+{% block site_js %}
+<script>
+	var password = document.getElementById("password1"), confirm_password = document.getElementById("password2");
+
+	function validatePassword(){
+        if(password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Passwords Don't Match");
+        } 
+        else {
+            confirm_password.setCustomValidity('');
+	    }
+	}
+
+	password.onchange = validatePassword;
+	confirm_password.onkeyup = validatePassword;
+</script>
+{% endblock %}
