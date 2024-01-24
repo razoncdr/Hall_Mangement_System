@@ -39,7 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    "crispy_forms",
+    "crispy_bootstrap5",
+    "CalculatorApp",
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap5'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +62,7 @@ ROOT_URLCONF = 'HallManagementSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core' / 'static' / 'templates',],
+        'DIRS': [BASE_DIR / 'core' / 'static' / 'templates', BASE_DIR / 'CalculatorApp' / 'templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

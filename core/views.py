@@ -20,6 +20,9 @@ import datetime
 
 # Create your views here.
 
+def DynamicPage(request, id):
+    return HttpResponse(id)
+
 def home(request):
     return render(request, 'home/index.html',{
 
@@ -48,7 +51,7 @@ def loginpage(request):
 
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['Hall Provost'])
 def registerpage(request):
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
@@ -98,7 +101,7 @@ def registerpage(request):
     return render(request, 'accounts/register.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['Hall Provost'])
 def userlist(request):
     users = User.objects.all()
     userlist = []
@@ -112,7 +115,7 @@ def userlist(request):
     return render(request, 'accounts/index.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['Hall Provost'])
 def edituser(request, userid):
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
@@ -154,7 +157,7 @@ def edituser(request, userid):
     return render(request, 'accounts/edit.html', context)
 
 
-@allowed_users(allowed_roles=['admin'])
+@allowed_users(allowed_roles=['Hall Provost'])
 def deleteuser(request):
     if request.method == "POST":
         user = User.objects.get(id=request.POST.get("userid"))
@@ -164,14 +167,14 @@ def deleteuser(request):
     return redirect('userlist')
    
 
-@allowed_users(allowed_roles=['admin', 'operator'])
+@allowed_users(allowed_roles=['Hall Provost', 'Student'])
 def profile(request):
     if request.method == 'POST':
         userinfo = UserProfile.objects.get(user=request.user)
         userinfo.fullName = request.POST.get("fullName")
         userinfo.birthDate = request.POST.get("birthdate")
         userinfo.gender = request.POST.get("gender")
-        userinfo.phone = request.POST.get("phone")
+        # userinfo.phone = request.POST.get("phone")
         userinfo.save()
 
     userinfo = UserProfile.objects.get(user=request.user)
