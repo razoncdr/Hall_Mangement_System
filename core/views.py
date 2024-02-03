@@ -28,10 +28,10 @@ def home(request):
 
     })
 
-def about(request):
-    return render(request, 'home/about.html',{
+# def about(request):
+#     return render(request, 'home/about.html',{
         
-    })
+#     })
 
 @unauthenticated_user
 def loginpage(request):
@@ -87,8 +87,15 @@ def registerpage(request):
         user.email = request.POST.get("email")
         user.set_password(request.POST.get("password1"))
         user.date_joined = datetime.datetime.now().strftime('%Y-%m-%d')
+
+        group_name = request.POST.get("group")
+        group, created = Group.objects.get_or_create(name=group_name)
+
+
+
         user.save()
-        user.groups.add(request.POST.get("group"))
+        user.groups.add("group")
+        # user.groups.add(request.POST.get("group"))
         messages.success(request, 'Account was created for ' + user.username)
 
         userinfo = UserProfile(user=authenticate(request, username=user.username, password = user.password))

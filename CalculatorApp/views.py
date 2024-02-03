@@ -17,6 +17,7 @@ from core.decorators import *
 from core.forms import *
 from django.shortcuts import (get_object_or_404, render, HttpResponseRedirect)
 
+@allowed_users(allowed_roles=['Hall Provost'])
 def create_student(request):
     success_message = ""
     if request.method == 'POST':
@@ -30,6 +31,8 @@ def create_student(request):
         department = Department.objects.get(id=department_id)
         session = Session.objects.get(id=session_id)
         
+        user = User.objects.create_user(username=registration_number, password=''+registration_number)
+
         student = Student.objects.create(
             name=name,
             registration_number=registration_number,
@@ -55,7 +58,7 @@ def create_student(request):
 
 
 
-@allowed_users(allowed_roles=['Hall Provost', 'operator'])
+@allowed_users(allowed_roles=['Hall Provost'])
 def editstudent(request, id):
     # dictionary for initial data with
     # field names as keys
@@ -80,7 +83,7 @@ def editstudent(request, id):
     return render(request, "studentedit.html", context)
 
 
-@allowed_users(allowed_roles=['Hall Provost', 'operator'])
+@allowed_users(allowed_roles=['Hall Provost'])
 def deletestudent(request):
     # dictionary for initial data with
     # field names as keys
@@ -97,7 +100,7 @@ def deletestudent(request):
         # home page
         return redirect("student_list")
     
-
+@allowed_users(allowed_roles=['Hall Provost'])
 def student_list(request):
     students = Student.objects.all().order_by('registration_number')
     return render(request, 'studentList1.html', {'students': students})
