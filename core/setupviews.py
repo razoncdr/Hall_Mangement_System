@@ -12,7 +12,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.utils import timezone
 from .models import *
-from CalculatorApp.models import *
+from HallManagementApp.models import *
 from .forms import *
 from .decorators import *
 import datetime
@@ -21,7 +21,7 @@ import string
 import json
 
 
-@allowed_users(allowed_roles=['Hall Provost', 'operator'])
+@allowed_users(allowed_roles=['Hall Provost', ])
 def feesheadlist(request):
     # dictionary for initial data with
     # field names as keys
@@ -126,3 +126,34 @@ def createstudentfee(request):
          
     return render(request, "studentfee/create.html", context)
     
+
+
+
+# edit by : Rejwanul Haque 
+
+
+@allowed_users(allowed_roles=['Hall Provost', ])
+def dining_managers(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = FeesHead.objects.all()
+         
+    return render(request, "feeshead/index.html", context)
+
+
+
+
+
+@allowed_users(allowed_roles=['Hall Provost', ])
+def members(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = FeesHead.objects.all()
+         
+    return render(request, "feeshead/index.html", context)

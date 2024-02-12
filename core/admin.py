@@ -1,7 +1,16 @@
 from django.contrib import admin
-#from .models import UserProfile, Address, Company, Customer, Category, Product, Stock, Purchase, PurchaseDetail, Sale, Refund, SaleDetail, Due, DueCollection
+from .models import *
 
 # Register your models here.
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'fullName')
+
+class AddressAdmin(admin.ModelAdmin):
+    list_display = ('user', 'streetAddress', 'city', )
+
+
+admin.site.register(UserProfile, ProfileAdmin)
+admin.site.register(Address, AddressAdmin)
 '''
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'fullName', 'phone')

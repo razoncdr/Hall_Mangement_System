@@ -95,13 +95,18 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                Setups
+                                Communication
                             </button>
                         </h2>
-                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body p-0">
-                                     
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushNotice">
+                            <div class="accordion-body p-0">  
+                        
                                 <div class="d-flex flex-column px-0 m-0">
+                                    <div class="d-flex flex-column px-0 m-0">
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'provost_notice' %}" ><i class="bi bi-link-45deg"></i> From Hall Provost</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'provost_notices' %}" ><i class="bi bi-link-45deg"></i> Provost Notices</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> From Student</a></li>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -144,6 +149,29 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingFive">
+                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
+                                Dining Management
+                            </button>
+                        </h2>
+                       
+                        <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushDiningManagement">
+                            <div class="accordion-body p-0">  
+                                <div class="d-flex flex-column px-0 m-0">
+                                    <div class="d-flex flex-column px-0 m-0">
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'dining_manager_list' %}" ><i class="bi bi-link-45deg"></i> Dining Managers</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'member_list' %}" ><i class="bi bi-link-45deg"></i> Members</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'add_dining_manager' %}"><i class="bi bi-link-45deg"></i>Add Dining Manager</a>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'add_member' %}"><i class="bi bi-link-45deg"></i>Add Member</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+
                 </div>
             </div>
             <!-- Page content wrapper-->

@@ -8,7 +8,7 @@ from .models import *
 from .forms import *
 from .decorators import *
 import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -51,7 +51,7 @@ def loginpage(request):
 
 
 
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Hall Provost', ])
 def registerpage(request):
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
@@ -94,8 +94,8 @@ def registerpage(request):
 
 
         user.save()
-        user.groups.add("group")
-        # user.groups.add(request.POST.get("group"))
+        # user.groups.add("group")
+        user.groups.add(request.POST.get("group"))
         messages.success(request, 'Account was created for ' + user.username)
 
         userinfo = UserProfile(user=authenticate(request, username=user.username, password = user.password))
@@ -107,22 +107,35 @@ def registerpage(request):
     context = {'groups': Group.objects.all()}
     return render(request, 'accounts/register.html', context)
 
+# This is the previous code, error: group matching query doesn't exist
+# @allowed_users(allowed_roles=['Hall Provost'])
+# def userlist(request):
+#     users = User.objects.all()
+#     userlist = []
+#     for user in users:
+#         userinfo = UserGroupForm()
+#         userinfo.user = user
+#         userinfo.group = Group.objects.get(user=user)
+#         userlist.append(userinfo)
+        
+#     context = {'users':  userlist}
+#     return render(request, 'accounts/index.html', context)
 
-@allowed_users(allowed_roles=['Hall Provost'])
+# Edited using chatgpt
+@allowed_users(allowed_roles=['Hall Provost', ])
 def userlist(request):
-    users = User.objects.all()
     userlist = []
-    for user in users:
+    for user in User.objects.all():
         userinfo = UserGroupForm()
         userinfo.user = user
-        userinfo.group = Group.objects.get(user=user)
+        userinfo.groups = user.groups.all()  # Retrieve all groups associated with the user
         userlist.append(userinfo)
         
-    context = {'users':  userlist}
+    context = {'users': userlist}
     return render(request, 'accounts/index.html', context)
 
 
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Hall Provost', ])
 def edituser(request, userid):
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
@@ -165,12 +178,25 @@ def edituser(request, userid):
 
 
 @allowed_users(allowed_roles=['Hall Provost'])
-def deleteuser(request):
-    if request.method == "POST":
-        user = User.objects.get(id=request.POST.get("userid"))
-        UserProfile.objects.get(user=user).delete()
-        user.delete()
+# def deleteuser(request):
+#     if request.method == "POST":
+#         user = User.objects.get(id=request.POST.get("userid"))
+#         UserProfile.objects.get(user=user).delete()
+#         user.delete()
         
+#     return redirect('userlist')
+def deleteuser(request):
+    # Assuming you have some way of identifying the user whose profile you want to delete
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+    
+    if request.method == 'POST':
+        # Delete the user profile
+        user_profile.delete()
+        # Optionally, delete the associated user as well
+        # request.user.delete()
+        # Redirect to a success page or somewhere else
+        # return redirect('success_url')
+
     return redirect('userlist')
    
 

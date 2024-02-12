@@ -1,0 +1,20 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}Add Dining Manager{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+
+{% block body %}
+
+<div class="container">
+    <h1 class="my-4">Add Dining Manager</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Add Dining Manager</button>
+    </form>
+</div>
+{% endblock %}

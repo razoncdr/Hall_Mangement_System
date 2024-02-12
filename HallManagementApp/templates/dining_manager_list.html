@@ -1,0 +1,40 @@
+{% extends 'core/base/base.html' %}
+
+{% block title %}Add Dining Manager{% endblock %}
+
+{% block site_css %}
+<style>
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<h1>List of Dining Managers</h1>
+<div class="center">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <!-- Add more columns as needed -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for dining_manager in dining_managers %}
+            <tr>
+                <td>{{ dining_manager.id }}</td>
+                <td>{{ dining_manager.name }}</td>
+                <td>{{ dining_manager.email }}</td>
+                <!-- Render more attributes as needed -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

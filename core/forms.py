@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import ModelChoiceField
 from .models import *
-from CalculatorApp.models import *
+from HallManagementApp.models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 import datetime
@@ -43,7 +43,7 @@ class FeesHeadForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ["name", "registration_number", "batch" , "department", "session", "status"]
+        fields = ["name", "registration_number", "room", "batch" , "department", "session", "status"]
 
 
 class StudentFeeForm(forms.Form):

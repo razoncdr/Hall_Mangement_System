@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'core',
     "crispy_forms",
     "crispy_bootstrap5",
-    "CalculatorApp",
+    "HallManagementApp",
+    "DiningManagementApp",
+    'Communication',
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -62,7 +64,7 @@ ROOT_URLCONF = 'HallManagementSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core' / 'static' / 'templates', BASE_DIR / 'CalculatorApp' / 'templates',],
+        'DIRS': [BASE_DIR / 'core' / 'static' / 'templates', BASE_DIR / 'HallManagementApp' / 'templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
