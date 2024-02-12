@@ -130,6 +130,7 @@ class ApplicationForm(models.Model):
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     # Add fields for application details
 
+
 class Payment(models.Model):
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)

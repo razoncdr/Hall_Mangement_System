@@ -52,3 +52,8 @@ class StudentFeeForm(forms.Form):
     registration_number = forms.CharField(max_length=150, required=False)
 
 
+class StudentFeeFilterForm(forms.Form):
+    feesHead = ModelChoiceField(queryset=FeesHead.objects.all(), required=False)
+    batch = ModelChoiceField(queryset=Batch.objects.all(), required=False)
+    hall = ModelChoiceField(queryset=Hall.objects.all(), required=False)
+    registration_number = forms.CharField(max_length=150, required=False)

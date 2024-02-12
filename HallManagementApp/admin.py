@@ -1,5 +1,5 @@
 from django.contrib import admin
-from HallManagementApp.models import Hall, Payment, ApplicationForm, Room, Student, Session, Department, Batch
+from HallManagementApp.models import *
 
 
 class BatchAdmin(admin.ModelAdmin):
@@ -24,9 +24,21 @@ class HallAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
 
+class FeesHeadAdmin(admin.ModelAdmin):
+    list_display = ('title', 'amount')
+
+
+class StudentFeeAdmin(admin.ModelAdmin):
+    list_display = ('student', 'feeshead', 'amount')
+
 # class UserProfileAdmin(admin.ModelAdmin):
 #     list_display = ('user', 'student')
 
+class ApplicationFormAdmin(admin.ModelAdmin):
+    list_display = ('student', )
+
+class ApplicationFormAdmin(admin.ModelAdmin):
+    list_display = ('student', )
 
 class ApplicationFormAdmin(admin.ModelAdmin):
     list_display = ('student', )
@@ -37,6 +49,8 @@ class PaymentAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Payment, PaymentAdmin)
+admin.site.register(FeesHead, FeesHeadAdmin)
+admin.site.register(StudentFees, StudentFeeAdmin)
 admin.site.register(ApplicationForm, ApplicationFormAdmin)
 # admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Student, StudentAdmin)

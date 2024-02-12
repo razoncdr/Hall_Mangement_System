@@ -1,0 +1,115 @@
+{% extends 'core/base/base.html' %}
+
+{% block title %}Student Fee List{% endblock %}
+
+{% block site_css %}{% endblock %}
+
+{% block body %}
+{% load crispy_forms_tags %}
+
+<section class="py-4 px-4">
+    <div class="row">
+        <div class="container col-sm-12">
+            <div class="pb-2 d-flex justify-content-center align-items-center border-bottom border-secondary border-2">
+                <h3 class="m-0 mx-2">Student Fee List</h3>                    
+            </div>
+
+            <div class="mt-3">
+                <a class="btn btn-sm btn-primary" href="{% url 'generate_studentfee' %}">Create Student Fee</a>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == "success" %}
+                        <div class="alert alert-success p-2 mx-3 mt-3 mb-1"><b>{{ message }}</b></div>
+                    {% else %}
+                        <div class="alert alert-danger p-2 mx-3 mt-3 mb-1"><b>{{ message }}</b></div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            
+            <div class="alert alert-primary mt-3">
+                <form id="StudentFeeForm" method="POST" action="" class="">
+                    {% csrf_token %}
+                    <div class="row gx-3">
+                        <div class="col-sm-4 ">
+                            {{ form.feesHead|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-4  ">
+                            {{ form.batch|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-4  ">
+                            {{ form.hall|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-4  ">
+                            {{ form.registration_number|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-4 ms-auto mt-auto">
+                            <input class="btn btn-primary" type="submit" id="searchBtn" value="Show" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="mt-3">
+                <table class="table table-borderedtable-hover text-center" style="font-size:14px;">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">#</th> 
+                            <th>Name</th>
+                            <th>Registration Number</th>
+                            <th>Batch</th>
+                            <th>Department</th>
+                            <th>Session</th>
+                            <th>Hall</th>
+                            <th>Room</th>
+                            <th>FeesHead</th>
+                            <th>Amount</th>
+                            <th scope="col" class="text-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for studentfee in studentfees %}
+                        <tr>
+                            <th scope="row">{{forloop.counter}}</th>
+                            <td>{{ studentfee.student.name }}</td>
+                            <td>{{ studentfee.student.registration_number }}</td>
+                            <td>{{ studentfee.student.batch.name }}</td>
+                            <td>{{ studentfee.student.department.name }}</td>
+                            <td>{{ studentfee.student.session.name }}</td>
+                            <td>{{ studentfee.student.room.hall }}</td>
+                            <td>{{ studentfee.student.room.name }}</td>
+                            <td>{{ studentfee.feeshead }}</td>
+                            <td>{{ studentfee.amount }}</td>
+                            <td class="text-center">
+                                {% comment %} 
+                                <a class="btn btn-sm btn-info" href="{% url 'edit_student' student.id %}">Edit</a>
+                                {% endcomment %} 
+                                <form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete?');" action="{% url 'delete_studentfee' %}">
+                                    {% csrf_token %}
+                                    <input type="decimal" value="{{studentfee.id}}" name="id" style="display:none;"/>
+                                    <button class="btn btn-sm btn-danger" type="submit" >Delete</button>
+                                </form>
+                            </td>   
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="">
+                <div class="col-md-12 text-left pt-2">
+                    <a class="btn btn-success btn-sm" href="/home/">Back To Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block site_js %}
+<script>
+
+</script>
+{% endblock %}
