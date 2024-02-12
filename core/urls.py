@@ -23,14 +23,10 @@ urlpatterns = [
     path('feeshead/delete/', setupviews.deletefeeshead, name = 'delete_feeshead'),
     path('feeshead/index/', setupviews.feesheadlist, name='feeshead_list'),
 
-
-    path('dining/create/', setupviews.createfeeshead, name = 'create_feeshead'),
-    path('dining/edit/<int:id>', setupviews.editfeeshead, name='edit_feeshead'),
-    path('dining/delete/', setupviews.deletefeeshead, name = 'delete_feeshead'),
-    path('dining/index/', setupviews.feesheadlist, name='feeshead_list'),
-
-
+    path('studentfee/index/', setupviews.studentfeelist, name='studentfeelist'),
+    path('studentfee/generate/', setupviews.generatestudentfee, name='generate_studentfee'),
     path('studentfee/create/', setupviews.createstudentfee, name='create_studentfee'),
+    path('studentfee/delete/', setupviews.deletestudentfee, name='delete_studentfee'),
     
     path('profile/', views.profile, name='profile'),
     path('profile/createaddress/', views.createaddressprofile, name='createaddressprofile'),

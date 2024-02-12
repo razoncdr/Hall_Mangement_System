@@ -96,7 +96,7 @@ def deletefeeshead(request):
     
     
 @allowed_users(allowed_roles=['Hall Provost'])
-def createstudentfee(request):
+def generatestudentfee(request):
     # dictionary for initial data with
 
     context = {}
@@ -108,17 +108,18 @@ def createstudentfee(request):
         students = Student.objects.filter(status='active')
                        
         if request.POST.get("batch") != "":
-            print(request.POST.get("batch")) 
+            #print(request.POST.get("batch")) 
             students = students.filter(batch=request.POST.get("batch"))
 
         if request.POST.get("registration_number") != "":
-            print(request.POST.get("registration_number")) 
+            #print(request.POST.get("registration_number")) 
             students = students.filter(registration_number=request.POST.get("registration_number"))
 
         feeshead = FeesHead.objects.get(id = request.POST.get("feesHead"))
         # print(students)
         for student in students:
             student.amount = feeshead.amount
+            student.feesheadid = feeshead.id
 
         context['dataset'] = students
          
@@ -127,8 +128,89 @@ def createstudentfee(request):
     return render(request, "studentfee/create.html", context)
     
 
+@allowed_users(allowed_roles=['Hall Provost'])
+def createstudentfee(request):
+    # dictionary for initial data with
+
+    context = {}
+    if request.method == "POST":
+        # form = CreateUserForm(request.POST)
+        # if request.method.is_valid():
+        data = request.POST.getlist("studentfees[]")
+        #print(data)
+
+        savedFee = []
+        for studentfee in data:
+            studentfee = json.loads(studentfee)
+            print(studentfee)
+            studentFeeInfo = StudentFees()
+            studentFeeInfo.student = Student.objects.get(id=studentfee['id'])
+            studentFeeInfo.feeshead = FeesHead.objects.get(id=studentfee['feesheadid'])
+            studentFeeInfo.amount = studentfee['amount']
+            studentFeeInfo.save()
+            savedFee.append(studentFeeInfo)
+         
+    #return render(request, "studentfee/create.html", context)
+    return JsonResponse({"res": "complete"}, status=200)
+    
+
+@allowed_users(allowed_roles=['Hall Provost'])
+def studentfeelist(request):
+    studentfees = StudentFees.objects.all()
+    batches = Batch.objects.all()  # Assuming you have a Batch model
+    halls = Hall.objects.all()  # Assuming you have a Hall model    
+    feesHeads = FeesHead.objects.all()  # Assuming you have a Hall model
+
+    form = StudentFeeFilterForm(request.POST or None)
+    if request.method == "POST":
+        # form = CreateUserForm(request.POST)
+        # if request.method.is_valid():
+
+        if request.POST.get("feesHead") != "":
+            print(request.POST.get("feesHead")) 
+            studentfees = studentfees.filter(feeshead=request.POST.get("feesHead"))
+            
+        if request.POST.get("batch") != "":
+            print(request.POST.get("batch")) 
+            studentfees = studentfees.filter(student__batch_id=request.POST.get("batch"))
+
+            
+        if request.POST.get("hall") != "":
+            print(request.POST.get("hall")) 
+            studentfees = studentfees.filter(student__room__hall_id=request.POST.get("hall"))
+
+        if request.POST.get("registration_number") != "":
+            print(request.POST.get("registration_number")) 
+            studentfees = studentfees.filter(student__registration_number=request.POST.get("registration_number"))
 
 
+    context = {
+        'studentfees': studentfees,
+        'batches': batches,
+        'halls': halls,
+        'feesHeads': feesHeads,
+        'form': form,
+    }
+    return render(request, 'studentfee/index.html', context)
+
+
+@allowed_users(allowed_roles=['Hall Provost', 'operator'])
+def deletestudentfee(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    if request.method =="POST":
+        # fetch the object related to passed id
+        obj = get_object_or_404(StudentFees, id = request.POST.get("id"))
+        
+        # delete object
+        obj.delete()
+        
+        # after deleting redirect to
+        # home page
+        return redirect("studentfeelist")
+    
 # edit by : Rejwanul Haque 
 
 

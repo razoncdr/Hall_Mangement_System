@@ -74,12 +74,14 @@
                                         <input class="form-check-input mx-auto" type="checkbox" id="check" name="{{data.id}}">
                                     </div>
                                 </td>
+                                <td class="id d-none">{{data.id}}</td>
+                                <td class="feesheadid d-none">{{data.feesheadid}}</td>
                                 <td>{{data.name}}</td>
                                 <td>{{data.registration_number}}</td>
                                 <td>{{data.session}}</td>
                                 <td>{{data.batch}}</td>
                                 <td>{{data.department}}</td>
-                                <td>{{data.amount}}</td>
+                                <td class="amount">{{data.amount}}</td>
                             </tr>
                           {% endfor %}
 
@@ -115,6 +117,53 @@
 
         });
     });
+
+
+    $("#submit").on('click', function() {   
+        var rows = [];
+        
+        $("#studentfeetable tbody tr").each(function(index, tr) { 
+            //console.log(index);
+            //console.log(tr);
+            if($(this).find("#check").is(":checked")){
+                rows.push(JSON.stringify({
+                    'id': $(tr).find('.id').text(),
+                    'feesheadid': $(tr).find('.feesheadid').text(),
+                    'amount': $(tr).find('.amount').text(),
+                }))
+            }
+
+        });
+
+
+        var formdata = {
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+            'studentfees': rows,
+        };
+
+        console.log(formdata);
+
+        $.ajax({
+                url : "{% url 'create_studentfee' %}", // the endpoint
+                type : "POST", // http method
+                data: formdata,
+                dataType: 'json',
+                // handle a successful response
+                success : function(json) {
+                    console.log(json); // log the returned json to the console
+                    alert("Student fee saved successfully!!");
+                    //window.location.href = "{% url 'studentfeelist' %}";
+                },
+        
+                // handle a non-successful response
+                error : function(xhr,errmsg,err,res) {
+                    console.log(res); // provide a bit more info about the error to the console
+                }
+            });
+    
+        });
+
+
 
 </script>
 {% endblock %}
