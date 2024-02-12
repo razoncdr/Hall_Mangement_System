@@ -134,7 +134,7 @@ def deletestudent(request):
         # home page
         return redirect("student_list")
     
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Hall Provost', 'Student'])
 def student_list(request):
     students = Student.objects.all().order_by('batch')
     batches = Batch.objects.all()  # Assuming you have a Batch model
