@@ -1,0 +1,27 @@
+{% extends 'core/base/base.html' %}
+{% block title %}Student's Messages{% endblock %}
+{% block body %}
+<div class="container">
+    <h1 class="mt-4">Student's Messages</h1>
+    <div class="row mt-4">
+        {% for notice in notices %}
+        <div class="col-md-6">
+            <div class="card mb-4 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ notice.title }}</h5>
+                    <p class="card-text">{{ notice.description|linebreaksbr }}</p>
+                    <p class="card-text"><small class="text-muted">Posted on: {{ notice.date }}</small></p>
+                    <!-- Add a delete button/link -->
+                    <form action="{% url 'delete_student_notice' notice.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>No notices available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
