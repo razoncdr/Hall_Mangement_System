@@ -207,7 +207,14 @@ def profile(request):
         userinfo.fullName = request.POST.get("fullName")
         userinfo.birthDate = request.POST.get("birthdate")
         userinfo.gender = request.POST.get("gender")
-        # userinfo.phone = request.POST.get("phone")
+        userinfo.phone = request.POST.get("phone")
+        userinfo.save()
+
+    if UserProfile.objects.filter(user=request.user).exists() == False:
+        userinfo = UserProfile()
+        userinfo.user = request.user
+        userinfo.fullName = request.user.username
+        userinfo.entryDate = datetime.datetime.now()
         userinfo.save()
 
     userinfo = UserProfile.objects.get(user=request.user)

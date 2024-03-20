@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models import Sum
 from django.shortcuts import reverse
-# from phonenumber_field.modelfields import PhoneNumberField
+from phonenumber_field.modelfields import PhoneNumberField
 
 GENDER = (
     ('M', 'Male'),
@@ -23,7 +23,7 @@ class UserProfile(models.Model):
     fullName = models.CharField(max_length=400, blank=True)
     birthDate = models.DateField(null=True, blank=True)
     gender = models.CharField(choices=GENDER, max_length=20, blank=True, null=True)
-    # phone = PhoneNumberField(blank=True)
+    phone = PhoneNumberField(blank=True)
     entryDate = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
