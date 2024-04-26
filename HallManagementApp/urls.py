@@ -7,6 +7,17 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     # path('', RedirectView.as_view(url='/home/')),
+    path('hall/create/', views.create_hall, name = 'create_hall'),
+    path('hall/edit/<int:id>', views.edithall, name='edit_hall'),
+    path('hall/delete/', views.deletehall, name = 'delete_hall'),
+    path('hall/index/', views.hall_list, name='hall_list'),
+    
+    path('room/create/', views.create_room, name = 'create_room'),
+    path('room/edit/<int:id>', views.editroom, name='edit_room'),
+    path('room/delete/', views.deleteroom, name = 'delete_room'),
+    path('room/index/', views.room_list, name='room_list'),
+    
+  
     path('student/create/', views.create_student, name = 'create_student'),
     path('student/edit/<int:id>', views.editstudent, name='edit_student'),
     path('student/delete/', views.deletestudent, name = 'delete_student'),

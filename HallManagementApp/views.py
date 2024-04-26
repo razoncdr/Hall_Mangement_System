@@ -15,9 +15,164 @@ from .models import *
 from HallManagementApp.models import *
 from core.decorators import *
 from core.forms import *
+from HallManagementApp.forms import *
 from django.shortcuts import (get_object_or_404, render, HttpResponseRedirect)
 
-@allowed_users(allowed_roles=['Hall Provost'])
+
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def hall_list(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = Hall.objects.all()
+         
+    return render(request, "hall/index.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def create_hall(request):
+    # dictionary for initial data with
+    # field names as keys
+    context = {}
+ 
+    # add the dictionary during initialization
+    form = HallForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("hall_list")
+        
+         
+    context['form']= form
+         
+    return render(request, "hall/create.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def edithall(request, id):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    # fetch the object related to passed id
+    obj = get_object_or_404(Hall, id = id)
+ 
+    # pass the object as instance in form
+    form = HallForm(request.POST or None, instance = obj)
+ 
+    # save the data from the form and
+    # redirect to halllist
+    if form.is_valid():
+        form.save()
+        return redirect("hall_list")
+ 
+    # add form dictionary to context
+    context["form"] = form
+ 
+    return render(request, "hall/edit.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def deletehall(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    if request.method =="POST":
+        # fetch the object related to passed id
+        obj = get_object_or_404(Hall, id = request.POST.get("id"))
+        
+        # delete object
+        obj.delete()
+        
+        # after deleting redirect to
+        # home page
+        return redirect("hall_list")
+ 
+
+
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def room_list(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = Room.objects.order_by("hall","name").all()
+         
+    return render(request, "room/index.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def create_room(request):
+    # dictionary for initial data with
+    # field names as keys
+    context = {}
+ 
+    # add the dictionary during initialization
+    form = RoomForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("room_list")
+        
+         
+    context['form']= form
+         
+    return render(request, "room/create.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def editroom(request, id):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    # fetch the object related to passed id
+    obj = get_object_or_404(Room, id = id)
+ 
+    # pass the object as instance in form
+    form = RoomForm(request.POST or None, instance = obj)
+ 
+    # save the data from the form and
+    # redirect to roomlist
+    if form.is_valid():
+        form.save()
+        return redirect("room_list")
+ 
+    # add form dictionary to context
+    context["form"] = form
+ 
+    return render(request, "room/edit.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def deleteroom(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    if request.method =="POST":
+        # fetch the object related to passed id
+        obj = get_object_or_404(Room, id = request.POST.get("id"))
+        
+        # delete object
+        obj.delete()
+        
+        # after deleting redirect to
+        # home page
+        return redirect("room_list")
+ 
+
+
+
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def create_student(request):
     success_message = ""
     if request.method == 'POST':
@@ -91,8 +246,7 @@ def create_student(request):
                      , 'success_message': success_message})
 
 
-
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def editstudent(request, id):
     # dictionary for initial data with
     # field names as keys
@@ -117,7 +271,7 @@ def editstudent(request, id):
     return render(request, "studentedit.html", context)
 
 
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def deletestudent(request):
     # dictionary for initial data with
     # field names as keys
@@ -134,7 +288,8 @@ def deletestudent(request):
         # home page
         return redirect("student_list")
     
-@allowed_users(allowed_roles=['Hall Provost', 'Student'])
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def student_list(request):
     students = Student.objects.all().order_by('batch')
     batches = Batch.objects.all()  # Assuming you have a Batch model

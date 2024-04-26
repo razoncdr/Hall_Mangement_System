@@ -93,12 +93,33 @@
                         </div>
                     </div>
                     <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingSetup">
+                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSetup" aria-expanded="false" aria-controls="flush-collapseSetup">
+                                Setups
+                            </button>
+                        </h2>
+                        <div id="flush-collapseSetup" class="accordion-collapse collapse" aria-labelledby="flush-headingSetup" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body p-0">
+                                    {% comment %} <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                    </div> {% endcomment %}  
+                                <div class="d-flex flex-column px-0 m-0">
+                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'hall_list' %}" ><i class="bi bi-link-45deg"></i> Hall</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'room_list' %}" ><i class="bi bi-link-45deg"></i> Room</a>
+                                    {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'batch_list' %}" ><i class="bi bi-link-45deg"></i> Batch</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'department_list' %}" ><i class="bi bi-link-45deg"></i> Department</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'session_list' %}" ><i class="bi bi-link-45deg"></i> Session</a>  {% endcomment %}
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                                 Communication
                             </button>
                         </h2>
-                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushNotice">
+                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body p-0">  
                         
                                 <div class="d-flex flex-column px-0 m-0">
@@ -158,7 +179,7 @@
                             </button>
                         </h2>
                        
-                        <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushDiningManagement">
+                        <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body p-0">  
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
@@ -197,6 +218,8 @@
                                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@{{user.username}}</a>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                             <li><a class="dropdown-item" href="/profile/">My Profile</a></li>
+                                            <li><a class="dropdown-item" href="/profile/">Settings</a></li>
+                                            <li><a class="dropdown-item" href="/profile/">Reset Password</a></li>
                                             <form id="logout" method="POST">
                                                 {% csrf_token %}
                                                 <input type ="hidden">
