@@ -17,6 +17,21 @@ urlpatterns = [
     path('room/delete/', views.deleteroom, name = 'delete_room'),
     path('room/index/', views.room_list, name='room_list'),
     
+    path('batch/create/', views.create_batch, name = 'create_batch'),
+    path('batch/edit/<int:id>', views.editbatch, name='edit_batch'),
+    path('batch/delete/', views.deletebatch, name = 'delete_batch'),
+    path('batch/index/', views.batch_list, name='batch_list'),
+    
+    path('department/create/', views.create_department, name = 'create_department'),
+    path('department/edit/<int:id>', views.editdepartment, name='edit_department'),
+    path('department/delete/', views.deletedepartment, name = 'delete_department'),
+    path('department/index/', views.department_list, name='department_list'),
+    
+    path('session/create/', views.create_session, name = 'create_session'),
+    path('session/edit/<int:id>', views.editsession, name='edit_session'),
+    path('session/delete/', views.deletesession, name = 'delete_session'),
+    path('session/index/', views.session_list, name='session_list'),
+    
   
     path('student/create/', views.create_student, name = 'create_student'),
     path('student/edit/<int:id>', views.editstudent, name='edit_student'),

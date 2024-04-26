@@ -32,3 +32,44 @@ class RoomForm(forms.ModelForm):
             "hall",
             "name",
         ]
+
+
+
+class BatchForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Batch
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]
+
+
+
+class DepartmentForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Department
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]
+
+
+class SessionForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Session
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]

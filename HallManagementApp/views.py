@@ -20,6 +20,10 @@ from django.shortcuts import (get_object_or_404, render, HttpResponseRedirect)
 
 
 
+#################################   CRUD Operation for Hall   ############################################
+
+
+
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def hall_list(request):
@@ -93,6 +97,8 @@ def deletehall(request):
         return redirect("hall_list")
  
 
+
+#################################   CRUD Operation for Room   ############################################
 
 
 
@@ -168,7 +174,245 @@ def deleteroom(request):
         return redirect("room_list")
  
 
+#################################   CRUD Operation for Batch   ############################################
 
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def batch_list(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = Batch.objects.order_by("-name").all()
+         
+    return render(request, "batch/index.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def create_batch(request):
+    # dictionary for initial data with
+    # field names as keys
+    context = {}
+ 
+    # add the dictionary during initialization
+    form = BatchForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("batch_list")
+        
+         
+    context['form']= form
+         
+    return render(request, "batch/create.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def editbatch(request, id):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    # fetch the object related to passed id
+    obj = get_object_or_404(Batch, id = id)
+ 
+    # pass the object as instance in form
+    form = BatchForm(request.POST or None, instance = obj)
+ 
+    # save the data from the form and
+    # redirect to batchlist
+    if form.is_valid():
+        form.save()
+        return redirect("batch_list")
+ 
+    # add form dictionary to context
+    context["form"] = form
+ 
+    return render(request, "batch/edit.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def deletebatch(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    if request.method =="POST":
+        # fetch the object related to passed id
+        obj = get_object_or_404(Batch, id = request.POST.get("id"))
+        
+        # delete object
+        obj.delete()
+        
+        # after deleting redirect to
+        # home page
+        return redirect("batch_list")
+ 
+
+
+
+
+#################################   CRUD Operation for Department   ############################################
+
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def department_list(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = Department.objects.order_by("name").all()
+         
+    return render(request, "department/index.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def create_department(request):
+    # dictionary for initial data with
+    # field names as keys
+    context = {}
+ 
+    # add the dictionary during initialization
+    form = DepartmentForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("department_list")
+        
+         
+    context['form']= form
+         
+    return render(request, "department/create.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def editdepartment(request, id):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    # fetch the object related to passed id
+    obj = get_object_or_404(Department, id = id)
+ 
+    # pass the object as instance in form
+    form = DepartmentForm(request.POST or None, instance = obj)
+ 
+    # save the data from the form and
+    # redirect to departmentlist
+    if form.is_valid():
+        form.save()
+        return redirect("department_list")
+ 
+    # add form dictionary to context
+    context["form"] = form
+ 
+    return render(request, "department/edit.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def deletedepartment(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    if request.method =="POST":
+        # fetch the object related to passed id
+        obj = get_object_or_404(Department, id = request.POST.get("id"))
+        
+        # delete object
+        obj.delete()
+        
+        # after deleting redirect to
+        # home page
+        return redirect("department_list")
+ 
+
+
+
+
+
+#################################   CRUD Operation for Session   ############################################
+
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def session_list(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = Session.objects.order_by("name").all()
+         
+    return render(request, "session/index.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def create_session(request):
+    # dictionary for initial data with
+    # field names as keys
+    context = {}
+ 
+    # add the dictionary during initialization
+    form = SessionForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("session_list")
+        
+         
+    context['form']= form
+         
+    return render(request, "session/create.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def editsession(request, id):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    # fetch the object related to passed id
+    obj = get_object_or_404(Session, id = id)
+ 
+    # pass the object as instance in form
+    form = SessionForm(request.POST or None, instance = obj)
+ 
+    # save the data from the form and
+    # redirect to sessionlist
+    if form.is_valid():
+        form.save()
+        return redirect("session_list")
+ 
+    # add form dictionary to context
+    context["form"] = form
+ 
+    return render(request, "session/edit.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def deletesession(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    if request.method =="POST":
+        # fetch the object related to passed id
+        obj = get_object_or_404(Session, id = request.POST.get("id"))
+        
+        # delete object
+        obj.delete()
+        
+        # after deleting redirect to
+        # home page
+        return redirect("session_list")
+ 
+
+
+
+
+#################################   CRUD Operation for Student   ############################################
 
 
 
