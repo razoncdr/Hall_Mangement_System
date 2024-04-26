@@ -208,14 +208,32 @@ def profile(request):
         userinfo.birthDate = request.POST.get("birthdate")
         userinfo.gender = request.POST.get("gender")
         userinfo.phone = request.POST.get("phone")
+        userinfo.email = request.POST.get("email")
         userinfo.save()
+
+        user = User.objects.get(pk=request.user.pk)
+        user.email = request.POST.get("email")
+        user.save()
+
+        if userinfo.email == None:
+            userinfo.email = user.email
+            userinfo.save()
 
     if UserProfile.objects.filter(user=request.user).exists() == False:
         userinfo = UserProfile()
         userinfo.user = request.user
         userinfo.fullName = request.user.username
+        userinfo.email = request.user.username + "@gmail.com"
         userinfo.entryDate = datetime.datetime.now()
         userinfo.save()
+
+        user = User.objects.get(pk=request.user.pk)
+        user.email = request.POST.get("email")
+        user.save()
+
+        if userinfo.email == None:
+            userinfo.email = user.email
+            userinfo.save()
 
     userinfo = UserProfile.objects.get(user=request.user)
     if userinfo.birthDate != None:
@@ -223,6 +241,9 @@ def profile(request):
     else:
         birthdate = datetime.datetime.now().strftime('%Y-%m-%d')
     userinfo.entryDate = userinfo.entryDate.strftime('%d-%m-%Y')
+
+    
+
         
     addresses = Address.objects.filter(user=request.user)
     

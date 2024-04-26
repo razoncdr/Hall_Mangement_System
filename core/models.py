@@ -24,6 +24,7 @@ class UserProfile(models.Model):
     birthDate = models.DateField(null=True, blank=True)
     gender = models.CharField(choices=GENDER, max_length=20, blank=True, null=True)
     phone = PhoneNumberField(blank=True)
+    email = models.EmailField(blank=True, null=True)
     entryDate = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
