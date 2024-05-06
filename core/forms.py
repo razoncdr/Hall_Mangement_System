@@ -57,3 +57,17 @@ class StudentFeeFilterForm(forms.Form):
     batch = ModelChoiceField(queryset=Batch.objects.all(), required=False)
     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False)
     registration_number = forms.CharField(max_length=150, required=False)
+
+
+
+class HallListFilterForm(forms.Form):
+    hall = ModelChoiceField(queryset=Hall.objects.all(), required=False)
+
+    
+# class RoomListFilterForm(forms.Form):
+#     room = ModelChoiceField(queryset=Room.objects.all(), required=False)
+#     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False)
+
+class RoomListFilterForm(forms.Form):
+    room = forms.CharField(label='Room Number', required=False)
+    hall = forms.ModelChoiceField(queryset=Hall.objects.all(), label='Hall', required=False)

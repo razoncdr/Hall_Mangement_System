@@ -17,6 +17,7 @@ from core.decorators import *
 from core.forms import *
 from HallManagementApp.forms import *
 from django.shortcuts import (get_object_or_404, render, HttpResponseRedirect)
+from django.db.models import Q
 
 
 
@@ -31,8 +32,22 @@ def hall_list(request):
     # field names as keys
     context ={}
  
+    halls = Hall.objects.all()
+
+    form = HallListFilterForm(request.POST or None)
+    if request.method == "POST":
+            
+        # if request.POST.get("hall") != "":
+        #     print(request.POST.get("hall")) 
+        halls = halls.filter(id=request.POST.get("hall"))
+
     # add the dictionary during initialization
-    context["dataset"] = Hall.objects.all()
+    # context["dataset"] = Hall.objects.all()
+    print(len(halls))
+    for hall in halls:
+        print(hall.name)
+    context["halls"] = halls
+    context["form"] = form
          
     return render(request, "hall/index.html", context)
 
@@ -101,17 +116,27 @@ def deletehall(request):
 #################################   CRUD Operation for Room   ############################################
 
 
-
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def room_list(request):
-    # dictionary for initial data with
-    # field names as keys
-    context ={}
- 
-    # add the dictionary during initialization
-    context["dataset"] = Room.objects.order_by("hall","name").all()
-         
+    context = {}
+    rooms = Room.objects.all()
+    halls = Hall.objects.all()
+    form = RoomListFilterForm(request.POST or None)
+
+    if request.POST.get("hall"):
+        rooms = rooms.filter(hall_id=request.POST.get("hall"))
+    
+    search_term = request.POST.get("room")
+    if search_term:
+        rooms = rooms.filter(Q(name__startswith=search_term))
+
+    context["rooms"] = rooms
+    context["halls"] = halls
+    context["form"] = form
+       
     return render(request, "room/index.html", context)
+
+
 
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
@@ -540,23 +565,46 @@ def student_list(request):
     halls = Hall.objects.all()  # Assuming you have a Hall model
 
     
-    # Searching by hall name
-    search_hall_name = request.GET.get('search_hall_name')
-    if search_hall_name:
-        students = students.filter(room__hall__name__icontains = search_hall_name)
+    # # Searching by hall name
+    # search_hall_name = request.GET.get('search_hall_name')
+    # if search_hall_name:
+    #     students = students.filter(room__hall__name__icontains = search_hall_name)
 
 
-    # Searching by batch
-    search_batch = request.GET.get('search_batch')
-    if search_batch:
-        students = students.filter(batch__name__icontains=search_batch)
+    # # Searching by batch
+    # search_batch = request.GET.get('search_batch')
+    # if search_batch:
+    #     students = students.filter(batch__name__icontains=search_batch)
     
-    # Searching by room number
-    search_room_number = request.GET.get('search_room_number')
-    if search_room_number:
-        students = students.filter(room__name__icontains=search_room_number)
+    # # Searching by room number
+    # search_room_number = request.GET.get('search_room_number')
+    # if search_room_number:
+    #     students = students.filter(room__name__icontains=search_room_number)
     
-    
+    form = StudentFeeFilterForm(request.POST or None)
+    if request.method == "POST":
+        # form = CreateUserForm(request.POST)
+        # if request.method.is_valid():
+
+        if request.POST.get("feesHead") != "":
+            print(request.POST.get("feesHead")) 
+            studentfees = studentfees.filter(feeshead=request.POST.get("feesHead")) 
+            
+        if request.POST.get("batch") != "":
+            print(request.POST.get("batch")) 
+            studentfees = studentfees.filter(student__batch_id=request.POST.get("batch"))
+
+            
+        if request.POST.get("hall") != "":
+            print(request.POST.get("hall")) 
+            studentfees = studentfees.filter(student__room__hall_id=request.POST.get("hall"))
+
+        if request.POST.get("registration_number") != "":
+            print(request.POST.get("registration_number")) 
+            studentfees = studentfees.filter(student__registration_number=request.POST.get("registration_number"))
+
+
+
     context = {
         'students': students,
         'batches': batches,
