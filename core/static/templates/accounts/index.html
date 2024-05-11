@@ -40,7 +40,7 @@
                                 <th scope="col">Email</th>
                                 <th scope="col">IsActive</th>
                                 <th scope="col">Group</th>
-                                <th scope="col" class="text-center">Action</th>
+                                <th scope="col" class="text-center" style="width:150px;">Action</th>
                               </tr>
                         </thead>
                         <tbody>
@@ -51,7 +51,7 @@
                                 <td>{{user.user.username}}</td>
                                 <td>{{user.user.email}}</td>
                                 <td>{{user.user.is_active}}</td>
-                                <td>{{user.group.name}}</td>
+                                <td>{{user.groups}}</td>
 								<td class="text-center">
 									<a class="btn btn-sm btn-info" href="{% url 'edituser' user.user.id %}">Edit</a>
 									<form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete the user?');" action="{% url 'deleteuser' %}">

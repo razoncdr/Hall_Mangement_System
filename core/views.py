@@ -128,7 +128,7 @@ def userlist(request):
     for user in User.objects.all():
         userinfo = UserGroupForm()
         userinfo.user = user
-        userinfo.groups = user.groups.all()  # Retrieve all groups associated with the user
+        userinfo.groups = ', '.join([str(i) for i in user.groups.values_list('name', flat=True)])  # Retrieve all groups associated with the user
         userlist.append(userinfo)
         
     context = {'users': userlist}
@@ -170,7 +170,7 @@ def edituser(request, userid):
         
     userinfo = UserGroupForm()
     userinfo.user = User.objects.get(id=userid)
-    userinfo.group = Group.objects.get(user=userinfo.user)
+    userinfo.group = Group.objects.filter(user=userinfo.user)
     
     
     context = {'userinfo':  userinfo, 'groups': Group.objects.all()}

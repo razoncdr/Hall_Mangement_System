@@ -1,4 +1,5 @@
 {% load static %}
+{% load auth_extras %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,48 +41,49 @@
                     </a>
                 </div>
                 <div class="accordion accordion-flush" id="accordionFlushExample" style="width: 235px;">
+                    <style>
+                        .menulink{
+                            --bs-btn-color: var(--bs-white);
+                            --bs-btn-bg: blueviolet;
+                            --bs-btn-border-color: blueviolet;
+                            --bs-btn-hover-color: blueviolet;
+                            --bs-btn-hover-bg: white;
+                            --bs-btn-hover-border-color: blueviolet;
+                            font-weight: 500;
+                            --bs-btn-padding-y: .15rem;
+                            --bs-btn-font-size: .9rem;
+                            text-decoration: none;
+                            transition: .2s;
+                            border-width: 1px;
+                            border-color: #0d6efd57!important;
+                            border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
+                            --bs-border-width: 1px; 
+                        }
+                        .menulink:hover{    
+                            border-color: #084298!important;
+                            color: #084298!important;
+                            background-color: #cfe2ff!important;
+                        }
+                        .accordion-flush .accordion-item:last-child {
+                            border-bottom: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);    
+                        }
+                        .accordion-flush .accordion-item:first-child {
+                            border-top: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
+                        }
+                        .accordion{
+                            --bs-accordion-btn-focus-box-shadow: transparent;
+                        }
+                        .bi-link-45deg::before {
+                            font-weight: 800!important;
+                        }
+                    </style>
+                    {% if request.user|has_group:"Hall Provost" %}
                     <div class="accordion-item">
                         <h2 class="accordion-header " id="flush-headingOne">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                                 Account
                             </button>
                         </h2>        
-                        <style>
-                            .menulink{
-                                --bs-btn-color: var(--bs-white);
-                                --bs-btn-bg: blueviolet;
-                                --bs-btn-border-color: blueviolet;
-                                --bs-btn-hover-color: blueviolet;
-                                --bs-btn-hover-bg: white;
-                                --bs-btn-hover-border-color: blueviolet;
-                                font-weight: 500;
-                                --bs-btn-padding-y: .15rem;
-                                --bs-btn-font-size: .9rem;
-                                text-decoration: none;
-                                transition: .2s;
-                                border-width: 1px;
-                                border-color: #0d6efd57!important;
-                                border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
-                                --bs-border-width: 1px; 
-                            }
-                            .menulink:hover{    
-                                border-color: #084298!important;
-                                color: #084298!important;
-                                background-color: #cfe2ff!important;
-                            }
-                            .accordion-flush .accordion-item:last-child {
-                                border-bottom: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);    
-                            }
-                            .accordion-flush .accordion-item:first-child {
-                                border-top: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
-                            }
-                            .accordion{
-                                --bs-accordion-btn-focus-box-shadow: transparent;
-                            }
-                            .bi-link-45deg::before {
-                                font-weight: 800!important;
-                            }
-                        </style>
                         <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body p-0">
                             
@@ -92,6 +94,8 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingSetup">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSetup" aria-expanded="false" aria-controls="flush-collapseSetup">
@@ -113,6 +117,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Student" %}
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
@@ -133,6 +139,8 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingThree">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
@@ -145,8 +153,8 @@
                         
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li>
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'student_list' %}" ><i class="bi bi-link-45deg"></i> Student List</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li>
                                     </div>
                                 </div>
                             </div>
