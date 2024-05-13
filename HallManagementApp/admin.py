@@ -14,6 +14,10 @@ class SessionAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
 
+class FeesHeadAdmin(admin.ModelAdmin):
+    list_display = ('title', 'amount')
+
+
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('name', 'registration_number', 'batch', 'department', 'session')
 
@@ -23,9 +27,8 @@ class RoomAdmin(admin.ModelAdmin):
 class HallAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
-
-class FeesHeadAdmin(admin.ModelAdmin):
-    list_display = ('title', 'amount')
+class SemesterAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
 
 class StudentFeeAdmin(admin.ModelAdmin):
@@ -42,7 +45,7 @@ class ApplicationFormAdmin(admin.ModelAdmin):
 
 class ApplicationFormAdmin(admin.ModelAdmin):
     list_display = ('student', )
-    
+
 
 # Register your models here.
 admin.site.register(FeesHead, FeesHeadAdmin)
@@ -55,3 +58,4 @@ admin.site.register(Department, DepartmentAdmin)
 admin.site.register(Batch, BatchAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Hall, HallAdmin)
+admin.site.register(Semester, SemesterAdmin)

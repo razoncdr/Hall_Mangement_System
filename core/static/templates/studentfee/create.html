@@ -27,21 +27,24 @@
                     {% endfor %}
                 {% endif %}
 				
-                <div class="alert alert-primary mt-3">
+                <div class="alert alert-success mt-3">
                     <form id="StudentFeeForm" method="POST" action="" class="">
                         {% csrf_token %}
                         <div class="row gx-3">
-                            <div class="col-sm-4 ">
+                            <div class="col-sm-3 ">
                                 {{ form.feesHead|as_crispy_field }}
                             </div>
-                            <div class="col-sm-4  ">
+                            <div class="col-sm-3 ">
+                                {{ form.semester|as_crispy_field }}
+                            </div>
+                            <div class="col-sm-3  ">
                                 {{ form.batch|as_crispy_field }}
                             </div>
-                            <div class="col-sm-4  ">
+                            <div class="col-sm-3  ">
                                 {{ form.registration_number|as_crispy_field }}
                             </div>
-                            <div class="col-sm-4 ms-auto mt-auto">
-                                <input class="btn btn-primary" type="submit" id="searchBtn" value="Show" />
+                            <div class="col-sm-3 ms-auto mt-auto">
+                                <input class="btn btn-sm btn-success" type="submit" id="searchBtn" value="Generate Fee" />
                             </div>
                         </div>
                     </form>
@@ -52,17 +55,18 @@
                         <thead class="table-light">
                             <tr>
                                 <th scope="col">#</th>
-                                <th scope="col" class="text-center">
-                                    <div class="form-check">
-                                        <input class="form-check-input mx-auto" type="checkbox" id="CheckAll" name="all">
-                                    </div>
+                                <th scope="col" class="text-center px-3">
+                                    <input class="form-check-input" type="checkbox" id="CheckAll" name="all">
                                 </th>
                                 <th scope="col">Student Name</th>
                                 <th scope="col" class="text-center">Registration No.</th>
                                 <th scope="col">Session</th>
                                 <th scope="col">Batch</th>
                                 <th scope="col">Department</th>
-                                <th scope="col" class="text-center">Fee Amount</th>
+                                <th scope="col">Semester</th>
+                                <th scope="col">Fee Title</th>
+                                <th scope="col" class="text-center">Amount</th>
+                                <th scope="col" class="text-center">Fee Status</th>
                               </tr>
                         </thead>
                         <tbody>
@@ -70,9 +74,7 @@
                             <tr>
                                 <th scope="row">{{forloop.counter}}</th>
                                 <td class="text-center">
-                                    <div class="form-check">
-                                        <input class="form-check-input mx-auto" type="checkbox" id="check" name="{{data.id}}">
-                                    </div>
+                                    <input class="form-check-input" type="checkbox" id="check" name="{{data.id}}">
                                 </td>
                                 <td class="id d-none">{{data.id}}</td>
                                 <td class="feesheadid d-none">{{data.feesheadid}}</td>
@@ -81,17 +83,79 @@
                                 <td>{{data.session}}</td>
                                 <td>{{data.batch}}</td>
                                 <td>{{data.department}}</td>
+                                <td class="semesterid d-none">{{data.semesterid}}</td>
+                                <td>{{data.semester}}</td>
+                                <td>{{data.fee_title}}</td>
                                 <td class="amount">{{data.amount}}</td>
+                                <td>{{data.fee_status}}</td>
                             </tr>
                           {% endfor %}
 
                         </tbody>
                     </table>
-                    <div class="">
-                        <div class="col-md-12 text-center pt-2">
-                            <a class="btn btn-success btn-lg" id="submit">Submit</a>
+
+                    <div class="text-center ">
+                        <button class="btn btn-warning btn-lg my-3 fw-semibold font-monospace" type="button" id="submit">
+                            Save Fee
+                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="padding: 8px;"></span>
+                        </button>
+                    </div>
+
+                    {% if dataset.count != 0 %}
+                        <!-- Back to bottom button -->
+                        <button type="button" class="btn btn-warning btn-floating fw-semibold font-monospace align-middle" id="btn-back-to-bottom">
+                            Go to Save
+                            <span class="spinner-grow spinner-grow-sm" style="margin-bottom: -1px;" role="status" aria-hidden="true"></span>
+                        </button>
+                    {% else %}
+                        <!-- Back to bottom button -->
+                        <button type="button" class="btn btn-warning btn-floating fw-semibold font-monospace align-middle d-none" id="btn-back-to-bottom">
+                            Go to Save
+                            <span class="spinner-grow spinner-grow-sm" style="margin-bottom: -1px;" role="status" aria-hidden="true"></span>
+                        </button>
+                    {% endif %}
+
+
+                    <div class="modal fade" id="progressModal" data-bs-backdrop="static" aria-hidden="true" aria-labelledby="progressModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="progressModalToggleLabel"></h1>
+                                </div>
+                                <div class="modal-body pb-2">
+                                    <div class="progress " style="height: 32px;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated fw-semibold" role="progressbar" aria-label="Working..." 
+                                             style="width: 0%; transition: all 0.25s ease-in-out 0s;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <div class="text-center fw-semibold mt-1">
+                                        <span class="" id="progressBarCompletedTask"></span>
+                                        <span class="">/</span>
+                                        <span class="" id="progressBarTotalTask"></span>
+                                    </div>
+                                </div>
+                                <div class="modal-footer justify-content-center">
+                                    <button class="btn btn-primary" onclick="StartAjax();" id="confirmModalBtn">Confirm</button>
+                                    <button class="btn btn-secondary" id="closeModalBtn" data-bs-dismiss="modal">Close</button>
+                    
+                                    <button class="btn btn-primary justify-content-center" id="savingModalBtn" disabled>
+                                        <span class="">Saving</span>
+                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    </button>
+                    
+                                    <button class="btn btn-success" id="completeModalBtn" data-bs-dismiss="modal">Complete</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <style>
+                        #btn-back-to-bottom {
+                            position: fixed;
+                            bottom: 20px;
+                            right: 20px;
+                            display: none;
+                        }
+                    </style>
                 </div>
 
                 <div class="">
@@ -109,6 +173,46 @@
 {% block site_js %}
 <script>
 
+    $(document).ready(function () {
+
+        scrollFunction();
+
+    });
+
+    
+    //Get the button
+    let mybutton = document.getElementById("btn-back-to-bottom");
+
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function () {
+        scrollFunction();
+    };
+
+    function scrollFunction() {
+        if (document.documentElement.scrollTop < (document.documentElement.scrollHeight - 800)) {
+            mybutton.style.display = "block";
+        }
+        else {
+            mybutton.style.display = "none";
+        }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    
+    mybutton.addEventListener("click", backToBottom);
+
+    function backToTop() {
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+    }
+
+    function backToBottom() {
+        document.body.scrollTop = document.body.scrollHeight;
+        document.documentElement.scrollTop = document.body.scrollHeight;
+    }
+
+
+
     $("#CheckAll").change(function() { 
         $('#studentfeetable tbody tr').each(function(index, tr) { 
             //console.log(index);
@@ -118,8 +222,205 @@
         });
     });
 
+    
+    var error = false;
 
-    $("#submit").on('click', function() {   
+    $('#submit').click(function (e) {
+
+        error = false;
+        var count = 0;
+        $('#studentfeetable tbody tr').each(function(index, tr) { 
+            //console.log(index);
+            //console.log(tr);
+            if($(this).find("#check").is(":checked")) count++;
+
+        });
+
+        if(count == 0){
+            $('#progressModalToggleLabel').text("# Check the select boxes to save fees!!");
+            $('#progressModalToggleLabel').removeClass("text-success");
+            $('#progressModalToggleLabel').removeClass("text-danger");
+            $('#progressModalToggleLabel').addClass("text-warning");            
+            $('#confirmModalBtn').addClass("d-none");
+        }
+        else{
+            $('#progressModalToggleLabel').text("# Confirm to save all the checked fees!!");
+            $('#progressModalToggleLabel').removeClass("text-success");
+            $('#progressModalToggleLabel').removeClass("text-danger");
+            $('#progressModalToggleLabel').removeClass("text-warning");
+            $('#confirmModalBtn').removeClass("d-none");
+        }
+
+        $('#closeModalBtn').removeClass("d-none");
+        $('#savingModalBtn').addClass("d-none");
+        $('#completeModalBtn').addClass("d-none");
+
+        $('#progressBarTotalTask').text(count);
+        $('#progressBarCompletedTask').text("0");
+        $('.progress-bar').width("0%");
+        $('.progress-bar').text("0%");
+
+        $('#progressModal').modal('toggle');
+
+    });
+
+
+    function ajaxRequest(rowNumber) {
+        
+        if (rowNumber >= $("#studentfeetable tbody tr").length) {
+            Finish();
+            return;
+        }
+
+        row = $("#studentfeetable tbody").find('tr').eq(rowNumber);
+
+        if($(row).find("#check").is(":checked") == false){
+            ajaxRequest(rowNumber + 1);
+            return;
+        }
+
+
+        var formdata = {
+            'csrfmiddlewaretoken': $("input[name='csrfmiddlewaretoken']").val(),
+            'studentid': $(row).find('.id').text(),
+            'feesheadid': $(row).find('.feesheadid').text(),
+            'semesterid': $(row).find('.semesterid').text(),
+            'amount': $(row).find('.amount').text(),
+        };
+
+        //console.log(formdata);
+
+        $.ajax({
+                url : "{% url 'create_studentfee' %}", // the endpoint
+                type : "POST", // http method
+                data: formdata,
+                dataType: 'json',
+                // handle a successful response
+                success : function(json) {
+                    console.log(json);
+                    //alert("Student fee saved successfully!!");
+
+                    if (json.success) {
+                        var tableRow = $("#studentfeetable tbody").find('tr').eq(rowNumber);
+
+                        tableRow.find("#check").prop('disabled', true);
+                        tableRow.find("#check").removeAttr('id');
+                        tableRow.addClass("bg-success");
+                        tableRow.addClass("text-white");
+                        tableRow.removeClass("bg-light");
+    
+                        var TotalTasks = Number($('#progressBarTotalTask').text());
+                        var CompletedTasks = Number($('#progressBarCompletedTask').text()) + 1;
+    
+                        var CompletedPercentage = (CompletedTasks * 100.0) / TotalTasks;
+    
+                        //console.log(CompletedPercentage);
+    
+                        $('.progress-bar').width(CompletedPercentage + "%");
+                        $('.progress-bar').text(CompletedPercentage.toFixed(2) + "%");
+    
+                        $('#progressBarCompletedTask').text(CompletedTasks);
+    
+                        ajaxRequest(rowNumber + 1);
+                    }
+                    else {
+                        //console.log(data.message);
+    
+                        tableRow.find("#check").prop('disabled', true);
+                        tableRow.find("#check").removeAttr('id');
+                        tableRow.addClass("bg-danger");
+                        tableRow.addClass("text-white");
+                        tableRow.removeClass("bg-light");
+    
+                        error = true;
+
+                        ajaxRequest(rowNumber + 1);
+                    }
+    
+                    
+                },
+        
+                // handle a non-successful response
+                error : function(xhr,errmsg,err,res) {
+                    //console.log(res); 
+                    tableRow.find("#check").prop('disabled', true);
+                    tableRow.find("#check").removeAttr('id');
+                    tableRow.addClass("bg-danger");
+                    tableRow.addClass("text-white");
+                    tableRow.removeClass("bg-light");
+
+                    error = true;
+                }
+
+
+            });
+    
+    }
+
+
+    function StartAjax() {
+
+        backToTop();
+
+        $('#progressModalToggleLabel').text("# Please wait until the process is complete!!");
+        $('#confirmModalBtn').addClass("d-none");
+        $('#closeModalBtn').addClass("d-none");
+        $('#savingModalBtn').removeClass("d-none");
+        $('#completeModalBtn').addClass("d-none");
+
+        ajaxRequest(0);
+
+    }
+
+
+    function Finish() {
+
+        if (error == true) {
+            $('#progressModalToggleLabel').text("# Error: Some students fee save unsuccessful!!");
+            $('#progressModalToggleLabel').addClass("text-danger");            
+            $('#submit').addClass("disabled");
+        }
+        else {
+            $('#progressModalToggleLabel').text("# Students fee saved successfully!!");
+            $('#progressModalToggleLabel').addClass("text-success");
+            $('#submit').removeClass("disabled");
+        }
+
+        $('#confirmModalBtn').addClass("d-none");
+        $('#closeModalBtn').addClass("d-none");
+        $('#savingModalBtn').addClass("d-none");
+        $('#completeModalBtn').removeClass("d-none");
+
+        //console.log("process finish");
+
+    }
+
+
+    function printDiv() {
+        //hideLastTdWithClass();
+        var contents = $("#headerTable").html();
+        var frame1 = $('<iframe />');
+        frame1[0].name = "frame1";
+        frame1.css({ "position": "absolute", "top": "-1000000px" });
+        $("body").append(frame1);
+        var frameDoc = frame1[0].contentWindow ? frame1[0].contentWindow : frame1[0].contentDocument.document ? frame1[0].contentDocument.document : frame1[0].contentDocument;
+        frameDoc.document.open();
+        //Create a new HTML document.
+        frameDoc.document.write('<html><head><title>DIV Contents</title><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link href="/Content/bootstrap.css" rel="stylesheet"><link href="/Content/bootstrap-datetimepicker.css" rel="stylesheet"><link href="/Content/site.css" rel="stylesheet"></head>');
+        frameDoc.document.write('</head><body>');
+        frameDoc.document.write(contents);
+        frameDoc.document.write('</body></html>');
+        frameDoc.document.close();
+        setTimeout(function () {
+            window.frames["frame1"].focus();
+            window.frames["frame1"].print();
+            frame1.remove();
+
+        }, 500);
+    }
+
+
+    {% comment %} $("#submit").on('click', function() {   
         var rows = [];
         
         $("#studentfeetable tbody tr").each(function(index, tr) { 
@@ -161,9 +462,7 @@
                 }
             });
     
-        });
-
-
+        }); {% endcomment %}
 
 </script>
 {% endblock %}

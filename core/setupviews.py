@@ -115,11 +115,16 @@ def generatestudentfee(request):
             #print(request.POST.get("registration_number")) 
             students = students.filter(registration_number=request.POST.get("registration_number"))
 
+        semester = Semester.objects.get(id = request.POST.get("semester"))
         feeshead = FeesHead.objects.get(id = request.POST.get("feesHead"))
         # print(students)
         for student in students:
-            student.amount = feeshead.amount
+            student.semesterid = semester.id
+            student.semester = semester.name
             student.feesheadid = feeshead.id
+            student.fee_title = feeshead.title
+            student.amount = feeshead.amount
+            student.fee_status = Payment_Status.UNPAID.label
 
         context['dataset'] = students
          
@@ -131,27 +136,32 @@ def generatestudentfee(request):
 @allowed_users(allowed_roles=['Hall Provost'])
 def createstudentfee(request):
     # dictionary for initial data with
+    try:
+        context = {}
+        if request.method == "POST":
+            # form = CreateUserForm(request.POST)
+            # if request.method.is_valid():
+            # data = request.POST.getlist("studentfees[]")
+            # print(data)
 
-    context = {}
-    if request.method == "POST":
-        # form = CreateUserForm(request.POST)
-        # if request.method.is_valid():
-        data = request.POST.getlist("studentfees[]")
-        #print(data)
-
-        savedFee = []
-        for studentfee in data:
-            studentfee = json.loads(studentfee)
-            print(studentfee)
+            #studentfee = json.loads(studentfee)
+            #print(studentfee)
             studentFeeInfo = StudentFees()
-            studentFeeInfo.student = Student.objects.get(id=studentfee['id'])
-            studentFeeInfo.feeshead = FeesHead.objects.get(id=studentfee['feesheadid'])
-            studentFeeInfo.amount = studentfee['amount']
+            studentFeeInfo.student = Student.objects.get(id=request.POST.get("studentid"))
+            studentFeeInfo.feeshead = FeesHead.objects.get(id=request.POST.get("feesheadid"))
+            studentFeeInfo.semester = Semester.objects.get(id=request.POST.get("semesterid"))
+            studentFeeInfo.amount = request.POST.get("amount")
+            studentFeeInfo.paymentStatus = Payment_Status.UNPAID
+            studentFeeInfo.entryuser = UserProfile.objects.get(user=request.user)
+            studentFeeInfo.entryDate = datetime.datetime.now()
             studentFeeInfo.save()
-            savedFee.append(studentFeeInfo)
-         
-    #return render(request, "studentfee/create.html", context)
-    return JsonResponse({"res": "complete"}, status=200)
+            
+        #return render(request, "studentfee/create.html", context)
+        return JsonResponse({"success": True}, status=200)
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({"success": False, "message": e}, status=400)
     
 
 @allowed_users(allowed_roles=['Hall Provost'])
@@ -211,8 +221,9 @@ def deletestudentfee(request):
         # home page
         return redirect("studentfeelist")
     
-# edit by : Rejwanul Haque 
 
+
+# edit by : Rejwanul Haque 
 
 @allowed_users(allowed_roles=['Hall Provost', ])
 def dining_managers(request):
@@ -224,8 +235,6 @@ def dining_managers(request):
     context["dataset"] = FeesHead.objects.all()
          
     return render(request, "feeshead/index.html", context)
-
-
 
 
 

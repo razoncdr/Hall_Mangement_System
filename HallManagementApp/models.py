@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from core.models import UserProfile
 
@@ -9,16 +10,15 @@ STATUS = (
     ('inactive', 'Inactive'),
 )
 
-PAYMENT_STATUS = (
-    ('paid', 'Paid'),
-    ('unpaid', 'Unpaid'),
-)
-
 Transaction_Type = (
     ('bkash', 'Bkash'),
     ('rocket', 'Rocket'),
     ('nagad', 'Nagad'),
 )
+
+class Payment_Status(models.TextChoices):
+    PAID = "P", _("Paid")
+    UNPAID = "U", _("Unpaid")
 
 class Hall(models.Model):
     name = models.CharField(max_length=50)
@@ -84,7 +84,7 @@ class StudentFees(models.Model):
     feeshead = models.ForeignKey(FeesHead, on_delete=models.RESTRICT)
     semester = models.ForeignKey(Semester, on_delete=models.RESTRICT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    paymentStatus = models.CharField(choices=PAYMENT_STATUS, max_length=20)
+    paymentStatus = models.CharField(choices=Payment_Status, default=Payment_Status.PAID,max_length=20)
     entryuser = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
     entryDate = models.DateTimeField(null=True, blank=True)
 
