@@ -1,47 +1,3 @@
-# from django.db import models
-
-# Create your models here.
-# class Batch(models.Model):
-#     batch_title = models.CharField(max_length=50)
-    
-
-
-# class Session(models.Model):
-#     session = models.CharField(max_length=50)
-
-
-# class Department(models.Model):
-#     dept_name = models.CharField(max_length=50)
-
-
-# class Student(models.Model):
-#     name = models.CharField(max_length=50)
-#     batch = models.IntegerField()
-#     department = models.CharField(max_length=50)
-#     room_no = models.IntegerField()
-#     description = models.TextField()
-
-
-# class UserProfile(models.Model):
-#     name = models.CharField(max_length=50)
-#     batch = models.IntegerField()
-#     department = models.CharField(max_length=50)
-#     room_no = models.IntegerField()
-#     about_student = models.TextField()
-
-
-# Entities:
-# 
-#     - Batch(title)
-#     - Session() 
-#     - Department() 
-#     - Student() 
-#     - UserProfile() 
-
-#     - ApplicationForm(batch, session, dept, regi no, status{approved, pending, rejected, paid}, payment) 
-#     - Payment(transactionID, date, amount) 
-
-
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -51,6 +7,17 @@ from core.models import UserProfile
 STATUS = (
     ('active', 'Active'),
     ('inactive', 'Inactive'),
+)
+
+PAYMENT_STATUS = (
+    ('paid', 'Paid'),
+    ('unpaid', 'Unpaid'),
+)
+
+Transaction_Type = (
+    ('bkash', 'Bkash'),
+    ('rocket', 'Rocket'),
+    ('nagad', 'Nagad'),
 )
 
 class Hall(models.Model):
@@ -84,9 +51,14 @@ class Session(models.Model):
     def __str__(self):
         return f"{self.name}"
 
+class Semester(models.Model):
+    name = models.CharField(max_length=50)
+    # Add other attributes as needed
+    def __str__(self):
+        return f"{self.name}"
+
 class Student(models.Model):
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, blank = True, null=True)
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
     userprofile = models.OneToOneField(UserProfile, on_delete=models.SET_NULL, blank=True, null=True)
     name = models.CharField(max_length=100)
     registration_number = models.CharField(max_length=20)
@@ -99,19 +71,6 @@ class Student(models.Model):
     def __str__(self):
         return f"{self.name} ({self.registration_number})"
 
-
-# class Student(models.Model):
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     name = models.CharField(max_length=100)
-#     registration_number = models.CharField(max_length=20, unique=True)
-#     batch = models.ForeignKey(Batch, on_delete=models.RESTRICT)
-#     department = models.ForeignKey(Department, on_delete=models.RESTRICT)
-#     session = models.ForeignKey(Session, on_delete=models.RESTRICT)
-#     status = models.CharField(choices=STATUS, max_length=20, default='active')  # Set default status to 'active'
-
-#     def __str__(self):
-#         return f"{self.name} ({self.registration_number})"
-
 class FeesHead(models.Model):
     title = models.CharField(max_length=100)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
@@ -123,16 +82,24 @@ class FeesHead(models.Model):
 class StudentFees(models.Model):
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     feeshead = models.ForeignKey(FeesHead, on_delete=models.RESTRICT)
+    semester = models.ForeignKey(Semester, on_delete=models.RESTRICT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    paymentStatus = models.CharField(choices=PAYMENT_STATUS, max_length=20)
+    entryuser = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
+    entryDate = models.DateTimeField(null=True, blank=True)
+
+
+class FeeTransaction(models.Model):
+    studentFee =  models.ManyToManyField('StudentFees', related_name='transactions')
+    student = models.ForeignKey(Student, on_delete=models.RESTRICT)
+    paidAmount = models.DecimalField(max_digits=10, decimal_places=2)
+    entryDate = models.DateTimeField()
+    transactionType = models.CharField(choices=Transaction_Type, max_length=20)
+    transactionId = models.CharField(max_length=100)
+    transactionDetails = models.TextField()
 
 
 class ApplicationForm(models.Model):
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     # Add fields for application details
-
-
-class Payment(models.Model):
-    student = models.ForeignKey(Student, on_delete=models.RESTRICT)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-    # Add fields for payment details
 

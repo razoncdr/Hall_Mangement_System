@@ -42,13 +42,9 @@ class ApplicationFormAdmin(admin.ModelAdmin):
 
 class ApplicationFormAdmin(admin.ModelAdmin):
     list_display = ('student', )
-
-
-class PaymentAdmin(admin.ModelAdmin):
-    list_display = ('student', 'amount')
+    
 
 # Register your models here.
-admin.site.register(Payment, PaymentAdmin)
 admin.site.register(FeesHead, FeesHeadAdmin)
 admin.site.register(StudentFees, StudentFeeAdmin)
 admin.site.register(ApplicationForm, ApplicationFormAdmin)

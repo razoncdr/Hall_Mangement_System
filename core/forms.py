@@ -47,8 +47,8 @@ class StudentForm(forms.ModelForm):
 
 
 class StudentFeeForm(forms.Form):
-    feesHead = ModelChoiceField(queryset=FeesHead.objects.all(), )
-    batch = ModelChoiceField(queryset=Batch.objects.all(), required=False)
+    feesHead = ModelChoiceField(queryset=FeesHead.objects.order_by('-title').all(), )
+    batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False)
     registration_number = forms.CharField(max_length=150, required=False)
 
 
