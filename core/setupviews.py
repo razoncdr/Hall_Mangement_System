@@ -124,7 +124,7 @@ def generatestudentfee(request):
             student.feesheadid = feeshead.id
             student.fee_title = feeshead.title
             student.amount = feeshead.amount
-            student.fee_status = Payment_Status.UNPAID.label
+            student.fee_status = Payment_Status.UNPAID.name
 
         context['dataset'] = students
          
