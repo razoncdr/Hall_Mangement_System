@@ -73,3 +73,16 @@ class SessionForm(forms.ModelForm):
         fields = [
             "name",
         ]
+
+
+class SemesterForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Semester
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]

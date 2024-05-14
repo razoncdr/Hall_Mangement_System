@@ -432,6 +432,87 @@ def deletesession(request):
         # after deleting redirect to
         # home page
         return redirect("session_list")
+    
+
+
+
+
+
+
+    #################################   CRUD Operation for Semester   ############################################
+
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def semester_list(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+ 
+    # add the dictionary during initialization
+    context["dataset"] = Semester.objects.order_by("name").all()
+         
+    return render(request, "semester/index.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def create_semester(request):
+    # dictionary for initial data with
+    # field names as keys
+    context = {}
+ 
+    # add the dictionary during initialization
+    form = SemesterForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect("semester_list")
+        
+         
+    context['form']= form
+         
+    return render(request, "semester/create.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def edit_semester(request, id):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    # fetch the object related to passed id
+    obj = get_object_or_404(Semester, id = id)
+ 
+    # pass the object as instance in form
+    form = SemesterForm(request.POST or None, instance = obj)
+ 
+    # save the data from the form and
+    # redirect to semesterlist
+    if form.is_valid():
+        form.save()
+        return redirect("semester_list")
+ 
+    # add form dictionary to context
+    context["form"] = form
+ 
+    return render(request, "semester/edit.html", context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def delete_semester(request):
+    # dictionary for initial data with
+    # field names as keys
+    context ={}
+    
+    if request.method =="POST":
+        # fetch the object related to passed id
+        obj = get_object_or_404(Semester, id = request.POST.get("id"))
+        
+        # delete object
+        obj.delete()
+        
+        # after deleting redirect to
+        # home page
+        return redirect("semester_list")
  
 
 
