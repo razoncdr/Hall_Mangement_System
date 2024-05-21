@@ -70,27 +70,30 @@
                               </tr>
                         </thead>
                         <tbody>
-                          {% for data in dataset %}
-                            <tr>
-                                <th scope="row">{{forloop.counter}}</th>
-                                <td class="text-center">
-                                    <input class="form-check-input" type="checkbox" id="check" name="{{data.id}}">
-                                </td>
-                                <td class="id d-none">{{data.id}}</td>
-                                <td class="feesheadid d-none">{{data.feesheadid}}</td>
-                                <td>{{data.name}}</td>
-                                <td>{{data.registration_number}}</td>
-                                <td>{{data.session}}</td>
-                                <td>{{data.batch}}</td>
-                                <td>{{data.department}}</td>
-                                <td class="semesterid d-none">{{data.semesterid}}</td>
-                                <td>{{data.semester}}</td>
-                                <td>{{data.fee_title}}</td>
-                                <td class="amount">{{data.amount}}</td>
-                                <td>{{data.fee_status}}</td>
-                            </tr>
-                          {% endfor %}
-
+                            {% for data in dataset %}
+                                <tr class="{{data.bgcolor}} bg-gradient">
+                                    <th scope="row">{{forloop.counter}}</th>
+                                    <td class="text-center">
+                                        {% if data.isgenerated %}
+                                            <input class="form-check-input" type="checkbox"  disabled>
+                                        {% else %}
+                                            <input class="form-check-input" type="checkbox" id="check">
+                                        {% endif %}
+                                    </td>
+                                    <td class="id d-none">{{data.id}}</td>
+                                    <td class="feesheadid d-none">{{data.feesheadid}}</td>
+                                    <td>{{data.name}}</td>
+                                    <td>{{data.registration_number}}</td>
+                                    <td>{{data.session}}</td>
+                                    <td>{{data.batch}}</td>
+                                    <td>{{data.department}}</td>
+                                    <td class="semesterid d-none">{{data.semesterid}}</td>
+                                    <td>{{data.semester}}</td>
+                                    <td>{{data.fee_title}}</td>
+                                    <td class="amount">{{data.amount}}</td>
+                                    <td>{{data.fee_status}}</td>
+                                </tr>
+                            {% endfor %}
                         </tbody>
                     </table>
 

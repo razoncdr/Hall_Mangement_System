@@ -124,7 +124,14 @@ def generatestudentfee(request):
             student.feesheadid = feeshead.id
             student.fee_title = feeshead.title
             student.amount = feeshead.amount
-            student.fee_status = Payment_Status.UNPAID.name
+            student.isgenerated = StudentFees.objects.filter(student = student, 
+                                                             semester = semester, feeshead = feeshead).exists()
+            if student.isgenerated :
+                student.bgcolor = "bg-secondary text-white"
+                student.fee_status = StudentFees.objects.filter(student = student, 
+                                semester = semester, feeshead = feeshead).first().paymentStatus.name
+            else :
+                student.fee_status = Payment_Status.UNPAID.name
 
         context['dataset'] = students
          
@@ -166,7 +173,7 @@ def createstudentfee(request):
 
 @allowed_users(allowed_roles=['Hall Provost'])
 def studentfeelist(request):
-    studentfees = StudentFees.objects.all()
+    studentfees = StudentFees.objects.none()
     batches = Batch.objects.all()  # Assuming you have a Batch model
     halls = Hall.objects.all()  # Assuming you have a Hall model    
     feesHeads = FeesHead.objects.all()  # Assuming you have a Hall model
@@ -175,19 +182,23 @@ def studentfeelist(request):
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
         # if request.method.is_valid():
-
+        studentfees = StudentFees.objects.order_by('-entryDate').all()
         if request.POST.get("feesHead") != "":
-            print(request.POST.get("feesHead")) 
+            print("feesHeadid: " + request.POST.get("feesHead")) 
             studentfees = studentfees.filter(feeshead=request.POST.get("feesHead"))
             
         if request.POST.get("batch") != "":
-            print(request.POST.get("batch")) 
+            print("batchid: " + request.POST.get("batch")) 
             studentfees = studentfees.filter(student__batch_id=request.POST.get("batch"))
 
             
         if request.POST.get("hall") != "":
-            print(request.POST.get("hall")) 
+            print("hallid: " + request.POST.get("hall")) 
             studentfees = studentfees.filter(student__room__hall_id=request.POST.get("hall"))
+
+        if request.POST.get("semester") != "":
+            print("semesterid: " + request.POST.get("semester")) 
+            studentfees = studentfees.filter(semester_id=request.POST.get("semester"))
 
         if request.POST.get("registration_number") != "":
             print(request.POST.get("registration_number")) 

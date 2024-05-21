@@ -55,8 +55,9 @@ class StudentFeeForm(forms.Form):
 
 class StudentFeeFilterForm(forms.Form):
     feesHead = ModelChoiceField(queryset=FeesHead.objects.order_by('-title').all(), required=False,widget=forms.Select(attrs={'class':'form-select-sm',},) )
-    batch = ModelChoiceField(queryset=Batch.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    semester = ModelChoiceField(queryset=Semester.objects.order_by('name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-select-sm',},))
 
 

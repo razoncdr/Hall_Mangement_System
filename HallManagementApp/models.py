@@ -13,6 +13,7 @@ STATUS = (
 )
 
 Transaction_Type = (
+    ('cash', 'Cash'),
     ('bkash', 'Bkash'),
     ('rocket', 'Rocket'),
     ('nagad', 'Nagad'),
