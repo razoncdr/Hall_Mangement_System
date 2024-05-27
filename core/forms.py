@@ -59,7 +59,10 @@ class StudentFeeFilterForm(forms.Form):
     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     semester = ModelChoiceField(queryset=Semester.objects.order_by('name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-select-sm',},))
-
+    From_Date = forms.DateField(widget=forms.TextInput(attrs={'type':'date', 'class':'form-control-sm', 'value': datetime.datetime.now().strftime('%Y-%m-%d')},))
+    To_Date = forms.DateField(widget=forms.TextInput(attrs={'type':'date', 'class':'form-control-sm', 'value': datetime.datetime.now().strftime('%Y-%m-%d')},))
+    payment_Status = forms.ChoiceField(choices=[(None, '------')] + [(tag.value, tag.name) for tag in Payment_Status], 
+                                required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
 
 
 class HallListFilterForm(forms.Form):

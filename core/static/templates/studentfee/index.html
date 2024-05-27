@@ -38,16 +38,25 @@
                         <div class="col-sm-3  ">
                             {{ form.batch|as_crispy_field }}
                         </div>
-                        <div class="col-sm-3  ">
+                        {% comment %} <div class="col-sm-3  ">
                             {{ form.hall|as_crispy_field }}
-                        </div>
+                        </div> {% endcomment %}
                         <div class="col-sm-3  ">
                             {{ form.semester|as_crispy_field }}
                         </div>
                         <div class="col-sm-3  ">
                             {{ form.registration_number|as_crispy_field }}
                         </div>
-                        <div class="col-sm-3 ms-auto my-auto">
+                        <div class="col-sm-3  ">
+                            {{ form.From_Date|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-3  ">
+                            {{ form.To_Date|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-3  ">
+                            {{ form.payment_Status|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-3 ms-auto mt-auto mb-3">
                             <input class="btn btn-sm btn-primary" type="submit" id="searchBtn" value="Show" />
                         </div>
                     </div>
