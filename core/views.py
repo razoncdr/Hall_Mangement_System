@@ -18,6 +18,10 @@ from .forms import *
 from .decorators import *
 import datetime
 
+def home(request):
+    return render(request, 'home/index.html',{
+
+    })
 
 @unauthenticated_user
 def loginpage(request):
