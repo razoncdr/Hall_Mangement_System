@@ -641,54 +641,38 @@ def deletestudent(request):
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def student_list(request):
-    students = Student.objects.all().order_by('batch')
-    batches = Batch.objects.all()  # Assuming you have a Batch model
-    halls = Hall.objects.all()  # Assuming you have a Hall model
+    students = Student.objects.none()
 
-    
-    # # Searching by hall name
-    # search_hall_name = request.GET.get('search_hall_name')
-    # if search_hall_name:
-    #     students = students.filter(room__hall__name__icontains = search_hall_name)
-
-
-    # # Searching by batch
-    # search_batch = request.GET.get('search_batch')
-    # if search_batch:
-    #     students = students.filter(batch__name__icontains=search_batch)
-    
-    # # Searching by room number
-    # search_room_number = request.GET.get('search_room_number')
-    # if search_room_number:
-    #     students = students.filter(room__name__icontains=search_room_number)
-    
-    form = StudentFeeFilterForm(request.POST or None)
+    form = StudentForm(request.POST or None)
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
         # if request.method.is_valid():
+        students = Student.objects.order_by('registration_number').all()
+        if request.POST.get("hall") != "":
+            print("hallid: " + request.POST.get("hall")) 
+            students = students.filter(room__hall_id=request.POST.get("hall"))
 
-        if request.POST.get("feesHead") != "":
-            print(request.POST.get("feesHead")) 
-            studentfees = studentfees.filter(feeshead=request.POST.get("feesHead")) 
+        if request.POST.get("room") != "":
+            print("roomid: " + request.POST.get("room")) 
+            students = students.filter(room__name__icontains=request.POST.get("room"))
             
         if request.POST.get("batch") != "":
             print(request.POST.get("batch")) 
-            studentfees = studentfees.filter(student__batch_id=request.POST.get("batch"))
+            students = students.filter(batch_id=request.POST.get("batch"))
 
             
-        if request.POST.get("hall") != "":
-            print(request.POST.get("hall")) 
-            studentfees = studentfees.filter(student__room__hall_id=request.POST.get("hall"))
+        # if request.POST.get("semester") != "":
+        #     print(request.POST.get("hall")) 
+        #     studentfees = studentfees.filter(student__room__hall_id=request.POST.get("hall"))
 
         if request.POST.get("registration_number") != "":
             print(request.POST.get("registration_number")) 
-            studentfees = studentfees.filter(student__registration_number=request.POST.get("registration_number"))
+            students = students.filter(registration_number__icontains=request.POST.get("registration_number"))
 
 
 
     context = {
-        'students': students,
-        'batches': batches,
-        'halls': halls,
+        'students' : students,
+        'form' : form,
     }
     return render(request, 'studentList1.html', context)

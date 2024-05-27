@@ -1,21 +1,22 @@
 {% extends 'core/base/base.html' %}
 
-{% block title %}Student List{% endblock %}
+{% block title %}Student Fee List{% endblock %}
 
 {% block site_css %}{% endblock %}
 
 {% block body %}
+{% load crispy_forms_tags %}
 
-<section class="py-3 px-4">
+<section class="py-4 px-4">
     <div class="row">
         <div class="container col-sm-12">
             <div class="pb-2 d-flex justify-content-center align-items-center border-bottom border-secondary border-2">
                 <h3 class="m-0 mx-2">Student List</h3>                    
             </div>
 
-            <div class="mt-3">
-                <a class="btn btn-sm btn-primary" href="{% url 'create_student' %}">Create Student</a>
-            </div>
+            {% comment %} <div class="mt-3">
+                <a class="btn btn-sm btn-primary" href="{% url 'generate_studentfee' %}">Create Student</a>
+            </div> {% endcomment %}
 
             {% if messages %}
                 {% for message in messages %}
@@ -27,45 +28,33 @@
                 {% endfor %}
             {% endif %}
             
-            <!-- Add form for sorting and searching -->
-            <div class="mt-3">
-                <form method="GET" action="">
-                    <div class="row">
-                        <!-- <div class="col-md-4">
-                            <select class="form-select" name="search_by_batch">
-                                <option value="" selected disabled>Search by Batch</option>
-                                {% for batch in batches %}
-                                    <option value="{{ batch.id }}">{{ batch.name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div> -->
-                        
-                        <div class="mt-3">
-                            <form method="GET" action="">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search by Hall" name="search_hall_name">
-                                            <button type="submit" class="btn btn-primary">Search</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search by Room Number" name="search_room_number">
-                                            <button type="submit" class="btn btn-primary">Search</button>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" placeholder="Search by Batch" name="search_batch">
-                                            <button type="submit" class="btn btn-primary">Search</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+            <div class="alert alert-primary mt-3">
+                <form id="StudentForm" method="POST" action="" class="">
+                    {% csrf_token %}
+                    <div class="row gx-3">
+                        <div class="col-sm-3 ">
+                            {{ form.hall|as_crispy_field }}
                         </div>
-                        
+                        <div class="col-sm-3  ">
+                            {{ form.room|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-3  ">
+                            {{ form.batch|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-3  ">
+                            {{ form.semester|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-3  ">
+                            {{ form.registration_number|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-3 ms-auto my-auto">
+                            <input class="btn btn-sm btn-primary" type="submit" id="searchBtn" value="Show" />
+                        </div>
+                    </div>
+                </form>
+            </div>
 
+            {% if students %}
             <div class="mt-3">
                 <table class="table table-bordered table-hover text-center">
                     <thead class="table-light">
@@ -106,6 +95,7 @@
                 </table>
             </div>
 
+            {% endif %}
             <div class="">
                 <div class="col-md-12 text-left pt-2">
                     <a class="btn btn-success btn-sm" href="/home/">Back To Home</a>

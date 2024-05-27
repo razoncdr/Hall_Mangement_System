@@ -40,10 +40,18 @@ class FeesHeadForm(forms.ModelForm):
         fields = ["title", "amount"]
 
 
-class StudentForm(forms.ModelForm):
-    class Meta:
-        model = Student
-        fields = ["name", "registration_number", "room", "batch" , "department", "session", "status"]
+# class StudentForm(forms.ModelForm):
+#     class Meta:
+#         model = Student
+#         fields = ["name", "registration_number", "room", "batch" , "department", "session", "status"]
+
+
+class StudentForm(forms.Form):
+    hall = ModelChoiceField(queryset=Hall.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    room = forms.CharField(label='Room Number', required=False, widget=forms.TextInput(attrs={'class':'form-control-sm',}))
+    batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    semester = ModelChoiceField(queryset=Semester.objects.order_by('name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-control-sm',},))
 
 
 class StudentFeeForm(forms.Form):

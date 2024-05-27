@@ -7,7 +7,7 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/home/')),
-    path('home/', views.home, name='home'),
+    # path('home/', views.home, name='home'),
     # path('home/<slug:id>', views.DynamicPage, name='DynamicPage'),
     # path('about/', views.about, name='about'),
     
