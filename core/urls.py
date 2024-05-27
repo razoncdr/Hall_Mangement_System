@@ -1,5 +1,5 @@
 from django.urls import path
-from core import views, setupviews
+from core import views, setupviews, reportviews
 from django.views.generic.base import RedirectView
 from django.conf.urls.static import static
 from django.conf import settings
@@ -27,6 +27,9 @@ urlpatterns = [
     path('studentfee/generate/', setupviews.generatestudentfee, name='generate_studentfee'),
     path('studentfee/create/', setupviews.createstudentfee, name='create_studentfee'),
     path('studentfee/delete/', setupviews.deletestudentfee, name='delete_studentfee'),
+
+    path('report/fee_statement/', reportviews.feestatementreport, name='fee_statement_report'),
+    path('report/fee_payment/', reportviews.feestatementreport, name='fee_payment_report'),
     
     path('profile/', views.profile, name='profile'),
     path('profile/createaddress/', views.createaddressprofile, name='createaddressprofile'),

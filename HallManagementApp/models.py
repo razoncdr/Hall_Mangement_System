@@ -22,6 +22,16 @@ Transaction_Type = (
 class Payment_Status(Enum):
     PAID = 'P'
     UNPAID = 'U'
+    
+class Semester_Status(Enum):
+    Semester_1 = '1-1'
+    Semester_2 = '1-2'
+    Semester_3 = '2-1'
+    Semester_4 = '2-2'
+    Semester_5 = '3-1'
+    Semester_6 = '3-2'
+    Semester_7 = '4-1'
+    Semester_8 = '4-2'
 
 class Hall(models.Model):
     name = models.CharField(max_length=50)
@@ -66,6 +76,7 @@ class Student(models.Model):
     name = models.CharField(max_length=100)
     registration_number = models.CharField(max_length=20)
     batch = models.ForeignKey(Batch, on_delete=models.RESTRICT)
+    semester = EnumChoiceField(Semester_Status, default=Semester_Status.Semester_1)
     department = models.ForeignKey(Department, on_delete=models.RESTRICT)
     session = models.ForeignKey(Session, on_delete=models.RESTRICT)
     status = models.CharField(choices=STATUS, max_length=20)
@@ -87,7 +98,6 @@ class StudentFees(models.Model):
     feeshead = models.ForeignKey(FeesHead, on_delete=models.RESTRICT)
     semester = models.ForeignKey(Semester, on_delete=models.RESTRICT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    #paymentStatus = models.CharField(choices=Payment_Status, default=Payment_Status.PAID, max_length=20)
     paymentStatus = EnumChoiceField(Payment_Status, default=Payment_Status.UNPAID)
     entryuser = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
     entryDate = models.DateTimeField(null=True, blank=True)

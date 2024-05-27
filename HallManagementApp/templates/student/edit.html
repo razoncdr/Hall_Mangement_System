@@ -20,9 +20,9 @@
                 {% if messages %}
                     {% for message in messages %}
 						{% if message.tags == "success" %}
-							<div class="alert alert-success p-2 mx-3 mt-3 mb-1"><b>{{ message }}</b></div>
+							<div class="alert alert-success p-2 mx-1 mt-3 mb-0"><b>{{ message }}</b></div>
 						{% else %}
-							<div class="alert alert-danger p-2 mx-3 mt-3 mb-1"><b>{{ message }}</b></div>
+							<div class="alert alert-danger p-2 mx-1 mt-3 mb-0"><b>{{ message }}</b></div>
 						{% endif %}
                     {% endfor %}
                 {% endif %}

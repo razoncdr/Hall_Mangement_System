@@ -94,7 +94,6 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingSetup">
@@ -118,9 +117,10 @@
                             </div>
                         </div>
                     </div>
+                    {% endif %}
 
                     {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Student" %}
-                    <div class="accordion-item">
+                    {% comment %} <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                                 Communication
@@ -139,9 +139,11 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     {% endif %}
 
+                    
+                    {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Operator"  %}
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingThree">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
@@ -176,14 +178,16 @@
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'feeshead_list' %}" ><i class="bi bi-link-45deg"></i> Fees Head</a></li>
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'generate_studentfee' %}" ><i class="bi bi-link-45deg"></i> Generate Student Fee</a></li>
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'studentfeelist' %}" ><i class="bi bi-link-45deg"></i> Student Fee List</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'fee_statement_report' %}" ><i class="bi bi-link-45deg"></i> Fee Statement Report</a></li>
+                                        {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'payment_report' %}" ><i class="bi bi-link-45deg"></i> Fee Payment Report</a></li> {% endcomment %}
 
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="accordion-item">
+                    {% endif %}
+                    {% comment %} <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingFive">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
                                 Dining Management
@@ -202,7 +206,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> {% endcomment %}
                     
 
                 </div>
@@ -216,7 +220,7 @@
                             <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center text-center">
-                            <img src="{% static 'core\images\pos1.png' %}" alt="" width="32" height="32">
+                            <img src="{% static 'core\images\hotel.png' %}" alt="" width="32" height="32">
                             <a class="navbar-brand mx-2" href="/home/">Hall Management System</a>
                         </div>
                         <button class="col-3 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>

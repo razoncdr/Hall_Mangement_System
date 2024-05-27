@@ -524,101 +524,95 @@ def delete_semester(request):
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def create_student(request):
+
+    error_message = ""
     success_message = ""
-    if request.method == 'POST':
-        name = request.POST.get('name')
-        registration_number = request.POST.get('registration_number')
-        status = request.POST.get('status')
-        batch_id = request.POST.get('batch')
-        department_id = request.POST.get('department')
-        session_id = request.POST.get('session')
-        room_id = request.POST.get('room')
-        
-        batch = Batch.objects.get(id=batch_id)
-        department = Department.objects.get(id=department_id)
-        session = Session.objects.get(id=session_id)
-        room = Room.objects.get(id=room_id)
-        
-        # user = UserProfile.objects.create_user(username=registration_number, password=''+registration_number)
-        user = User()
-        user.first_name = name
-        user.last_name = ""
-        user.username = request.POST.get("registration_number")
-        user.email = ""
-        user.set_password(registration_number)
-        user.date_joined = datetime.datetime.now().strftime('%Y-%m-%d')
-
-        group_name = "Student"
-        group, created = Group.objects.get_or_create(name=group_name)
-
-
-
-        user.save()
-        user.groups.add(group.id)
-        # user.groups.add(Student)
-        messages.success(request, 'Account was created for ' + user.username)
-
-        userinfo = UserProfile(user=authenticate(request, username=user.username, password = user.password))
-        userinfo.fullName = name
-        userinfo.user = user
-        userinfo.entryDate = datetime.datetime.now().strftime('%Y-%m-%d')
-        userinfo.save()
-
-
-        student = Student.objects.create(
-            name=name,
-            registration_number=registration_number,
-            batch=batch,
-            department=department,
-            session=session,
-            room = room, 
-            userprofile = userinfo, 
-            status = status, 
-        )
-        # Redirect or render a success page
-        success_message = f"Student '{student.name}' created successfully!"
-
-
-
-        
     # Handle GET requests or render form again with initial data
-    batches = Batch.objects.all()
-    rooms = Room.objects.all()
-    departments = Department.objects.all()
-    sessions = Session.objects.all()
-    form = StudentForm()
-    return render(request, 'student_form.html', {
-                       'batches': batches
-                     , 'rooms': rooms
-                     , 'departments': departments
-                     , 'sessions': sessions
-                     , 'form': form
-                     , 'success_message': success_message})
+    form = StudentForm(request.POST or None)
+
+    if request.method == 'POST':
+        if User.objects.filter(username=request.POST.get("registration_number")).exists():
+            error_message = f"Registration No. '{request.POST.get('registration_number')}' already exists!"
+
+        else:
+            name = request.POST.get('name')
+            registration_number = request.POST.get('registration_number')
+            status = request.POST.get('status')
+            batch_id = request.POST.get('batch')
+            department_id = request.POST.get('department')
+            session_id = request.POST.get('session')
+            room_id = request.POST.get('room')
+            
+            batch = Batch.objects.get(id=batch_id)
+            department = Department.objects.get(id=department_id)
+            session = Session.objects.get(id=session_id)
+            room = Room.objects.get(id=room_id)
+            
+            # user = UserProfile.objects.create_user(username=registration_number, password=''+registration_number)
+            user = User()
+            user.first_name = name
+            user.last_name = ""
+            user.username = request.POST.get("registration_number")
+            user.email = ""
+            user.set_password(registration_number)
+            user.date_joined = datetime.datetime.now().strftime('%Y-%m-%d')
+
+            group_name = "Student"
+            group, created = Group.objects.get_or_create(name=group_name)
+
+            user.save()
+            user.groups.add(group.id)
+            # user.groups.add(Student)
+            messages.success(request, 'Account was created for ' + user.username)
+
+            userinfo = UserProfile(user=authenticate(request, username=user.username, password = user.password))
+            userinfo.fullName = name
+            userinfo.user = user
+            userinfo.entryDate = datetime.datetime.now().strftime('%Y-%m-%d')
+            userinfo.save()
+
+            student = Student.objects.create(
+                name=name,
+                registration_number=registration_number,
+                batch=batch,
+                department=department,
+                session=session,
+                room = room, 
+                userprofile = userinfo, 
+                status = status, 
+            )
+
+            # Redirect or render a success page
+            success_message = f"Student '{student.name}' created successfully!"
+        
+    return render(request, 'student/create.html', {'form': form, 'error_message': error_message, 'success_message': success_message})
 
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
 def editstudent(request, id):
     # dictionary for initial data with
     # field names as keys
-    context ={}
-    
+    context = {}
     
     # fetch the object related to passed id
     obj = get_object_or_404(Student, id = id)
  
     # pass the object as instance in form
     form = StudentForm(request.POST or None, instance = obj)
- 
+
     # save the data from the form and
     # redirect to student_list
     if form.is_valid():
-        form.save()
-        return redirect("student_list")
+        if User.objects.filter(username=request.POST.get("registration_number")).exists():
+            messages.warning(request, f"Registration No. '{request.POST.get('registration_number')}' already exists!")
+        else:
+            form.save()
+            messages.success(request, "Save Successful!!")
  
     # add form dictionary to context
     context["form"] = form
  
-    return render(request, "studentedit.html", context)
+    return render(request, "student/edit.html", context)
 
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
@@ -643,7 +637,7 @@ def deletestudent(request):
 def student_list(request):
     students = Student.objects.none()
 
-    form = StudentForm(request.POST or None)
+    form = StudentFilterForm(request.POST or None)
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
         # if request.method.is_valid():
@@ -675,4 +669,4 @@ def student_list(request):
         'students' : students,
         'form' : form,
     }
-    return render(request, 'studentList1.html', context)
+    return render(request, 'student/index.html', context)

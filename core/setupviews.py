@@ -106,6 +106,10 @@ def generatestudentfee(request):
         # form = CreateUserForm(request.POST)
         # if request.method.is_valid():
         students = Student.objects.filter(status='active')
+
+        if request.POST.get("session") != "":
+            #print(request.POST.get("batch")) 
+            students = students.filter(session=request.POST.get("session"))
                        
         if request.POST.get("batch") != "":
             #print(request.POST.get("batch")) 

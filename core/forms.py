@@ -40,13 +40,24 @@ class FeesHeadForm(forms.ModelForm):
         fields = ["title", "amount"]
 
 
-# class StudentForm(forms.ModelForm):
-#     class Meta:
-#         model = Student
-#         fields = ["name", "registration_number", "room", "batch" , "department", "session", "status"]
+class StudentForm(forms.ModelForm):
+    room = ModelChoiceField(queryset=Room.objects.order_by('name').all())
+    batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all())
+    session = ModelChoiceField(queryset=Session.objects.order_by('-name').all())
+
+    class Meta:
+        model = Student
+        fields = ["name", "registration_number", "room", "session", "batch", "semester", "department", "status",]
+        # widgets = {
+        #     "batch": forms.Select(attrs={"class": 'form-select-sm',}),
+        #     "session": forms.Select(attrs={"class": 'form-select-sm',}),
+        #     "room": forms.Select(attrs={"class": 'form-select-sm',}),
+        #     "semester": forms.Select(attrs={"class": 'form-select-sm',}),
+        #     "department": forms.Select(attrs={"class": 'form-select-sm',}),
+        # }
 
 
-class StudentForm(forms.Form):
+class StudentFilterForm(forms.Form):
     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     room = forms.CharField(label='Room Number', required=False, widget=forms.TextInput(attrs={'class':'form-control-sm',}))
     batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
@@ -56,6 +67,7 @@ class StudentForm(forms.Form):
 
 class StudentFeeForm(forms.Form):
     feesHead = ModelChoiceField(queryset=FeesHead.objects.order_by('-title').all(), widget=forms.Select(attrs={'class':'form-select-sm',},))
+    session = ModelChoiceField(queryset=Session.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     semester = ModelChoiceField(queryset=Semester.objects.order_by('name').all(), widget=forms.Select(attrs={'class':'form-select-sm',},))
     registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-control-sm',},))
@@ -72,6 +84,15 @@ class StudentFeeFilterForm(forms.Form):
     payment_Status = forms.ChoiceField(choices=[(None, '------')] + [(tag.value, tag.name) for tag in Payment_Status], 
                                 required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
 
+
+
+class StudentFeeStatementForm(forms.Form):
+    session = ModelChoiceField(queryset=Session.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    hall = ModelChoiceField(queryset=Hall.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-select-sm',},))
+
+    
 
 class HallListFilterForm(forms.Form):
     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False)

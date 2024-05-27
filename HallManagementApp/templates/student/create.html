@@ -1,0 +1,82 @@
+{% extends 'core/base/base.html' %}
+
+
+{% block title %}Create Student{% endblock %}
+
+
+{% block site_css %}{% endblock %}
+
+
+{% block body %}
+    {% load crispy_forms_tags %}
+
+<section  class="py-5 px-4">
+    <div class="row">
+        <div class="col-sm-6 p-3 border mx-auto bg-light">
+            <div class="text-center pb-2 border-bottom">
+                <h3 class="m-0">Create Student</h3>
+            </div>
+            {% if success_message %}							
+                <div class="alert alert-success p-2 mx-1 mt-3 mb-0"><b>{{ success_message }}</b></div>
+            {% endif %}
+            {% if error_message %}							
+                <div class="alert alert-danger p-2 mx-1 mt-3 mb-0"><b>{{ error_message }}</b></div>
+            {% endif %}
+
+            <div class="p-2">
+                <!-- For creating a new student -->
+                <form action="{% url 'create_student' %}" method="post" class="row pt-1">
+                    {% csrf_token %}
+                    <div class="col-md-6">
+                        {{ form.name|as_crispy_field }}
+                    </div>
+
+                    <div class="col-md-6">
+                        {{ form.registration_number|as_crispy_field }}
+                    </div>
+
+                    <div class="col-md-12">
+                        {{ form.room|as_crispy_field }}
+                    </div>
+                    
+                    <div class="col-md-12">
+                        {{ form.batch|as_crispy_field }}
+                    </div>
+
+                    <div class="col-md-12">
+                        {{ form.department|as_crispy_field }}
+                    </div>
+
+                    <div class="col-md-12">
+                        {{ form.session|as_crispy_field }}
+                    </div>
+                
+                    {{ form.status|as_crispy_field  }}
+
+                    <div class="col-md-12 text-center">
+                        <input class="btn btn-primary" type="submit" value="Submit">
+                        <a class="btn btn-success ms-2" href="{% url 'student_list' %}" class="">Back To List</a>
+                    </div>
+                </form>
+            </div> 
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block site_js %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var successMessage = document.querySelector('.success-message');
+        var loadingBar = document.querySelector('.loading-bar');
+        if (successMessage && loadingBar) {
+            setTimeout(function () {
+                successMessage.style.display = 'none';
+                loadingBar.style.display = 'none';
+            }, 3000); // Hides the success message and loading bar after 3 seconds (3000 milliseconds)
+        }
+    });
+</script>
+{% endblock %}
