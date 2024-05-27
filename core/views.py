@@ -18,20 +18,10 @@ from .forms import *
 from .decorators import *
 import datetime
 
-# Create your views here.
-
-def DynamicPage(request, id):
-    return HttpResponse(id)
-
 def home(request):
     return render(request, 'home/index.html',{
 
     })
-
-# def about(request):
-#     return render(request, 'home/about.html',{
-        
-#     })
 
 @unauthenticated_user
 def loginpage(request):
