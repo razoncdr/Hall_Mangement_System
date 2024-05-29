@@ -13,14 +13,10 @@ class CreateUserForm(UserCreationForm):
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
  
       
-class LoginForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ["username", 'password']
-        widgets = {
-            "username": forms.TextInput(attrs={}),
-            "password": forms.TextInput(attrs={'type': 'password'}),
-        }
+class LoginForm(forms.Form):    
+    username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class':'form-control',},))
+    password = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class':'form-control', 'type': 'password',},))
+
         
         
 class UserGroupForm(UserCreationForm):

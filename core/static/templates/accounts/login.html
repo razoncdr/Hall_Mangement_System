@@ -30,7 +30,12 @@
                 <div class="p-2">
                     <form method="POST" action="" class="row g3 pt-1">
                         {% csrf_token %}
-                        {{ form|crispy }}
+                        <div class="col-sm-12 ">
+                            {{ form.username|as_crispy_field }}
+                        </div>
+                        <div class="col-sm-12 ">
+                            {{ form.password|as_crispy_field }}
+                        </div>
 
                         <div class="col-md-12 text-center pt-2">
                             <input class="btn btn-success" type="submit" value="Login">

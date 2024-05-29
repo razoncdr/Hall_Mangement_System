@@ -1,3 +1,4 @@
+import django
 from django.urls import path
 from core import views, setupviews, reportviews
 from django.views.generic.base import RedirectView

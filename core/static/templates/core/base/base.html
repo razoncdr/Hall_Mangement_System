@@ -29,6 +29,7 @@
         {% comment %} <nav class="navbar navbar-expand-lg navbar-light bg-light"> {% endcomment %}
         <div class="d-flex" id="wrapper">
             <!-- Sidebar-->
+            {% if user.is_authenticated %}
             <div class="border-end bg-white" id="sidebar-wrapper">
                 <div class="sidebar-heading bg-light" style="padding: 8px 0px;">
                     <a href="/" style="padding: 2px;" class="d-flex justify-content-center align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
@@ -211,17 +212,20 @@
 
                 </div>
             </div>
+            {% endif %}
             <!-- Page content wrapper-->
             <div id="page-content-wrapper" style="min-height: 100vh; margin:0; display:flex; flex-direction:column;">
                 <!-- Top navigation-->
                 <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
                     <div class="container-fluid">
                         <div class="col-4">
+                            {% if user.is_authenticated %}
                             <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                            {% endif %}
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center text-center">
                             <img src="{% static 'core\images\hotel.png' %}" alt="" width="32" height="32">
-                            <a class="navbar-brand mx-2" href="/home/">Hall Management System</a>
+                            <a class="navbar-brand mx-2" href="/home/">SEC | Hall Management System</a>
                         </div>
                         <button class="col-3 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                         <div class="col-4 collapse navbar-collapse" id="navbarSupportedContent">
@@ -235,11 +239,11 @@
                                             <li><a class="dropdown-item" href="/profile/">My Profile</a></li>
                                             <li><a class="dropdown-item" href="/profile/">Settings</a></li>
                                             <li><a class="dropdown-item" href="/profile/">Reset Password</a></li>
-                                            <form id="logout" method="POST">
+                                            <form id="logout" action="{% url 'logout' %}" method="POST">
                                                 {% csrf_token %}
                                                 <input type ="hidden">
                                             </form>
-                                            <li><a class="dropdown-item" href="{% url 'logout' %}" onclick="javacript:document.getElementById('logout').submit()">Log Out</a></li>
+                                            <li><a class="dropdown-item" type="button" onclick="javacript:document.getElementById('logout').submit()">Log Out</a></li>
                                         </ul>
                                     </li>
                                 {% else %}
