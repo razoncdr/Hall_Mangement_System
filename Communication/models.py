@@ -1,6 +1,6 @@
 from django.db import models
 
-from HallManagementApp.models import Student
+from core.models import Student
 from core.models import UserProfile
 
 class Notice(models.Model):

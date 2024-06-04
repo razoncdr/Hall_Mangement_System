@@ -23,7 +23,7 @@ import json
 
 
 
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
 def feestatementreport(request):
     studentfees = StudentFees.objects.none()
 

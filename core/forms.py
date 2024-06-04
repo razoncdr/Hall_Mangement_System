@@ -12,13 +12,12 @@ class CreateUserForm(UserCreationForm):
         model = User
         fields = ['username', 'first_name', 'last_name', 'email', 'password1', 'password2']
  
-      
+
 class LoginForm(forms.Form):    
     username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class':'form-control',},))
     password = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class':'form-control', 'type': 'password',},))
 
-        
-        
+
 class UserGroupForm(UserCreationForm):
     id = forms.IntegerField()
     username = forms.CharField(max_length=150)
@@ -28,6 +27,117 @@ class UserGroupForm(UserCreationForm):
     is_active = models.BooleanField(default=True)
     user = User()
     group = Group()
+
+
+
+class HallForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Hall
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]
+
+
+class RoomForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Room
+ 
+        # specify fields to be used
+        fields = [
+            "hall",
+            "name",
+            "capacity",
+        ]
+
+
+class BatchForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Batch
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]
+
+
+class DepartmentForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Department
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]
+
+
+class SessionForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Session
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]
+
+
+class SemesterForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = Semester
+ 
+        # specify fields to be used
+        fields = [
+            "name",
+        ]
+
+
+
+class DormitoryApplicationForm(forms.ModelForm):
+ 
+    # create meta class
+    class Meta:
+        # specify model to be used
+        model = DormitoryApplications
+ 
+        # specify fields to be used
+        fields = [
+            "session",
+            "batch",
+            "semester",
+            "department",
+            "preferred_room",
+            "registration_number",
+            "fullName",
+            "birthDate",
+            "gender",
+            "phone",
+            "email",
+            "picture",
+            "idCardPicture",
+            "guardian_phone",
+            "guardian_address",
+            "application_status",
+            "application_date",
+        ]
 
 
 class FeesHeadForm(forms.ModelForm):

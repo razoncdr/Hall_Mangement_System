@@ -18,10 +18,12 @@ from .forms import *
 from .decorators import *
 import datetime
 
+
 def home(request):
     return render(request, 'home/index.html',{
 
     })
+
 
 @unauthenticated_user
 def loginpage(request):
@@ -39,9 +41,7 @@ def loginpage(request):
     return render(request, 'accounts/login.html', context)
 
 
-
-
-@allowed_users(allowed_roles=['Hall Provost', ])
+@allowed_users(allowed_roles=['Hall Provost', 'Admin'])
 def registerpage(request):
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
@@ -112,7 +112,7 @@ def registerpage(request):
 #     return render(request, 'accounts/index.html', context)
 
 # Edited using chatgpt
-@allowed_users(allowed_roles=['Hall Provost', ])
+@allowed_users(allowed_roles=['Hall Provost', 'Admin'])
 def userlist(request):
     userlist = []
     for user in User.objects.all():
@@ -125,7 +125,7 @@ def userlist(request):
     return render(request, 'accounts/index.html', context)
 
 
-@allowed_users(allowed_roles=['Hall Provost', ])
+@allowed_users(allowed_roles=['Hall Provost', 'Admin'])
 def edituser(request, userid):
     if request.method == "POST":
         # form = CreateUserForm(request.POST)
@@ -167,14 +167,7 @@ def edituser(request, userid):
     return render(request, 'accounts/edit.html', context)
 
 
-@allowed_users(allowed_roles=['Hall Provost'])
-# def deleteuser(request):
-#     if request.method == "POST":
-#         user = User.objects.get(id=request.POST.get("userid"))
-#         UserProfile.objects.get(user=user).delete()
-#         user.delete()
-        
-#     return redirect('userlist')
+@allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
 def deleteuser(request):
     # Assuming you have some way of identifying the user whose profile you want to delete
     user_profile = get_object_or_404(UserProfile, user=request.user)
@@ -190,7 +183,7 @@ def deleteuser(request):
     return redirect('userlist')
    
 
-@allowed_users(allowed_roles=['Hall Provost', 'Student'])
+@allowed_users(allowed_roles=['Hall Provost', 'Admin', 'Student'])
 def profile(request):
     if request.method == 'POST':
         userinfo = UserProfile.objects.get(user=request.user)
@@ -232,16 +225,11 @@ def profile(request):
         birthdate = datetime.datetime.now().strftime('%Y-%m-%d')
     userinfo.entryDate = userinfo.entryDate.strftime('%d-%m-%Y')
 
-    
-
-        
-    addresses = Address.objects.filter(user=request.user)
-    
+      
     return render(request, 'core/profile.html',{
         'userinfo': userinfo,
         'birthdate':birthdate,
         'user': request.user,
-        'addresses': addresses,
     })
 
 
