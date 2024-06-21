@@ -1,11 +1,15 @@
 from django import forms
-from django.forms import ModelChoiceField
+from django.forms import DateInput, ModelChoiceField
 from .models import *
 from HallManagementApp.models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 import datetime
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Submit, Row, Column
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
 
 class CreateUserForm(UserCreationForm):
     class Meta:
@@ -110,34 +114,22 @@ class SemesterForm(forms.ModelForm):
         ]
 
 
-
-class DormitoryApplicationForm(forms.ModelForm):
- 
-    # create meta class
+class DormitoryApplicationsForm(forms.ModelForm):
     class Meta:
-        # specify model to be used
         model = DormitoryApplications
- 
-        # specify fields to be used
-        fields = [
-            "session",
-            "batch",
-            "semester",
-            "department",
-            "preferred_room",
-            "registration_number",
-            "fullName",
-            "birthDate",
-            "gender",
-            "phone",
-            "email",
-            "picture",
-            "idCardPicture",
-            "guardian_phone",
-            "guardian_address",
-            "application_status",
-            "application_date",
-        ]
+        fields = '__all__'  # Use all fields from the model
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+
+        # Add required attribute to form fields
+        for field_name, field in self.fields.items():
+            if field.required:
+                field.widget.attrs['required'] = 'required'
+
+        # Set date input for birthDate field
+        self.fields['birthDate'].widget = DateInput()
 
 
 class FeesHeadForm(forms.ModelForm):

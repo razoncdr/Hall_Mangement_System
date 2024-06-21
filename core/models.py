@@ -1,3 +1,4 @@
+import datetime
 from email.policy import default
 from django.db.models.signals import post_save
 from django.conf import settings
@@ -124,23 +125,25 @@ class DormitoryApplications(models.Model):
     batch = models.ForeignKey(Batch, on_delete=models.RESTRICT)
     semester = EnumChoiceField(Semester_Status, default=Semester_Status.Semester_1)
     department = models.ForeignKey(Department, on_delete=models.RESTRICT)
-    preferred_room = models.ForeignKey(Room, on_delete=models.RESTRICT)
+    preferred_room = models.ForeignKey(Room, on_delete=models.RESTRICT, blank=True, null=True)
     registration_number = models.CharField(max_length=20)
 
-    fullName = models.CharField(max_length=400, blank=True)
-    birthDate = models.DateField(null=True, blank=True)
-    gender = models.CharField(choices=GENDER, max_length=20, blank=True, null=True)
-    phone = PhoneNumberField(blank=True)
-    email = models.EmailField(blank=True, null=True)
+    fullName = models.CharField(max_length=400)
+    birthDate = models.DateField()
+    gender = models.CharField(choices=GENDER, max_length=20)
+    phone = PhoneNumberField()
+    email = models.EmailField()
     picture = models.ImageField(upload_to='ApplicationImages')
-    idCardPicture = models.ImageField(upload_to='ApplicationImages')
+    idCardPicture = models.ImageField(upload_to='ApplicationImages', blank=True, null=True)
     # medical_certificate = models.ImageField(upload_to='ApplicationImages')
 
-    guardian_phone = PhoneNumberField(blank=True)
-    guardian_address = models.CharField(max_length=400, blank=True)
+    guardian_name = models.CharField(max_length=400)
+    guardian_relation = models.CharField(max_length=400)
+    guardian_phone = PhoneNumberField()
+    guardian_address = models.CharField(max_length=400)
 
     application_status = EnumChoiceField(Application_Status, default=Application_Status.Pending)
-    application_date = models.DateTimeField(null=True, blank=True)
+    application_date = models.DateTimeField(default=datetime.datetime.now())
 
 
 class Student(models.Model):

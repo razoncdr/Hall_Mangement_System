@@ -1,6 +1,6 @@
 import django
 from django.urls import path
-from core import views, setupviews, reportviews
+from core import views, setupviews, reportviews, studentviews
 from django.views.generic.base import RedirectView
 from django.conf.urls.static import static
 from django.conf import settings
@@ -51,6 +51,7 @@ urlpatterns = [
     path('semester/delete/', setupviews.delete_semester, name = 'delete_semester'),
     path('semester/index/', setupviews.semester_list, name='semester_list'),
 
+    path('applications/create/', studentviews.dormitoryApplicationCreate, name='application_create'),
     path('student/create/', setupviews.create_student, name = 'create_student'),
     path('student/edit/<int:id>', setupviews.editstudent, name='edit_student'),
     path('student/delete/', setupviews.deletestudent, name = 'delete_student'),

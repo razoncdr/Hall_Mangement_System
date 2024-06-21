@@ -159,6 +159,7 @@
                                     <div class="d-flex flex-column px-0 m-0">
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'student_list' %}" ><i class="bi bi-link-45deg"></i> Student List</a></li>
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'application_create' %}" ><i class="bi bi-link-45deg"></i> Application Form</a></li>
                                     </div>
                                 </div>
                             </div>
@@ -260,7 +261,7 @@
                     {% block body %}{% endblock %}
                 </div>
                     
-                <!-- Footer-->
+                {% comment %} <!-- Footer-->
                 <div class="" id="footer">
                     <footer class="" style="background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 36%, rgba(0,212,255,1) 100%)!important;">
                         <div class="container text-white p-3 text-white">
@@ -310,7 +311,21 @@
                             </div>
                         </div>
                     </footer>
+                </div> {% endcomment %}
+
+                <!-- Footer-->
+                <div id="footer">
+                    <footer class="bg-dark text-white py-4">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12 text-center">
+                                    <span>© 2024 Hall Management System. All Rights Reserved.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </footer>
                 </div>
+
 
             </div>
         </div>
