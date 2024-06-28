@@ -248,10 +248,18 @@
                                         </ul>
                                     </li>
                                 {% else %}
-                                    <div class="d-flex justify-content-center ">
-                                        <a class="btn btn-warning mx-1" href="{% url 'application_create' %}">Admission</a>
+                                    <!-- <div class="d-flex justify-content-center ">
+                                        <a class="btn btn-warning mx-1" href="{% url 'application_create' %}">Admission<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="padding: 8px;"></span></a>
+                                        <a class="btn btn-success mx-1" href="{% url 'login' %}">Log In</a>
+                                    </div> -->
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-warning mx-1" href="{% url 'application_create' %}" style="padding: 0.5rem 0.5rem; font-size: 1rem; display: flex; align-items: center; justify-content: center;">
+                                            Admission
+                                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="padding: 8px; margin-left: 5px;"></span>
+                                        </a>
                                         <a class="btn btn-success mx-1" href="{% url 'login' %}">Log In</a>
                                     </div>
+                                    
                                 {% endif %}
                             </ul>
                         </div>
