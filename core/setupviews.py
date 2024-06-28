@@ -862,9 +862,9 @@ def studentfeelist(request):
             studentfees = studentfees.filter(student__registration_number=request.POST.get("registration_number"))
 
         if request.POST.get("payment_Status") != "":
-            print(request.POST.get("payment_Status")) 
+            # print(request.POST.get("payment_Status")) 
             payment_Status = Payment_Status(request.POST.get("payment_Status"))
-            print(payment_Status)
+            # print(payment_Status)
             studentfees = studentfees.filter(paymentStatus=payment_Status)
 
 

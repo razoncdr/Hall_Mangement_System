@@ -132,6 +132,36 @@ class DormitoryApplicationsForm(forms.ModelForm):
         self.fields['birthDate'].widget = DateInput()
 
 
+class DormitoryApplicationsFilterForm(forms.Form):
+    session = ModelChoiceField(queryset=Session.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    department = ModelChoiceField(queryset=Department.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    
+    # Adding an "all" option to semester
+    semester = forms.ChoiceField(choices=[(None, '------')] + [(tag.value, tag.name) for tag in Semester_Status], 
+                            required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+    
+    registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-select-sm',},))
+    date_from = forms.DateField(widget=DateInput(attrs={'class':'form-select-sm','type': 'date'}), required=True)
+    date_to = forms.DateField(widget=DateInput(attrs={'class':'form-select-sm','type': 'date'}), required=True)
+    
+    # Displaying application status choices
+    application_status = forms.ChoiceField(choices=[(None, '------')] + [(tag.value, tag.name) for tag in Application_Status], 
+                            required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
+
+
+# class DormitoryApplicationsFilterForm(forms.ModelForm):
+#     date_from = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+#     date_to = forms.DateField(required=True, widget=forms.DateInput(attrs={'type': 'date'}))
+
+#     class Meta:
+#         model = DormitoryApplications
+#         fields = ['session', 'batch', 'department', 'semester', 'registration_number', 'application_status']
+#         widgets = {
+#             'application_status': forms.Select(),
+#         }
+
+
 class FeesHeadForm(forms.ModelForm):
     class Meta:
         model = FeesHead
@@ -183,22 +213,16 @@ class StudentFeeFilterForm(forms.Form):
                                 required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
 
 
-
 class StudentFeeStatementForm(forms.Form):
     session = ModelChoiceField(queryset=Session.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-select-sm',},))
 
-    
 
 class HallListFilterForm(forms.Form):
     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False)
 
-    
-# class RoomListFilterForm(forms.Form):
-#     room = ModelChoiceField(queryset=Room.objects.all(), required=False)
-#     hall = ModelChoiceField(queryset=Hall.objects.all(), required=False)
 
 class RoomListFilterForm(forms.Form):
     room = forms.CharField(label='Room Number', required=False)

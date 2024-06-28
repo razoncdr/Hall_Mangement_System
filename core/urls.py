@@ -52,6 +52,9 @@ urlpatterns = [
     path('semester/index/', setupviews.semester_list, name='semester_list'),
 
     path('applications/create/', studentviews.dormitoryApplicationCreate, name='application_create'),
+    path('applications/index/', studentviews.dormitoryApplication_list, name='application_list'),
+    path('applications/review/<int:id>', studentviews.dormitoryApplication_list, name='application_review'),
+
     path('student/create/', setupviews.create_student, name = 'create_student'),
     path('student/edit/<int:id>', setupviews.editstudent, name='edit_student'),
     path('student/delete/', setupviews.deletestudent, name = 'delete_student'),

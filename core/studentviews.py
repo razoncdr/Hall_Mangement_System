@@ -50,3 +50,42 @@ def dormitoryApplicationCreate(request):
     context["form"] = form
 
     return render(request, 'dormitoryApplications/dormitoryform.html', context)
+
+
+@allowed_users(allowed_roles=['Admin', 'Hall Provost'])
+def dormitoryApplication_list(request):
+    applications = DormitoryApplications.objects.none()
+
+    form = DormitoryApplicationsFilterForm(request.POST or None)    
+    if request.method == "POST":
+        if form.is_valid():
+            applications = DormitoryApplications.objects.filter(
+                            application_date__gte=form.cleaned_data['date_from'], 
+                            application_date__lte=form.cleaned_data['date_to']).all()
+
+            if form.cleaned_data.get('session'):
+                applications = applications.filter(session=form.cleaned_data['session'])
+            if form.cleaned_data.get('batch'):
+                applications = applications.filter(batch=form.cleaned_data['batch'])
+            if form.cleaned_data.get('department'):
+                applications = applications.filter(department=form.cleaned_data['department'])
+            if form.cleaned_data.get('semester'):
+                semester = Semester_Status(form.cleaned_data['semester'])
+                applications = applications.filter(semester=semester)
+            if form.cleaned_data.get('registration_number'):
+                applications = applications.filter(registration_number__icontains=form.cleaned_data['registration_number'])
+            if form.cleaned_data.get('application_status'):
+                application_status = Application_Status(form.cleaned_data['application_status'])
+                applications = applications.filter(application_status=application_status)
+    else:
+        applications = DormitoryApplications.objects.filter(
+                        application_status=Application_Status.Pending).all()
+
+    context = {
+        'dataset' : applications,
+        'form' : form,
+    }
+
+    return render(request, 'dormitoryApplications/index.html', context)
+
+

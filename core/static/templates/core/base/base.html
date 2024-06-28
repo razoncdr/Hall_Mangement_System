@@ -160,6 +160,7 @@
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'student_list' %}" ><i class="bi bi-link-45deg"></i> Student List</a></li>
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li>
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'application_create' %}" ><i class="bi bi-link-45deg"></i> Application Form</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'application_list' %}" ><i class="bi bi-link-45deg"></i> Application List</a></li>
                                     </div>
                                 </div>
                             </div>
@@ -221,7 +222,7 @@
                     <div class="container-fluid">
                         <div class="col-4">
                             {% if user.is_authenticated %}
-                            <button class="btn btn-primary" id="sidebarToggle">Toggle Menu</button>
+                            <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
                             {% endif %}
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center text-center">
