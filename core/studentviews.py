@@ -33,15 +33,16 @@ def dormitoryApplicationCreate(request):
             instance.application_date = timezone.now()
             instance.save()
 
-            message = "Form Submitted Successfully!!"
+            messages.success(request, 'Form Submitted Successfully!!.')
+
         else:
             # Form is invalid, handle the validation errors
             errors = form.errors.as_data()
             # You can print errors to debug or log them
-            print(errors)
+            # print(errors)
             # In a real application, you might want to do something more user-friendly
-            # For simplicity, we'll just update the message to indicate validation errors
-            message = "Form submission failed due to validation errors."
+            # For simplicity, we'll just update the message to indicate validation errors            
+            messages.error(request, "Form submission failed due to validation errors.")
     else:
         form = DormitoryApplicationsForm()
 
