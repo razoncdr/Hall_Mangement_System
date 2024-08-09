@@ -12,6 +12,8 @@ from django.utils.translation import gettext_lazy as _
 from enum import Enum
 from django.db import models
 from django_enum_choices.fields import EnumChoiceField
+import uuid
+import secrets
 
 GENDER = (
     ('M', 'Male'),
@@ -55,7 +57,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
     fullName = models.CharField(max_length=400, blank=True)
     birthDate = models.DateField(null=True, blank=True)
-    gender = models.CharField(choices=GENDER, max_length=20, blank=True, null=True)
     phone = PhoneNumberField(blank=True)
     email = models.EmailField(blank=True, null=True)
     entryDate = models.DateTimeField(null=True, blank=True)
@@ -121,13 +122,15 @@ class Semester(models.Model):
 
 class DormitoryApplications(models.Model):
     # Add fields for application details
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    token = models.CharField(default=secrets.token_urlsafe, max_length=64, unique=True)
     session = models.ForeignKey(Session, on_delete=models.RESTRICT)
     batch = models.ForeignKey(Batch, on_delete=models.RESTRICT)
     semester = EnumChoiceField(Semester_Status, default=Semester_Status.Semester_1)
     department = models.ForeignKey(Department, on_delete=models.RESTRICT)
     preferred_room = models.ForeignKey(Room, on_delete=models.RESTRICT, blank=True, null=True)
-    registration_number = models.CharField(max_length=20)
 
+    registration_number = models.CharField(max_length=20)
     fullName = models.CharField(max_length=400)
     birthDate = models.DateField()
     gender = models.CharField(choices=GENDER, max_length=20)
@@ -143,18 +146,34 @@ class DormitoryApplications(models.Model):
     guardian_address = models.CharField(max_length=400)
 
     application_status = EnumChoiceField(Application_Status, default=Application_Status.Pending)
-    application_date = models.DateTimeField(default=datetime.datetime.now())
+    application_date = models.DateTimeField()
+    remarks = models.TextField()
+    review_date = models.DateTimeField(blank=True, null=True)
 
 
 class Student(models.Model):
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, blank = True, null=True)
     userprofile = models.OneToOneField(UserProfile, on_delete=models.SET_NULL, blank=True, null=True)
-    name = models.CharField(max_length=100)
-    registration_number = models.CharField(max_length=20)
+    
+    session = models.ForeignKey(Session, on_delete=models.RESTRICT)
     batch = models.ForeignKey(Batch, on_delete=models.RESTRICT)
     semester = EnumChoiceField(Semester_Status, default=Semester_Status.Semester_1)
     department = models.ForeignKey(Department, on_delete=models.RESTRICT)
-    session = models.ForeignKey(Session, on_delete=models.RESTRICT)
+
+    registration_number = models.CharField(max_length=20)
+    fullName = models.CharField(max_length=400)
+    birthDate = models.DateField()
+    gender = models.CharField(choices=GENDER, max_length=20)
+    phone = PhoneNumberField()
+    email = models.EmailField()
+    picture = models.ImageField(upload_to='ApplicationImages')
+    idCardPicture = models.ImageField(upload_to='ApplicationImages', blank=True, null=True)
+
+    guardian_name = models.CharField(max_length=400)
+    guardian_relation = models.CharField(max_length=400)
+    guardian_phone = PhoneNumberField()
+    guardian_address = models.CharField(max_length=400)
+
     status = models.CharField(choices=STATUS, max_length=20)
     # Add other attributes related to a student
 

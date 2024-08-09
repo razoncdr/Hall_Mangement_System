@@ -168,15 +168,20 @@ def edituser(request, userid):
 
 
 @allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
-def deleteuser(request):
-    # Assuming you have some way of identifying the user whose profile you want to delete
-    user_profile = get_object_or_404(UserProfile, user=request.user)
-    
+def deleteuser(request, userid):
     if request.method == 'POST':
-        # Delete the user profile
-        user_profile.delete()
+        # Assuming you have some way of identifying the user whose profile you want to delete
+
+        user = User.objects.get(id=userid)
+
+        if Student.objects.filter(registration_number=user.username).exists():
+            Student.objects.filter(registration_number=user.username).delete()
+
+        if UserProfile.objects.filter(user=user).exists():
+            UserProfile.objects.filter(user=user).delete()
+
         # Optionally, delete the associated user as well
-        # request.user.delete()
+        user.delete()
         # Redirect to a success page or somewhere else
         # return redirect('success_url')
 

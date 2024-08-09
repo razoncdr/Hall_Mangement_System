@@ -1,4 +1,5 @@
 {% extends 'core/base/base.html' %}
+{% load auth_extras %}
 
 {% block title %}Dormitory Applications List{% endblock %}
 
@@ -72,7 +73,7 @@
                             <th>Phone</th>
                             <th>Submission Date</th>
                             <th>Status</th>
-                            <th class="text-center">Action</th>
+                            <th class="text-center" >Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -89,7 +90,20 @@
                             <td>{{ item.application_date|date:"d/m/Y" }} {{ item.application_date|time:"h:i A" }}</td>
                             <td>{{ item.application_status.name }}</td>
                             <td>
-                                <a href="{% url 'application_review' item.id %}" class="btn btn-warning btn-sm">Review</a>
+                                <div class="d-flex justify-content-center">
+                                    <a href="{% url 'application_review' item.id %}" target="_blank" class="btn btn-warning btn-sm">Review</a>
+                                    {% if request.user|has_group:"Admin" %}
+                                    <a href="{% url 'application_update' item.uuid item.token %}" target="_blank" class="btn btn-info btn-sm ms-1">Update</a>
+                                    {% endif %}
+                                    {% comment %} <a href="{% url 'application_delete' item.id %}" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
+                                    {% if item.application_status.name != "Approved" %}
+                                    <form method="POST" class="d-inlinem ms-1" onsubmit="return confirm('Are you sure you want to delete the record?');" action="{% url 'application_delete' %}">
+                                        {%csrf_token%}
+                                        <input type="decimal" value="{{item.id}}" name="id" style="display:none;"/>
+                                        <button class="btn btn-sm btn-danger" type="submit" >Delete</button>
+                                    </form>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                         {% endfor %}

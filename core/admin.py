@@ -25,7 +25,7 @@ class FeesHeadAdmin(admin.ModelAdmin):
 
 
 class StudentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'registration_number', 'batch', 'department', 'session')
+    list_display = ('fullName', 'registration_number', 'batch', 'department', 'session')
 
 class RoomAdmin(admin.ModelAdmin):
     list_display = ('name', 'hall')

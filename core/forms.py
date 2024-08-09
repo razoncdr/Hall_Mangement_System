@@ -120,7 +120,12 @@ class DormitoryApplicationsForm(forms.ModelForm):
         fields = '__all__'  # Use all fields from the model
 
     def __init__(self, *args, **kwargs):
+        instance = kwargs.get('instance')
         super().__init__(*args, **kwargs)
+
+        # Make picture field not required for updates
+        if instance and instance.pk:
+            self.fields['picture'].required = False
         
 
         # Add required attribute to form fields
@@ -128,7 +133,13 @@ class DormitoryApplicationsForm(forms.ModelForm):
             if field.required:
                 field.widget.attrs['required'] = 'required'
 
-        # Set date input for birthDate field
+        self.fields['semester'] = forms.ChoiceField(choices=[(tag.value, tag.name) for tag in Semester_Status], 
+                                                required=False,)
+        self.fields['application_status'] = forms.ChoiceField(choices=[(tag.value, tag.name) for tag in Application_Status], 
+                                                required=False,)
+        self.fields['remarks'] = forms.CharField(widget=forms.Textarea(attrs={"rows":4}), required=False)
+        self.fields['token'] = forms.CharField(required=False)
+        # Set date input for birthDate field    
         self.fields['birthDate'].widget = DateInput()
 
 
@@ -175,7 +186,7 @@ class StudentForm(forms.ModelForm):
 
     class Meta:
         model = Student
-        fields = ["name", "registration_number", "room", "session", "batch", "semester", "department", "status",]
+        fields = ["fullName", "registration_number", "room", "session", "batch", "semester", "department", "status",]
         # widgets = {
         #     "batch": forms.Select(attrs={"class": 'form-select-sm',}),
         #     "session": forms.Select(attrs={"class": 'form-select-sm',}),
