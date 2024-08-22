@@ -5,8 +5,6 @@ from HallManagementApp.models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 import datetime
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -32,6 +30,14 @@ class UserGroupForm(UserCreationForm):
     user = User()
     group = Group()
 
+
+
+
+class UserFilterForm(forms.Form):
+    username = forms.CharField(required=False, label='Username (Registration Number)')  # Changed label
+    email = forms.CharField(required=False, label='Email Address')  # Example of changing another label
+    is_active = forms.ChoiceField(choices=[('1', 'Active'), ('0', 'Inactive')], required=False, label='Status')
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False, label='User Group')
 
 
 class HallForm(forms.ModelForm):

@@ -57,6 +57,7 @@
                                 <th scope="col">#</th>
                                 <th scope="col">Name</th>
                                 <th scope="col">Hall</th>
+                                <th scope="col">Capacity</th>
                                 <th scope="col" class="text-center">Action</th>
                               </tr>
                         </thead>
@@ -66,6 +67,7 @@
                                 <th scope="row">{{forloop.counter}}</th>
                                 <td>{{data.name}}</td>
                                 <td>{{data.hall}}</td>
+                                <td>{{data.capacity}}</td>
 								<td class="text-center">
 									<a class="btn btn-sm btn-info" href="{% url 'edit_room' data.id %}">Edit</a>
 									<form method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete the record?');" action="{% url 'delete_room' %}">

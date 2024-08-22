@@ -111,18 +111,85 @@ def registerpage(request):
 #     context = {'users':  userlist}
 #     return render(request, 'accounts/index.html', context)
 
-# Edited using chatgpt
-@allowed_users(allowed_roles=['Hall Provost', 'Admin'])
-def userlist(request):
-    userlist = []
-    for user in User.objects.all():
-        userinfo = UserGroupForm()
-        userinfo.user = user
-        userinfo.groups = ', '.join([str(i) for i in user.groups.values_list('name', flat=True)])  # Retrieve all groups associated with the user
-        userlist.append(userinfo)
+# # Edited using chatgpt
+# @allowed_users(allowed_roles=['Hall Provost', 'Admin'])
+# def userlist(request):
+#     userlist = []
+#     for user in User.objects.all():
+#         userinfo = UserGroupForm()
+#         userinfo.user = user
+#         userinfo.groups = ', '.join([str(i) for i in user.groups.values_list('name', flat=True)])  # Retrieve all groups associated with the user
+#         userlist.append(userinfo)
         
-    context = {'users': userlist}
-    return render(request, 'accounts/index.html', context)
+#     context = {'users': userlist}
+#     return render(request, 'accounts/index.html', context)
+
+from django.shortcuts import render
+from django.contrib.auth.models import User
+from .forms import UserFilterForm
+
+
+# def userlist(request):
+#     form = UserFilterForm(request.GET or None)
+#     # users = User.objects.all()
+#     users = User.objects.none()
+
+#     if form.is_valid():
+#         if form.cleaned_data['username']:
+#             users = User.objects.filter(username__icontains=form.cleaned_data['username'])
+#         print(users)
+#         if form.cleaned_data['email']:
+#             users = users.filter(email__icontains=form.cleaned_data['email'])
+#         if form.cleaned_data['is_active']:
+#             is_active = form.cleaned_data['is_active'] == '1'
+#             users = users.filter(is_active=is_active)
+#         if form.cleaned_data['group']:
+#             users = users.filter(groups=form.cleaned_data['group'])
+
+#     print("Printing the users: ")
+#     print(users)
+#     return render(request, 'accounts/index.html', {'form': form, 'users': users})
+#     # return render(request, 'accounts/index.html', {'form': form, 'users': users})
+
+from django.shortcuts import render
+from .forms import UserFilterForm
+from django.contrib.auth.models import User
+
+def userlist(request):
+    form = UserFilterForm(request.GET or None)
+    users = User.objects.none()  # Start with an empty queryset
+
+    if request.method == "GET" and form.is_valid():
+        username = form.cleaned_data.get('username', '')
+        email = form.cleaned_data.get('email', '')
+        is_active = form.cleaned_data.get('is_active', '')
+        group = form.cleaned_data.get('group', None)
+
+        # Debug information
+        print("Form Data:")
+        print(f"Username: {username}")
+        print(f"Email: {email}")
+        print(f"Is Active: {is_active}")
+        print(f"Group: {group}")
+
+
+        users = User.objects.all()
+        # Apply filters
+        if username:
+            users = users.filter(username__icontains=username)
+        if email:
+            users = users.filter(email__icontains=email)
+        if is_active:
+            is_active = is_active == '1'
+            users = users.filter(is_active=is_active)
+        if group:
+            users = users.filter(groups=group)
+
+        # Debug information
+        print("Filtered Users:")
+        print(users)
+
+    return render(request, 'accounts/index.html', {'form': form, 'users': users})
 
 
 @allowed_users(allowed_roles=['Hall Provost', 'Admin'])
