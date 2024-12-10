@@ -5,8 +5,6 @@ from HallManagementApp.models import *
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User, Group
 import datetime
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Submit, Row, Column
 
 class DateInput(forms.DateInput):
     input_type = 'date'
@@ -32,6 +30,14 @@ class UserGroupForm(UserCreationForm):
     user = User()
     group = Group()
 
+
+
+
+class UserFilterForm(forms.Form):
+    username = forms.CharField(required=False, label='Username (Registration Number)')  # Changed label
+    email = forms.CharField(required=False, label='Email Address')  # Example of changing another label
+    is_active = forms.ChoiceField(choices=[('1', 'Active'), ('0', 'Inactive')], required=False, label='Status')
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False, label='User Group')
 
 
 class HallForm(forms.ModelForm):
@@ -202,8 +208,11 @@ class StudentFilterForm(forms.Form):
     batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     semester = ModelChoiceField(queryset=Semester.objects.order_by('name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))
     registration_number = forms.CharField(max_length=150, required=False, widget=forms.TextInput(attrs={'class':'form-control-sm',},))
-
-
+    status = forms.ChoiceField(
+        choices=[('', '------')] + list(STATUS),  # Concatenate properly
+        required=False, 
+        widget=forms.Select(attrs={'class':'form-select-sm'})
+    )
 class StudentFeeForm(forms.Form):
     feesHead = ModelChoiceField(queryset=FeesHead.objects.order_by('-title').all(), widget=forms.Select(attrs={'class':'form-select-sm',},))
     session = ModelChoiceField(queryset=Session.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))

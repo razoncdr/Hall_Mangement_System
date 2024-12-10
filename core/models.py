@@ -163,7 +163,7 @@ class Student(models.Model):
 
     registration_number = models.CharField(max_length=20)
     fullName = models.CharField(max_length=400)
-    birthDate = models.DateField()
+    birthDate = models.DateField(null=True, blank=True)
     gender = models.CharField(choices=GENDER, max_length=20)
     phone = PhoneNumberField()
     email = models.EmailField()
