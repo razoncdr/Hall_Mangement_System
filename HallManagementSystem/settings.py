@@ -134,3 +134,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_ROOT = BASE_DIR / 'uploads'
 MEDIA_URL = '/files/'
+
+
+
+# Email configuration for development (use a real service in production)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Logs emails to the console
+EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'rejwanul7296@gmail.com'
+EMAIL_HOST_PASSWORD = 'jzlc gmlb nzez abuk'

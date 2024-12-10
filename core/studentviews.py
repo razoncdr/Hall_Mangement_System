@@ -10,15 +10,17 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import *
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+
+from core.utils import generate_verification_link
 from .models import *
 from HallManagementApp.models import *
 from .forms import *
 from .decorators import *
 import datetime
-import random
-import string
-import json
 from django.db.models import Q
+
+
+from django.core.mail import send_mail
 
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost'])
@@ -58,6 +60,25 @@ def dormitoryApplication_list(request):
     return render(request, 'dormitoryApplications/index.html', context)
 
 
+
+
+from django.utils.timezone import now
+
+def verify_email(request, uuid, token):
+    dorm_application = get_object_or_404(DormitoryApplications, uuid=uuid)
+    token_expiry_time = datetime.timedelta(days=1)  # Example: 1-day expiration
+
+    if dorm_application.token == token and now() - dorm_application.application_date <= token_expiry_time:
+        dorm_application.is_email_verified = True
+        dorm_application.save()
+        messages.success(request, 'Your email has been verified successfully!')
+        return redirect('application_update', uuid=dorm_application.uuid, token=dorm_application.token)
+    else:
+        return HttpResponse('Invalid or expired verification link.', status=400)
+
+
+
+
 def dormitoryApplicationCreate(request):
     message = ""
     if request.method == 'POST':
@@ -84,16 +105,46 @@ def dormitoryApplicationCreate(request):
                 instance.application_date = datetime.datetime.now()
                 instance.save()
 
+                
+
+                # Generate verification link
+                verification_url = generate_verification_link(instance)
+                full_url = f"http://127.0.0.1:8000{verification_url}"
+                print(full_url)
+                
+                # Send email
+                subject = "Verify your email"
+                message = f"Hi {instance.fullName},\nPlease verify your email by clicking on the following link: {full_url}"
+                from_email = settings.EMAIL_HOST_USER
+                to_list = [instance.email]
+
+
+                print(message)
+                print("from: ",from_email)
+                print(to_list)
+                print(instance.email)
+                
+                try:
+                    send_mail(subject, message, from_email, to_list, fail_silently=False)
+                    print("Email sent successfully")
+                except Exception as e:
+                    instance.delete()  # Remove the instance from the database
+                    messages.error(request, f"An error occurred while sending the verification email: {e}")
+
+                    print(f"Error sending email: {e}")
+                    return redirect('application_create')  # Redirect back to the creation page
+
+                # messages.success(request, 'Registration successful! Please check your email to verify your account.')
+                # return redirect('login')
+
+
+
                 messages.success(request, 'Form Submitted Successfully!!')
-                return redirect('application_update', uuid=instance.uuid, token=instance.token)
+                return redirect('application_create')
 
         else:
-            # Form is invalid, handle the validation errors
             errors = form.errors.as_data()
-            # You can print errors to debug or log them
-            print(errors)
-            # In a real application, you might want to do something more user-friendly
-            # For simplicity, we'll just update the message to indicate validation errors            
+            print(errors)           
             messages.error(request, "Form submission failed due to validation errors.")
     else:
         form = DormitoryApplicationsForm()
@@ -103,6 +154,8 @@ def dormitoryApplicationCreate(request):
     context["form"] = form
 
     return render(request, 'dormitoryApplications/create.html', context)
+
+
 
 
 def update_dormitoryApplication(request, uuid, token):
