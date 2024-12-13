@@ -34,10 +34,10 @@ class UserGroupForm(UserCreationForm):
 
 
 class UserFilterForm(forms.Form):
-    username = forms.CharField(required=False, label='Username (Registration Number)')  # Changed label
-    email = forms.CharField(required=False, label='Email Address')  # Example of changing another label
-    is_active = forms.ChoiceField(choices=[('1', 'Active'), ('0', 'Inactive')], required=False, label='Status')
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False, label='User Group')
+    username = forms.CharField(required=False, label='Username', widget=forms.TextInput(attrs={'class':'form-control-sm',},))
+    email = forms.CharField(required=False, label='Email Address', widget=forms.TextInput(attrs={'class':'form-control-sm',},))
+    is_active = forms.ChoiceField(choices=[('1', 'Active'), ('0', 'Inactive')], required=False, label='Status', widget=forms.Select(attrs={'class':'form-select-sm',},))
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=False, label='User Group', widget=forms.Select(attrs={'class':'form-select-sm',},))
 
 
 class HallForm(forms.ModelForm):
@@ -213,6 +213,8 @@ class StudentFilterForm(forms.Form):
         required=False, 
         widget=forms.Select(attrs={'class':'form-select-sm'})
     )
+
+    
 class StudentFeeForm(forms.Form):
     feesHead = ModelChoiceField(queryset=FeesHead.objects.order_by('-title').all(), widget=forms.Select(attrs={'class':'form-select-sm',},))
     session = ModelChoiceField(queryset=Session.objects.order_by('-name').all(), required=False, widget=forms.Select(attrs={'class':'form-select-sm',},))

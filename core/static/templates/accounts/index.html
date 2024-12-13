@@ -30,18 +30,18 @@
 
             <div class="alert alert-primary mt-3">
                 <form id="UserForm" method="GET" action="" class="">
-                    {% csrf_token %}
+                    {% comment %} {% csrf_token %} {% endcomment %}
                     <div class="row gx-3">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             {{ form.username|as_crispy_field }}
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             {{ form.email|as_crispy_field }}
                         </div>
                         <div class="col-sm-3">
                             {{ form.group|as_crispy_field }}
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             {{ form.is_active|as_crispy_field }}
                         </div>
                         <div class="col-sm-3 ms-auto mt-auto mb-3">

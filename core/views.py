@@ -305,24 +305,24 @@ def profile(request):
     })
 
 
-@login_required(login_url='login')
-def createaddressprofile(request):
-    if request.method == 'POST':
-        address = Address()
-        address.user = request.user
-        address.addressName = request.POST.get("addressName")
-        address.country = request.POST.get("country")
-        address.city = request.POST.get("city")
-        address.area = request.POST.get("area")
-        address.streetAddress = request.POST.get("streetaddress")
-        address.save()
-    else:
-        return redirect("/profile/")
-    return redirect("/profile/")
+# @login_required(login_url='login')
+# def createaddressprofile(request):
+#     if request.method == 'POST':
+#         address = Address()
+#         address.user = request.user
+#         address.addressName = request.POST.get("addressName")
+#         address.country = request.POST.get("country")
+#         address.city = request.POST.get("city")
+#         address.area = request.POST.get("area")
+#         address.streetAddress = request.POST.get("streetaddress")
+#         address.save()
+#     else:
+#         return redirect("/profile/")
+#     return redirect("/profile/")
 
 
-@login_required(login_url='login')
-def deleteaddressprofile(request, id):
+# @login_required(login_url='login')
+# def deleteaddressprofile(request, id):
     if request.method == 'POST':
         Address.objects.filter(id=id).delete()
     else:

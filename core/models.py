@@ -179,7 +179,7 @@ class Student(models.Model):
     # Add other attributes related to a student
 
     def __str__(self):
-        return f"{self.name} ({self.registration_number})"
+        return f"{self.fullName} ({self.registration_number})"
 
 
 

@@ -92,7 +92,7 @@
                             <td>
                                 <div class="d-flex justify-content-center">
                                     <a href="{% url 'application_review' item.id %}" target="_blank" class="btn btn-warning btn-sm">Review</a>
-                                    {% if request.user|has_group:"Admin" %}
+                                    {% if request.user|has_group:"Admin" and item.application_status.name == "Pending" %}
                                     <a href="{% url 'application_update' item.uuid item.token %}" target="_blank" class="btn btn-info btn-sm ms-1">Update</a>
                                     {% endif %}
                                     {% comment %} <a href="{% url 'application_delete' item.id %}" class="btn btn-danger btn-sm">Delete</a> {% endcomment %}
