@@ -9,7 +9,6 @@ from .forms import *
 from .decorators import *
 import datetime
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import *
@@ -274,50 +273,42 @@ def deleteuser(request, userid):
 
 @allowed_users(allowed_roles=['Hall Provost', 'Admin', 'Student'])
 def profile(request):
+    message = ""
+
     if request.method == 'POST':
+        post_data = request.POST.copy()  # Make a mutable copy of the POST data
         userinfo = UserProfile.objects.get(user=request.user)
-        userinfo.fullName = request.POST.get("fullName")
-        userinfo.birthDate = request.POST.get("birthdate")
-        userinfo.gender = request.POST.get("gender")
-        userinfo.phone = request.POST.get("phone")
-        userinfo.email = request.POST.get("email")
-        userinfo.save()
+        post_data['email'] = userinfo.email
+        form = UserProfileForm(post_data, request.FILES, instance=UserProfile.objects.get(user=request.user))
 
-        user = User.objects.get(pk=request.user.pk)
-        user.email = request.POST.get("email")
-        user.save()
-
-        if userinfo.email == None:
-            userinfo.email = user.email
-            userinfo.save()
-
-    if UserProfile.objects.filter(user=request.user).exists() == False:
-        userinfo = UserProfile()
-        userinfo.user = request.user
-        userinfo.fullName = request.user.username
-        userinfo.email = request.user.username + "@gmail.com"
-        userinfo.entryDate = datetime.datetime.now()
-        userinfo.save()
-
-        user = User.objects.get(pk=request.user.pk)
-        user.email = request.POST.get("email")
-        user.save()
-
-        if userinfo.email == None:
-            userinfo.email = user.email
-            userinfo.save()
-
-    userinfo = UserProfile.objects.get(user=request.user)
-    if userinfo.birthDate != None:
-        birthdate = userinfo.birthDate.strftime('%Y-%m-%d')
+        if form.is_valid():
+            # Save the valid data to the model
+            form.save()
+            messages.success(request, "Profile updated successfully.")
+            userinfo = UserProfile.objects.get(user=request.user)
+            form = UserProfileForm(instance=userinfo)
+        else:
+            errors = form.errors.as_data()
+            # print(errors)           
+            messages.error(request, "Form submission failed due to validation errors.")
+        
     else:
-        birthdate = datetime.datetime.now().strftime('%Y-%m-%d')
-    userinfo.entryDate = userinfo.entryDate.strftime('%d-%m-%Y')
+        if UserProfile.objects.filter(user=request.user).exists() == False:
+            userinfo = UserProfile()
+            userinfo.user = request.user
+            userinfo.fullName = request.user.username
+            userinfo.email = request.user.email
+            userinfo.entryDate = datetime.datetime.now()
+            userinfo.save()
 
-      
+        userinfo = UserProfile.objects.get(user=request.user)
+        form = UserProfileForm(instance=userinfo)
+        # form.fields['phone'].initial = userinfo.phone  # Set the initial value for the phone field
+
     return render(request, 'core/profile.html',{
+        'form': form,
+        'message': message,
         'userinfo': userinfo,
-        'birthdate':birthdate,
         'user': request.user,
     })
 

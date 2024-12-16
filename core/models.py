@@ -59,10 +59,8 @@ class UserProfile(models.Model):
     birthDate = models.DateField(null=True, blank=True)
     phone = PhoneNumberField(blank=True)
     email = models.EmailField(blank=True, null=True)
-    entryDate = models.DateTimeField(null=True, blank=True)
-
     picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)  # Added profile picture
-
+    entryDate = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.fullName

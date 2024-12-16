@@ -31,6 +31,45 @@ class UserGroupForm(UserCreationForm):
     group = Group()
 
 
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['fullName', 'birthDate', 'picture', 'phone', 'email']  # Only include fields that need to be validated and updated
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Disable the email field explicitly
+        self.fields['email'].disabled = True  # Email should not be updated
+
+        # Mark fields as required (optional for validation, depending on your requirements)
+        self.fields['fullName'].required = True
+        self.fields['birthDate'].required = True
+        self.fields['phone'].required = True
+
+        # Customize the birthDate field to use a DateInput widget
+        self.fields['birthDate'].widget = forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={
+                'type': 'date',  # HTML5 date picker
+                'class': 'form-control',
+                'placeholder': 'YYYY-MM-DD',  # Placeholder text
+            }
+        )
+
+        # Customize the phone field widget
+        self.fields['phone'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Phone number'})
+
+        # Customize the picture field if necessary (e.g., limit size or type)
+        self.fields['picture'].widget.attrs.update({'class': 'form-control'})
+    
+    def clean(self):
+        # Override clean() to prevent validation of fields not included in the `fields` list
+        cleaned_data = super().clean()
+        # If you want to skip certain fields, you can remove them from the cleaned_data
+        # For example, if `email` is not in the form but still part of the model:
+        cleaned_data.pop('email', None)
+        return cleaned_data
 
 
 class UserFilterForm(forms.Form):
@@ -147,6 +186,10 @@ class DormitoryApplicationsForm(forms.ModelForm):
         self.fields['token'] = forms.CharField(required=False)
         # Set date input for birthDate field    
         self.fields['birthDate'].widget = DateInput()
+
+
+
+
 
 
 class DormitoryApplicationsFilterForm(forms.Form):
