@@ -144,3 +144,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'rejwanul7296@gmail.com'
 EMAIL_HOST_PASSWORD = 'jzlc gmlb nzez abuk'
+DEFAULT_FROM_EMAIL = 'rejwanul7296@gmail.com'

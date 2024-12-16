@@ -25,14 +25,14 @@ def generate_verification_link(dorm_application):
     return verification_url
 
 
-def send_email_to_user(email, subject, message):
-    """
-    Utility function to send email to the user.
-    """
-    send_mail(
-        subject=subject,
-        message=message,
-        from_email='no-reply@example.com',
-        recipient_list=[email],
-        fail_silently=False
-    )
+# def send_email_to_user(email, subject, message):
+#     """
+#     Utility function to send email to the user.
+#     """
+#     send_mail(
+#         subject=subject,
+#         message=message,
+#         from_email='no-reply@example.com',
+#         recipient_list=[email],
+#         fail_silently=False
+#     )

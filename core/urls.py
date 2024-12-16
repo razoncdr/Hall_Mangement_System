@@ -5,6 +5,8 @@ from django.views.generic.base import RedirectView
 from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.auth.views import LogoutView
+from django.contrib.auth import views as auth_views
+from .views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView  
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/home/')),
@@ -19,6 +21,32 @@ urlpatterns = [
     path('accounts/delete/<int:userid>', views.deleteuser, name='deleteuser'),
     path('accounts/index/', views.userlist, name='userlist'),
     
+     # Request password reset
+    path('password-reset/', auth_views.PasswordResetView.as_view(
+        template_name='password_reset/password_reset_form.html'
+    ), name='password_reset'),
+
+    # Password reset email sent confirmation
+    path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(
+        template_name='password_reset/password_reset_done.html'
+    ), name='password_reset_done'),
+
+    # Password reset link confirmation
+    # path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(
+    #     template_name='password_reset/password_reset_confirm.html'
+    # ), name='password_reset_confirm'),
+
+    # Password Reset Confirmation URL
+    path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(
+        template_name='password_reset/password_reset_confirm.html'
+    ), name='password_reset_confirm'),
+
+    # Password Reset Complete
+    path('reset/done/', CustomPasswordResetCompleteView.as_view(
+        template_name='password_reset/password_reset_complete.html'
+    ), name='password_reset_complete'),
+
+
     path('profile/', views.profile, name='profile'),
 
     path('hall/create/', setupviews.create_hall, name = 'create_hall'),
@@ -58,12 +86,10 @@ urlpatterns = [
     path('applications/delete/', studentviews.delete_dormitoryApplication, name='application_delete'),
     path('applications/index/', studentviews.dormitoryApplication_list, name='application_list'),
 
-
     path('student/create/', setupviews.create_student, name = 'create_student'),
     path('student/edit/<int:id>', setupviews.editstudent, name='edit_student'),
     path('student/delete/', setupviews.deletestudent, name = 'delete_student'),
     path('student/index/', setupviews.student_list, name='student_list'),
-
 
     path('feeshead/create/', setupviews.createfeeshead, name = 'create_feeshead'),
     path('feeshead/edit/<int:id>', setupviews.editfeeshead, name='edit_feeshead'),

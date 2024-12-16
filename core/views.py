@@ -97,59 +97,76 @@ def registerpage(request):
     context = {'groups': Group.objects.all()}
     return render(request, 'accounts/register.html', context)
 
-# This is the previous code, error: group matching query doesn't exist
-# @allowed_users(allowed_roles=['Hall Provost'])
-# def userlist(request):
-#     users = User.objects.all()
-#     userlist = []
-#     for user in users:
-#         userinfo = UserGroupForm()
-#         userinfo.user = user
-#         userinfo.group = Group.objects.get(user=user)
-#         userlist.append(userinfo)
-        
-#     context = {'users':  userlist}
-#     return render(request, 'accounts/index.html', context)
-
-# # Edited using chatgpt
-# @allowed_users(allowed_roles=['Hall Provost', 'Admin'])
-# def userlist(request):
-#     userlist = []
-#     for user in User.objects.all():
-#         userinfo = UserGroupForm()
-#         userinfo.user = user
-#         userinfo.groups = ', '.join([str(i) for i in user.groups.values_list('name', flat=True)])  # Retrieve all groups associated with the user
-#         userlist.append(userinfo)
-        
-#     context = {'users': userlist}
-#     return render(request, 'accounts/index.html', context)
-
-from django.shortcuts import render
+   
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
+from django.contrib.auth import get_user_model
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+from django.contrib.auth.forms import SetPasswordForm
+from django.core.mail import send_mail
+from django.conf import settings
 from django.contrib.auth.models import User
-from .forms import UserFilterForm
+from django.shortcuts import redirect
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = SetPasswordForm  # You can customize the form if needed
+
+    def get_context_data(self, **kwargs):
+        # Get the context from the parent class
+        context = super().get_context_data(**kwargs)
+
+        # Decode the uidb64 to get the user's ID
+        uidb64 = self.kwargs['uidb64']
+        token = self.kwargs['token']
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = get_user_model().objects.get(pk=uid)
+
+        # Add the username to the context to display in the template
+        context['username'] = user.username
+        return context
+
+    def form_valid(self, form):
+        # Get the user from the token and uidb64
+        uidb64 = self.kwargs['uidb64']
+        token = self.kwargs['token']
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = get_user_model().objects.get(pk=uid)
+        
+        # Save user id in the session to use in the complete view
+        self.request.session['reset_user'] = user.id
+        
+        # Continue with the parent form valid behavior
+        return super().form_valid(form)
 
 
-# def userlist(request):
-#     form = UserFilterForm(request.GET or None)
-#     # users = User.objects.all()
-#     users = User.objects.none()
+class CustomPasswordResetCompleteView(PasswordResetCompleteView):
+    def get_context_data(self, **kwargs):
+        # Get the context from the parent class
+        context = super().get_context_data(**kwargs)
+        # Get the user from the session
+        user_id = self.request.session.get('reset_user')
+        if user_id:
+            try:
+                # Retrieve the user from the database
+                user = User.objects.get(pk=user_id)
+                # Send the reset email to the user
+                self.send_reset_email(user)
+                # Clear the session to prevent re-sending the email
+                del self.request.session['reset_user']
+            except User.DoesNotExist:
+                pass
+        
+        return context
 
-#     if form.is_valid():
-#         if form.cleaned_data['username']:
-#             users = User.objects.filter(username__icontains=form.cleaned_data['username'])
-#         print(users)
-#         if form.cleaned_data['email']:
-#             users = users.filter(email__icontains=form.cleaned_data['email'])
-#         if form.cleaned_data['is_active']:
-#             is_active = form.cleaned_data['is_active'] == '1'
-#             users = users.filter(is_active=is_active)
-#         if form.cleaned_data['group']:
-#             users = users.filter(groups=form.cleaned_data['group'])
+    def send_reset_email(self, user):
+        subject = "Your Password Has Been Reset"
+        message = f"Hello {user.username},\n\nYour password has been successfully reset. If you did not request this change, please contact support immediately."
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [user.email]
+        
+        send_mail(subject, message, from_email, recipient_list)
 
-#     print("Printing the users: ")
-#     print(users)
-#     return render(request, 'accounts/index.html', {'form': form, 'users': users})
-#     # return render(request, 'accounts/index.html', {'form': form, 'users': users})
+
 
 from django.shortcuts import render
 from .forms import UserFilterForm

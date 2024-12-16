@@ -158,7 +158,7 @@
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'student_list' %}" ><i class="bi bi-link-45deg"></i> Student List</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li>
+                                        {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li> {% endcomment %}
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'application_create' %}" ><i class="bi bi-link-45deg"></i> Application Form</a></li>
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'application_list' %}" ><i class="bi bi-link-45deg"></i> Application List</a></li>
                                     </div>
@@ -226,7 +226,7 @@
                             {% endif %}
                         </div>
                         <div class="col-4 d-flex justify-content-center align-items-center text-center">
-                            <img src="{% static 'core\images\hotel.png' %}" alt="" width="32" height="32">
+                            <img src="{% static 'core\images\hotel.png' %}" alt="" width="25" height="25">
                             <a class="navbar-brand mx-2" href="/home/">SEC | Hall Management System</a>
                         </div>
                         <button class="col-3 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
@@ -238,9 +238,9 @@
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@{{user.username}}</a>
                                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                            <li><a class="dropdown-item" href="/profile/">My Profile</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
                                             <li><a class="dropdown-item" href="/profile/">Settings</a></li>
-                                            <li><a class="dropdown-item" href="/profile/">Reset Password</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'password_reset' %}">Reset Password</a></li>
                                             <form id="logout" action="{% url 'logout' %}" method="POST">
                                                 {% csrf_token %}
                                                 <input type ="hidden">
