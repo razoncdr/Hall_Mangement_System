@@ -61,6 +61,9 @@ class UserProfile(models.Model):
     email = models.EmailField(blank=True, null=True)
     entryDate = models.DateTimeField(null=True, blank=True)
 
+    picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)  # Added profile picture
+
+
     def __str__(self):
         return self.fullName
 

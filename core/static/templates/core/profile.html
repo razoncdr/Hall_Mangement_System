@@ -14,13 +14,27 @@
     <div class="container px-4 px-lg-5 my-5">
         <div class="row gx-4 gx-lg-5 mb-3">
             <div class="col-md-3 border-end">
-                <div class="d-flex flex-column align-items-center text-center mb-5">
-                    <img src="{% static 'core\images\user.png' %}" class="rounded-circle mt-sm-5" width="115px" />
-                    <span class="fw-bold alert alert-warning my-2 p-2">{{userinfo.fullName}}</span>
-                    <span class="text-black-50 small fw-bold">{{user.email}}</span>
-                    <span class="text-black-50 small fw-bold" style="font-size: 11px;">Entry Date: {{userinfo.entryDate}}</span>
-                    <span> </span>
-                </div>
+                <div class="col-md-3 offset-md-4 border-end">
+                    <div class="d-flex flex-column align-items-center text-center mb-5">
+                        {% if userinfo.picture %}
+                            <img src="{{ userinfo.picture.url }}"  class="rounded-circle mt-4" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ddd;"  alt="Profile Picture" />
+                        {% else %}
+                            <img src="{% static 'core/images/user.png' %}"  class="rounded-circle mt-4"  style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ddd;" alt="Default Picture" />
+                        {% endif %}
+                
+                        <h5 class="fw-bold mt-3 mb-1 text-uppercase text-truncate" 
+                        style="color: #343a40; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">
+                        {{ userinfo.fullName }}
+                        </h5>
+                        <span class="text-secondary small">{{ user.email }}</span>
+                
+                        <div class="mt-2">
+                            <span class="badge bg-warning text-dark p-2 fw-bold">
+                                Entry Date: {{ userinfo.entryDate }}
+                            </span>
+                        </div>
+                    </div>
+                </div> 
             </div>
             <div class="col-md-6 border-end">
                 <form class="" action="." method="POST" enctype="multipart/form-data">

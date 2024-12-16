@@ -339,6 +339,7 @@ def create_user_and_student(application, random_password):
         birthDate=application.birthDate,
         phone=application.phone,
         email=application.email,
+        picture=application.picture,
         entryDate=timezone.now()
     )
 
