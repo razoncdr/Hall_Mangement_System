@@ -1,2 +1,7 @@
+django-crispy-forms
+crispy-bootstrap5
+Pillow
+django-environ
+django-enum-choices
 django-phonenumber-field
 django-phonenumbers

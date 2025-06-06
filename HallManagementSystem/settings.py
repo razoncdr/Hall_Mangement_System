@@ -12,10 +12,14 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import environ
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()
+env.read_env(str(BASE_DIR / '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
@@ -138,10 +142,10 @@ MEDIA_URL = '/files/'
 
 
 # Email configuration for development (use a real service in production)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Logs emails to the console
-EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP server
-EMAIL_PORT = 587
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_HOST')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST')
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'rejwanul7296@gmail.com'
-EMAIL_HOST_PASSWORD = 'jzlc gmlb nzez abuk'
 DEFAULT_FROM_EMAIL = 'rejwanul7296@gmail.com'
