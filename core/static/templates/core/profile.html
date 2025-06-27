@@ -9,105 +9,109 @@
 <!-- {% load static %} -->
 
 {% block body %}
-{% load crispy_forms_tags %}
+    {% load crispy_forms_tags %}
 
-<section class="py-5">
-    <div class="container px-4 px-lg-5">
-        <div class="row gx-4 gx-lg-5 mb-3">
-            <div class="col-md-3 border-end">
-                <div class="col-md-3 offset-md-4 border-end">
-                    <div class="d-flex flex-column align-items-center text-center mb-5">
-                        {% if userinfo.picture %}
-                            <img src="{{ userinfo.picture.url }}"  class="rounded-circle mt-4" style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ddd;"  alt="Profile Picture" />
-                        {% else %}
-                            <img src="{% static 'core/images/user.png' %}"  class="rounded-circle mt-4"  style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ddd;" alt="Default Picture" />
-                        {% endif %}
-                
-                        <h5 class="fw-bold mt-3 mb-1 text-uppercase text-truncate" 
-                        style="color: #343a40; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">
-                        {{ userinfo.fullName }}
-                        </h5>
-                        <span class="text-secondary small">{{ user.email }}</span>
-                
-                        <div class="mt-2">
+    <section class="py-5">
+        <div class="container px-4 px-lg-5">
+            <div class="row gx-4 gx-lg-5 mb-3">
+                <div class="col-md-3 border-end">
+                    <div class="col-md-3 offset-md-4 border-end">
+                        <div class="d-flex flex-column align-items-center text-center mb-5">
+                            {% if userinfo.picture %}
+                                <img src="{{ userinfo.picture.url }}" class="rounded-circle mt-4"
+                                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ddd;"
+                                     alt="Profile Picture"/>
+                            {% else %}
+                                <img src="{% static 'core/images/user.png' %}" class="rounded-circle mt-4"
+                                     style="width: 150px; height: 150px; object-fit: cover; border: 4px solid #ddd;"
+                                     alt="Default Picture"/>
+                            {% endif %}
+
+                            <h5 class="fw-bold mt-3 mb-1 text-uppercase text-truncate"
+                                style="color: #343a40; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">
+                                {{ userinfo.fullName }}
+                            </h5>
+                            <span class="text-secondary small">{{ user.email }}</span>
+
+                            <div class="mt-2">
                             <span class="badge bg-warning text-dark p-2 fw-bold">
                                 Entry Date: {{ userinfo.entryDate }}
                             </span>
+                            </div>
                         </div>
                     </div>
-                </div> 
-            </div>
-            <div class="col-md-6 border-end">
-                <form class="" action="." method="POST" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    <div class="">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="text-right">Profile Settings</h4>
-                        </div>
-                        <hr class="m-0 mb-3"/>
-                        
-                        <!-- Display Form Errors -->
-                        {% if messages %}
-                            {% for message in messages %}
-                                {% if message.tags == "success" %}
-                                    <div class="alert alert-success px-3 py-2 mt-2 mb-3">
-                                        <i class="fas fa-check-circle"></i> <strong>Success:</strong> {{ message }}
-                                    </div>
-                                {% else %}
-                                    <div class="alert alert-warning px-3 py-2 mt-2 mb-3">
-                                        <i class="fas fa-exclamation-triangle"></i> <b>Error:</b> {{ message }}
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endif %}
+                </div>
+                <div class="col-md-6 border-end">
+                    <form class="" action="." method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h4 class="text-right">Profile Settings</h4>
+                            </div>
+                            <hr class="m-0 mb-3"/>
 
-                        <div class="row">
-                            <!-- Full Name Field -->
-                            <div class="col-sm-12">
-                                {{ form.fullName|as_crispy_field }}
+                            <!-- Display Form Errors -->
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if message.tags == "success" %}
+                                        <div class="alert alert-success px-3 py-2 mt-2 mb-3">
+                                            <i class="fas fa-check-circle"></i> <strong>Success:</strong> {{ message }}
+                                        </div>
+                                    {% else %}
+                                        <div class="alert alert-warning px-3 py-2 mt-2 mb-3">
+                                            <i class="fas fa-exclamation-triangle"></i> <b>Error:</b> {{ message }}
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endif %}
+
+                            <div class="row">
+                                <!-- Full Name Field -->
+                                <div class="col-sm-12">
+                                    {{ form.fullName|as_crispy_field }}
+                                </div>
+
+                                <!-- Birthdate Field -->
+                                <div class="col-sm-6">
+                                    {{ form.birthDate|as_crispy_field }}
+                                </div>
+
+                                <!-- Picture Field -->
+                                <div class="col-sm-6">
+                                    <style>
+                                        /* Truncate text with ellipsis */
+                                        .input-group .flex-grow-1 {
+                                            display: block; /* Ensures the element takes full available width */
+                                            max-width: 100%; /* Prevents exceeding the parent container's width */
+                                            white-space: nowrap; /* Prevents text from wrapping */
+                                            overflow: hidden; /* Hides overflow text */
+                                            text-overflow: ellipsis; /* Adds '...' when text overflows */
+                                        }
+                                    </style>
+                                    {{ form.picture|as_crispy_field }}
+                                </div>
+
+                                <!-- Email Field (Disabled) -->
+                                <div class="col-sm-12">
+                                    {{ form.email|as_crispy_field }}
+                                </div>
+
+                                <!-- Phone Field -->
+                                <div class="col-sm-12">
+                                    {{ form.phone|as_crispy_field }}
+                                </div>
                             </div>
-                
-                            <!-- Birthdate Field -->
-                            <div class="col-sm-6">
-                                {{ form.birthDate|as_crispy_field }}
-                            </div>
-                                                    
-                            <!-- Picture Field -->
-                            <div class="col-sm-6">
-                                <style>
-                                    /* Truncate text with ellipsis */
-                                    .input-group .flex-grow-1 {
-                                        display: block;               /* Ensures the element takes full available width */
-                                        max-width: 100%;              /* Prevents exceeding the parent container's width */
-                                        white-space: nowrap;         /* Prevents text from wrapping */
-                                        overflow: hidden;            /* Hides overflow text */
-                                        text-overflow: ellipsis;     /* Adds '...' when text overflows */
-                                    }
-                                </style>
-                                {{ form.picture|as_crispy_field }}
-                            </div>
-                
-                            <!-- Email Field (Disabled) -->
-                            <div class="col-sm-12">
-                                {{ form.email|as_crispy_field }}
-                            </div>
-                
-                            <!-- Phone Field -->
-                            <div class="col-sm-12">
-                                {{ form.phone|as_crispy_field }}
+
+                            <!-- Submit Button -->
+                            <div class="mt-2 text-center">
+                                <button class="btn btn-warning profile-button" type="submit">Save Profile</button>
                             </div>
                         </div>
-                
-                        <!-- Submit Button -->
-                        <div class="mt-2 text-center">
-                            <button class="btn btn-warning profile-button" type="submit">Save Profile</button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
 {% endblock %}
 

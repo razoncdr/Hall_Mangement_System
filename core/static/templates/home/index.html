@@ -1,4 +1,5 @@
 {% extends 'core/base/base.html' %}
+{% load static %}
 
 
 {% block title %}SEC{% endblock %}
@@ -8,59 +9,19 @@
 
 
 {% block body %}
-
-
     <header class="masthead" style="position: relative; background-color: #343a40;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(../static/core/images/homebg.jpeg) no-repeat center center; background-size: cover;
-    padding-top: 5rem; padding-bottom: 5rem;">
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('{% static "core/images/homebg.jpeg" %}') no-repeat center center;
+    background-size: cover; padding-top: 5rem; padding-bottom: 5rem;">
         <div class="col-9 col-sm-6 px-4 py-3 px-lg-5 my-5 mx-auto" style="background-color: #00706bcf;">
-            <div class="text-center text-white" style="font-family: 'Source Sans Pro',HelveticaNeue-Light,'Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,'Lucida Grande',sans-serif;">
-                <!-- <h1 class='display-4 fw-bolder'>Point Of Sale System</h1> -->
-                <!-- <p class='lead fs-4 fw-normal mb-0'>Largest online books & stationary items store</p> -->
-                <h1 class="display-4 fw-bolder">SEC | Hall Management System</h1>
+            <div class="text-center text-white"
+                 style="font-family: 'Source Sans Pro',HelveticaNeue-Light,'Helvetica Neue Light','Helvetica Neue',Helvetica,Arial,'Lucida Grande',sans-serif;">
+                <h1 class="display-5 fw-bolder">Sylhet Engineering College</h1>
+                <h1 class="display-6 fw-bolder">Hall Management System</h1>
                 <p class="lead fs-4 fw-normal mb-0"></p>
             </div>
         </div>
-</header>
-
-
-    <!-- <main>
-        <section id="feedback" class="feedback text-white">
-            <div class="section-title">
-                <h3 class="text-center">Feedback</h3>
-            </div>
-
-            <div class="">
-                <div class="container">
-                    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true" data-bs-interval="2000">
-                        <div class="carousel-indicators">
-                          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                          <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                        </div>
-                        <div class="carousel-inner">
-                            <div class="carousel-item active" data-bs-interval="2000">
-                                <p>What an amazing little bookstore. Very friendly. I found my new bookstore. Their prices are fantastic too.I’m very impressed.</p>
-                            </div>
-                            <div class="carousel-item" data-bs-interval="2000">
-                                <p>Excellent service.reasonable price.they are offering great opportunity to enhance knowledge.</p>
-                                <h6>Bodrul Islam</h6>
-                            </div>
-                        </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Next</span>
-                        </button>
-                      </div>
-                </div>
-            </div>
-        </section>-->
-        <!-- feedback section ends -->
-    </main>
-
+    </header>
 {% endblock %}
 
 {% block site_js %}{% endblock %}

@@ -1,5 +1,13 @@
 @charset "UTF-8";
 
+body {
+    background: linear-gradient(120deg, #f6d365 0%, #fda085 100%);
+    font-family: 'Segoe UI', 'Arial', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    letter-spacing: 0.02em;
+    transition: background 0.5s;
+}
 
 /* header ends */
 .rating { 

@@ -66,7 +66,7 @@ ROOT_URLCONF = 'HallManagementSystem.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'core' / 'static' / 'templates', BASE_DIR / 'HallManagementApp' / 'templates', ],
+        'DIRS': [BASE_DIR / 'core' / 'static' / 'templates' ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -1,39 +1,25 @@
-from sqlite3 import Timestamp
-from unicodedata import category, name
-from django.shortcuts import render, redirect
-from django.shortcuts import (get_object_or_404, render, HttpResponseRedirect)
 from django.contrib import messages
-from django.http import HttpResponseRedirect
-from django.http import JsonResponse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import *
-from django.core.files.storage import FileSystemStorage
-from django.conf import settings
-from django.utils import timezone
-from django.db import transaction
-from core.utils import generate_verification_link, generate_random_password
-from .models import *
-from HallManagementApp.models import *
-from .forms import *
-from .decorators import *
-import datetime
-from django.db.models import Q
-
 from django.core.mail import send_mail
+from django.db import transaction
+from django.shortcuts import (get_object_or_404, render)
+from django.utils import timezone
+
+from core.utils import generate_verification_link, generate_random_password
+from .decorators import *
+from .forms import *
 
 
 @allowed_users(allowed_roles=['Admin', 'Hall Provost', 'Operator'])
 def dormitoryApplication_list(request):
     applications = DormitoryApplications.objects.none()
 
-    form = DormitoryApplicationsFilterForm(request.POST or None)    
+    form = DormitoryApplicationsFilterForm(request.POST or None)
     if request.method == "POST":
         if form.is_valid():
             applications = DormitoryApplications.objects.filter(
-                            application_date__gte=form.cleaned_data['date_from'], 
-                            application_date__lt=form.cleaned_data['date_to'] + datetime.timedelta(days=1),
-                            is_email_verified=True).all()
+                application_date__gte=form.cleaned_data['date_from'],
+                application_date__lt=form.cleaned_data['date_to'] + datetime.timedelta(days=1),
+                is_email_verified=True).all()
 
             if form.cleaned_data.get('session'):
                 applications = applications.filter(session=form.cleaned_data['session'])
@@ -45,18 +31,19 @@ def dormitoryApplication_list(request):
                 semester = Semester_Status(form.cleaned_data['semester'])
                 applications = applications.filter(semester=semester)
             if form.cleaned_data.get('registration_number'):
-                applications = applications.filter(registration_number__icontains=form.cleaned_data['registration_number'])
+                applications = applications.filter(
+                    registration_number__icontains=form.cleaned_data['registration_number'])
             if form.cleaned_data.get('application_status'):
                 application_status = Application_Status(form.cleaned_data['application_status'])
                 applications = applications.filter(application_status=application_status)
     else:
         applications = DormitoryApplications.objects.filter(
-                        application_status=Application_Status.Pending,
-                        is_email_verified=True).all()
+            application_status=Application_Status.Pending,
+            is_email_verified=True).all()
 
     context = {
-        'dataset' : applications,
-        'form' : form,
+        'dataset': applications,
+        'form': form,
     }
 
     return render(request, 'dormitoryApplications/index.html', context)
@@ -72,7 +59,7 @@ def verify_email(request, uuid, token):
 
         # Send email
         subject = "Email Verified Successfully"
-        update_url = f"http://127.0.0.1:8000/applications/{dorm_application.uuid}/{dorm_application.token}/update/"  
+        update_url = f"http://127.0.0.1:8000/applications/{dorm_application.uuid}/{dorm_application.token}/update/"
         message = (
             f"Hi {dorm_application.fullName},\n\n"
             "Your email has been verified successfully!\n"
@@ -89,9 +76,8 @@ def verify_email(request, uuid, token):
         except Exception as e:
             messages.error(request, f"An error occurred while sending the email: {e}")
 
-
         return redirect('application_update', uuid=dorm_application.uuid, token=dorm_application.token)
-    
+
     else:
         return HttpResponse('Invalid or expired verification link.', status=400)
 
@@ -107,17 +93,18 @@ def dormitoryApplicationCreate(request):
 
         if form.is_valid():
             # Create an instance of the form but don't save it yet
-            if Student.objects.filter(registration_number=form.cleaned_data['registration_number']).exists():         
+            if Student.objects.filter(registration_number=form.cleaned_data['registration_number']).exists():
                 messages.error(request, "A student with the registration number already exists.")
 
-            elif DormitoryApplications.objects.filter(email=form.cleaned_data['email']).exists():         
+            elif DormitoryApplications.objects.filter(email=form.cleaned_data['email']).exists():
                 messages.error(request, "An application with this email address already exists.")
 
             else:
                 if DormitoryApplications.objects.filter(registration_number=form.cleaned_data['registration_number'],
-                                                       application_status=Application_Status.Pending).exists(): 
-                    dormApplication = DormitoryApplications.objects.get(registration_number=form.cleaned_data['registration_number'],
-                                                        application_status=Application_Status.Pending)
+                                                        application_status=Application_Status.Pending).exists():
+                    dormApplication = DormitoryApplications.objects.get(
+                        registration_number=form.cleaned_data['registration_number'],
+                        application_status=Application_Status.Pending)
                     dormApplication.delete()
 
                 instance = form.save(commit=False)
@@ -129,7 +116,7 @@ def dormitoryApplicationCreate(request):
                 verification_url = generate_verification_link(instance)
                 full_url = f"http://127.0.0.1:8000{verification_url}"
                 # print(full_url)
-                
+
                 # Send email
                 subject = "Verify your email"
                 message = f"Hi {instance.fullName},\nPlease verify your email by clicking on the following link: {full_url}"
@@ -143,7 +130,8 @@ def dormitoryApplicationCreate(request):
 
                 try:
                     send_mail(subject, message, from_email, to_list, fail_silently=True)
-                    messages.success(request, 'A verification link has been sent to your email address. Please verify your email to proceed.')
+                    messages.success(request,
+                                     'A verification link has been sent to your email address. Please verify your email to proceed.')
                     return redirect('application_create')
                 except Exception as e:
                     instance.delete()  # Remove the instance from the database
@@ -203,7 +191,7 @@ def update_dormitoryApplication(request, uuid, token):
 
                 # Send a notification email to the user
                 try:
-                    update_url = f"http://127.0.0.1:8000/applications/{instance.uuid}/{instance.token}/update/"  
+                    update_url = f"http://127.0.0.1:8000/applications/{instance.uuid}/{instance.token}/update/"
                     subject = "Application Updated Successfully"
                     message = (
                         f"Hi {instance.fullName},\n\n"
@@ -216,7 +204,8 @@ def update_dormitoryApplication(request, uuid, token):
                     to_list = [instance.email]
 
                     send_mail(subject, message, from_email, to_list, fail_silently=False)
-                    messages.success(request, "Your application has been updated successfully! A confirmation email has been sent.")
+                    messages.success(request,
+                                     "Your application has been updated successfully! A confirmation email has been sent.")
                 except Exception as e:
                     messages.error(request, f"An error occurred while sending the email: {e}")
 
@@ -239,9 +228,9 @@ def review_dormitoryApplication(request, id):
     # dictionary for initial data with
     # field names as keys
     context = {}
-    
+
     # fetch the object related to passed id
-    obj = get_object_or_404(DormitoryApplications, id = id)
+    obj = get_object_or_404(DormitoryApplications, id=id)
 
     if request.method == 'POST':
         # print(request.POST.get('status') )
@@ -262,7 +251,8 @@ def review_dormitoryApplication(request, id):
                     "Thank you."
                 )
                 send_mail(subject, message, settings.EMAIL_HOST_USER, [obj.email], fail_silently=False)
-                messages.success(request, f"The application has been rejected, and an email notification has been sent to {obj.email}.")
+                messages.success(request,
+                                 f"The application has been rejected, and an email notification has been sent to {obj.email}.")
             except Exception as e:
                 messages.error(request, f"Failed to send email: {e}")
 
@@ -298,8 +288,9 @@ def review_dormitoryApplication(request, id):
                             "Thank you."
                         )
                         send_mail(subject, message, settings.EMAIL_HOST_USER, [obj.email], fail_silently=False)
-                        messages.success(request, f"Account created for {user.username}. Student '{student.fullName}' created successfully!")
-                    
+                        messages.success(request,
+                                         f"Account created for {user.username}. Student '{student.fullName}' created successfully!")
+
                     except Exception as e:
                         messages.error(request, f"Failed to send email: {e}")
 
@@ -373,22 +364,20 @@ def create_user_and_student(application, random_password):
     return user, user_profile, student
 
 
-
 @allowed_users(allowed_roles=['Hall Provost', 'Admin', 'Operator'])
 def delete_dormitoryApplication(request):
     # dictionary for initial data with
     # field names as keys
-    context ={}
-    
-    if request.method =="POST":
+    context = {}
+
+    if request.method == "POST":
         # fetch the object related to passed id
-        obj = get_object_or_404(DormitoryApplications, id = request.POST.get("id"))
-        
+        obj = get_object_or_404(DormitoryApplications, id=request.POST.get("id"))
+
         if obj.application_status != Application_Status.Approved:
             # delete object
             obj.delete()
-        
+
         # after deleting redirect to
         # home page
         return redirect("application_list")
-    
