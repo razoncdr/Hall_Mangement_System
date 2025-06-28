@@ -2,27 +2,20 @@ from django.contrib import admin
 from .models import *
 
 # Register your models here.
-class ProfileAdmin(admin.ModelAdmin):
+class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'fullName')
-
-admin.site.register(UserProfile, ProfileAdmin)
-
 
 class BatchAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
-
 class DepartmentAdmin(admin.ModelAdmin):
     list_display = ('name', )
-
 
 class SessionAdmin(admin.ModelAdmin):
     list_display = ('name', )
 
-
 class FeesHeadAdmin(admin.ModelAdmin):
     list_display = ('title', 'amount')
-
 
 class StudentAdmin(admin.ModelAdmin):
     list_display = ('fullName', 'registration_number', 'batch', 'department', 'session')
@@ -48,6 +41,7 @@ class ApplicationFormAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
+admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(FeesHead, FeesHeadAdmin)
 admin.site.register(StudentFees, StudentFeeAdmin)
 admin.site.register(DormitoryApplications, ApplicationFormAdmin)
@@ -59,6 +53,27 @@ admin.site.register(Batch, BatchAdmin)
 admin.site.register(Room, RoomAdmin)
 admin.site.register(Hall, HallAdmin)
 admin.site.register(Semester, SemesterAdmin)
+
+@admin.register(SSLCommerzSession)
+class SSLCommerzSessionAdmin(admin.ModelAdmin):
+    list_display = [
+        'student',
+        'transaction_id',
+        'amount',
+        'status',
+        'created_at',
+    ]
+    list_filter = [
+        'status',
+    ]
+    search_fields = [
+        'transaction_id',
+        'student_fullName',
+    ]
+    readonly_fields = [
+        'created_at',
+    ]
+
 
 '''
 class ProfileAdmin(admin.ModelAdmin):
