@@ -181,12 +181,12 @@ def update_dormitoryApplication(request, uuid, token):
                 ).exclude(uuid=obj.uuid)
 
                 if duplicate_applications.exists():
-                    duplicate_applications.delete()  # Delete duplicate pending applications
+                    duplicate_applications.delete()
 
                 # Save the form instance
                 instance = form.save(commit=False)
-                instance.application_status = Application_Status.Pending  # Ensure status is still Pending
-                instance.is_email_verified = True  # Ensure is_email_verified is True
+                instance.application_status = Application_Status.Pending
+                instance.is_email_verified = True
                 instance.save()
 
                 # Send a notification email to the user
@@ -204,8 +204,11 @@ def update_dormitoryApplication(request, uuid, token):
                     to_list = [instance.email]
 
                     send_mail(subject, message, from_email, to_list, fail_silently=False)
-                    messages.success(request,
-                                     "Your application has been updated successfully! A confirmation email has been sent.")
+                    messages.success(
+                        request,
+                        "Your application has been updated successfully! A confirmation email has been sent."
+                    )
+
                 except Exception as e:
                     messages.error(request, f"An error occurred while sending the email: {e}")
 

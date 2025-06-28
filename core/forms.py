@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import Group
@@ -18,8 +20,10 @@ class CreateUserForm(UserCreationForm):
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=150, widget=forms.TextInput(attrs={'class': 'form-control', }, ))
-    password = forms.CharField(max_length=150,
-                               widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password', }, ))
+    password = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'type': 'password', }, )
+    )
 
 
 class UserGroupForm(UserCreationForm):
@@ -36,8 +40,13 @@ class UserGroupForm(UserCreationForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['fullName', 'birthDate', 'picture', 'phone',
-                  'email']  # Only include fields that need to be validated and updated
+        fields = [
+            'fullName',
+            'birthDate',
+            'picture',
+            'phone',
+            'email'
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

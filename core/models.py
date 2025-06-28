@@ -1,19 +1,12 @@
-import datetime
-from email.policy import default
-from django.db.models.signals import post_save
+import secrets
+import uuid
+from enum import Enum
+
 from django.conf import settings
-from django.db import models
-from django.db.models import Sum
-from django.shortcuts import reverse
-from phonenumber_field.modelfields import PhoneNumberField
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils.translation import gettext_lazy as _
-from enum import Enum
-from django.db import models
 from django_enum_choices.fields import EnumChoiceField
-import uuid
-import secrets
+from phonenumber_field.modelfields import PhoneNumberField
 
 GENDER = (
     ('M', 'Male'),
@@ -32,10 +25,12 @@ Transaction_Type = (
     ('nagad', 'Nagad'),
 )
 
+
 class Payment_Status(Enum):
     PAID = 'P'
     UNPAID = 'U'
-    
+
+
 class Semester_Status(Enum):
     Semester_1 = '1-1'
     Semester_2 = '1-2'
@@ -46,11 +41,11 @@ class Semester_Status(Enum):
     Semester_7 = '4-1'
     Semester_8 = '4-2'
 
+
 class Application_Status(Enum):
     Pending = 'pending'
     Approved = 'approved'
     Rejected = 'rejected'
-
 
 
 class UserProfile(models.Model):
@@ -81,41 +76,51 @@ class UserProfile(models.Model):
 #         verbose_name_plural = 'Addresses'
 
 
-
 class Hall(models.Model):
     name = models.CharField(max_length=50)
+
     # Add other attributes as needed
     def __str__(self):
         return f"{self.name}"
+
 
 class Room(models.Model):
     hall = models.ForeignKey(Hall, on_delete=models.RESTRICT)
     name = models.CharField(max_length=50)
     capacity = models.DecimalField(max_digits=10, decimal_places=0)
+
     # Add other attributes as needed
     def __str__(self):
         return f"{self.name} ({self.hall})"
 
+
 class Batch(models.Model):
     name = models.CharField(max_length=50)
+
     # Add other attributes as needed
     def __str__(self):
         return f"{self.name}"
+
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
+
     # Add other attributes as needed
     def __str__(self):
         return f"{self.name}"
+
 
 class Session(models.Model):
     name = models.CharField(max_length=50)
+
     # Add other attributes as needed
     def __str__(self):
         return f"{self.name}"
 
+
 class Semester(models.Model):
     name = models.CharField(max_length=50)
+
     # Add other attributes as needed
     def __str__(self):
         return f"{self.name}"
@@ -154,9 +159,9 @@ class DormitoryApplications(models.Model):
 
 
 class Student(models.Model):
-    room = models.ForeignKey(Room, on_delete=models.SET_NULL, blank = True, null=True)
+    room = models.ForeignKey(Room, on_delete=models.SET_NULL, blank=True, null=True)
     userprofile = models.OneToOneField(UserProfile, on_delete=models.SET_NULL, blank=True, null=True)
-    
+
     session = models.ForeignKey(Session, on_delete=models.RESTRICT)
     batch = models.ForeignKey(Batch, on_delete=models.RESTRICT)
     semester = EnumChoiceField(Semester_Status, default=Semester_Status.Semester_1)
@@ -177,11 +182,11 @@ class Student(models.Model):
     guardian_address = models.CharField(max_length=400)
 
     status = models.CharField(choices=STATUS, max_length=20)
+
     # Add other attributes related to a student
 
     def __str__(self):
         return f"{self.fullName} ({self.registration_number})"
-
 
 
 class FeesHead(models.Model):
@@ -203,12 +208,10 @@ class StudentFees(models.Model):
 
 
 class FeeTransaction(models.Model):
-    studentFee =  models.ManyToManyField('StudentFees', related_name='transactions')
+    studentFee = models.ManyToManyField('StudentFees', related_name='transactions')
     student = models.ForeignKey(Student, on_delete=models.RESTRICT)
     paidAmount = models.DecimalField(max_digits=10, decimal_places=2)
     entryDate = models.DateTimeField()
     transactionType = models.CharField(choices=Transaction_Type, max_length=20)
     transactionId = models.CharField(max_length=100)
     transactionDetails = models.TextField()
-
-

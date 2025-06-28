@@ -1,25 +1,19 @@
-from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import *
-from .models import *
-from .forms import *
+from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
+from django.core.mail import send_mail
+from django.shortcuts import render
+from django.utils.encoding import force_str
+from django.utils.http import urlsafe_base64_decode
+
 from .decorators import *
-import datetime
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import *
-from .models import *
 from .forms import *
-from .decorators import *
-import datetime
 
 
 def home(request):
-    return render(request, 'home/index.html',{
+    return render(request, 'home/index.html', {
 
     })
 
@@ -27,9 +21,9 @@ def home(request):
 @unauthenticated_user
 def loginpage(request):
     form = LoginForm(request.POST or None)
-    
+
     if request.method == "POST":
-        user = authenticate(request, username=request.POST.get("username"), password = request.POST.get("password"))
+        user = authenticate(request, username=request.POST.get("username"), password=request.POST.get("password"))
         if user is not None:
             login(request, user)
             return redirect('home')
@@ -53,11 +47,11 @@ def registerpage(request):
             usergroup.user.username = request.POST.get("username")
             usergroup.user.email = request.POST.get("email")
             usergroup.group = request.POST.get("group")
-            
+
             context = {'groups': Group.objects.all(), 'user': usergroup}
             return render(request, 'accounts/register.html', context)
-            
-        if User.objects.filter(username = request.POST.get("username")).exists():
+
+        if User.objects.filter(username=request.POST.get("username")).exists():
             messages.error(request, "username already exist")
             usergroup = UserGroupForm()
             usergroup.user.first_name = request.POST.get("first_name")
@@ -65,10 +59,10 @@ def registerpage(request):
             usergroup.user.username = request.POST.get("username")
             usergroup.user.email = request.POST.get("email")
             usergroup.group = request.POST.get("group")
-            
+
             context = {'groups': Group.objects.all(), 'user': usergroup}
             return render(request, 'accounts/register.html', context)
-            
+
         user = User()
         user.first_name = request.POST.get("first_name")
         user.last_name = request.POST.get("last_name")
@@ -80,32 +74,20 @@ def registerpage(request):
         group_name = request.POST.get("group")
         group, created = Group.objects.get_or_create(name=group_name)
 
-
-
         user.save()
         # user.groups.add("group")
         user.groups.add(request.POST.get("group"))
         messages.success(request, 'Account was created for ' + user.username)
 
-        userinfo = UserProfile(user=authenticate(request, username=user.username, password = user.password))
+        userinfo = UserProfile(user=authenticate(request, username=user.username, password=user.password))
         userinfo.fullName = user.first_name + " " + user.last_name
         userinfo.user = user
         userinfo.entryDate = datetime.datetime.now().strftime('%Y-%m-%d')
         userinfo.save()
-    
+
     context = {'groups': Group.objects.all()}
     return render(request, 'accounts/register.html', context)
 
-   
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView
-from django.contrib.auth import get_user_model
-from django.utils.http import urlsafe_base64_decode
-from django.utils.encoding import force_str
-from django.contrib.auth.forms import SetPasswordForm
-from django.core.mail import send_mail
-from django.conf import settings
-from django.contrib.auth.models import User
-from django.shortcuts import redirect
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     form_class = SetPasswordForm  # You can customize the form if needed
@@ -130,10 +112,10 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         token = self.kwargs['token']
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = get_user_model().objects.get(pk=uid)
-        
+
         # Save user id in the session to use in the complete view
         self.request.session['reset_user'] = user.id
-        
+
         # Continue with the parent form valid behavior
         return super().form_valid(form)
 
@@ -154,7 +136,7 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
                 del self.request.session['reset_user']
             except User.DoesNotExist:
                 pass
-        
+
         return context
 
     def send_reset_email(self, user):
@@ -162,14 +144,9 @@ class CustomPasswordResetCompleteView(PasswordResetCompleteView):
         message = f"Hello {user.username},\n\nYour password has been successfully reset. If you did not request this change, please contact support immediately."
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [user.email]
-        
+
         send_mail(subject, message, from_email, recipient_list)
 
-
-
-from django.shortcuts import render
-from .forms import UserFilterForm
-from django.contrib.auth.models import User
 
 def userlist(request):
     form = UserFilterForm(request.GET or None)
@@ -187,7 +164,6 @@ def userlist(request):
         print(f"Email: {email}")
         print(f"Is Active: {is_active}")
         print(f"Group: {group}")
-
 
         users = User.objects.all()
         # Apply filters
@@ -215,14 +191,15 @@ def edituser(request, userid):
         # if request.method.is_valid():
         if request.POST.get("password1") != request.POST.get("password2"):
             messages.error(request, "Password and Confirm Password didn't match")
-            return redirect('edituser', request.POST.get("id") )
-            
+            return redirect('edituser', request.POST.get("id"))
+
         user = User.objects.get(id=request.POST.get("id"))
-    
-        if user.username != request.POST.get("username") and User.objects.filter(username = request.POST.get("username")).exists():
+
+        if user.username != request.POST.get("username") and User.objects.filter(
+                username=request.POST.get("username")).exists():
             messages.error(request, "username already exist")
-            return redirect('edituser', request.POST.get("id") )
-        
+            return redirect('edituser', request.POST.get("id"))
+
         user.first_name = request.POST.get("first_name")
         user.last_name = request.POST.get("last_name")
         user.username = request.POST.get("username")
@@ -240,13 +217,12 @@ def edituser(request, userid):
         userinfo.fullName = user.first_name + " " + user.last_name
         userinfo.save()
         return redirect("userlist")
-        
+
     userinfo = UserGroupForm()
     userinfo.user = User.objects.get(id=userid)
     userinfo.group = Group.objects.filter(user=userinfo.user)
-    
-    
-    context = {'userinfo':  userinfo, 'groups': Group.objects.all()}
+
+    context = {'userinfo': userinfo, 'groups': Group.objects.all()}
     return render(request, 'accounts/edit.html', context)
 
 
@@ -269,7 +245,7 @@ def deleteuser(request, userid):
         # return redirect('success_url')
 
     return redirect('userlist')
-   
+
 
 @allowed_users(allowed_roles=['Hall Provost', 'Admin', 'Student'])
 def profile(request):
@@ -278,6 +254,10 @@ def profile(request):
     if request.method == 'POST':
         post_data = request.POST.copy()  # Make a mutable copy of the POST data
         userinfo = UserProfile.objects.get(user=request.user)
+        print(post_data.get('picture-clear'))
+        if 'picture' in request.FILES or post_data.get('picture-clear'):
+            if userinfo.picture and userinfo.picture.name:
+                userinfo.picture.delete(save=False)
         post_data['email'] = userinfo.email
         form = UserProfileForm(post_data, request.FILES, instance=UserProfile.objects.get(user=request.user))
 
@@ -291,7 +271,7 @@ def profile(request):
             errors = form.errors.as_data()
             # print(errors)           
             messages.error(request, "Form submission failed due to validation errors.")
-        
+
     else:
         if UserProfile.objects.filter(user=request.user).exists() == False:
             userinfo = UserProfile()
@@ -303,51 +283,11 @@ def profile(request):
 
         userinfo = UserProfile.objects.get(user=request.user)
         form = UserProfileForm(instance=userinfo)
-        # form.fields['phone'].initial = userinfo.phone  # Set the initial value for the phone field
 
-    return render(request, 'core/profile.html',{
+    return render(request, 'core/profile.html', {
         'form': form,
         'message': message,
         'userinfo': userinfo,
         'user': request.user,
     })
 
-
-# @login_required(login_url='login')
-# def createaddressprofile(request):
-#     if request.method == 'POST':
-#         address = Address()
-#         address.user = request.user
-#         address.addressName = request.POST.get("addressName")
-#         address.country = request.POST.get("country")
-#         address.city = request.POST.get("city")
-#         address.area = request.POST.get("area")
-#         address.streetAddress = request.POST.get("streetaddress")
-#         address.save()
-#     else:
-#         return redirect("/profile/")
-#     return redirect("/profile/")
-
-
-# @login_required(login_url='login')
-# def deleteaddressprofile(request, id):
-    if request.method == 'POST':
-        Address.objects.filter(id=id).delete()
-    else:
-        return redirect("/profile/")
-    return redirect("/profile/")
-
-
-    if request.method == 'POST':
-        order = Order.objects.get(ref_code=request.POST.get("ref_code"))
-        order.status = 'CANCELLED'
-        order.save()
-        orderproducts = OrderProduct.objects.filter(order=order)
-        for item in orderproducts:
-            product = Product.objects.get(slug=item.item.slug)
-            product.quantity += item.quantity
-            product.sold -= item.quantity
-            product.save()
-    else:
-        return redirect("/order/")
-    return redirect("/order/")

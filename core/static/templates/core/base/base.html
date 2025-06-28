@@ -3,94 +3,109 @@
 
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>{% block title %}{% endblock %} | Hall Management System</title>
-        <!-- Favicon-->
-        <!--
-            <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-        -->
-        <!-- Bootstrap icons-->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>{% block title %}{% endblock %} | Hall Management System</title>
+    <!-- Favicon-->
+    <!--
+        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+    -->
+    <!-- Bootstrap icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+          integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
-        <!-- Google fonts-->
-        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css" />
-        <!-- Core theme CSS (includes Bootstrap)-->
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
-        <link href="{% static 'core/css/base.css' %}" rel="stylesheet" />
-        {% block site_css %}{% endblock %}
-    </head>
-    <body>
-        <!-- Navigation-->
-        {% comment %} <nav class="navbar navbar-expand-lg navbar-light bg-light"> {% endcomment %}
-        <div class="d-flex" id="wrapper">
-            <!-- Sidebar-->
-            {% if user.is_authenticated %}
-            <div class="border-end bg-white" id="sidebar-wrapper">
-                <div class="sidebar-heading bg-light" style="padding: 8px 0px;">
-                    <a href="/" style="padding: 2px;" class="d-flex justify-content-center align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
-                        <img src="{% static 'core/images/home.png' %}" alt="" width="32" height="32">
-                        <span class="fs-4 fw-bold text-primary mx-2" height="40" 
-                            style="background: #27B0FF;
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    <link href="{% static 'core/css/base.css' %}" rel="stylesheet"/>
+    {% block site_css %}{% endblock %}
+</head>
+<body>
+<!-- Navigation-->
+<div class="d-flex" id="wrapper">
+    <!-- Sidebar-->
+    {% if user.is_authenticated %}
+        <div class="border-end bg-white" id="sidebar-wrapper">
+            <div class="sidebar-heading bg-light" style="padding: 8px 0px;">
+                <a href="/" style="padding: 2px;"
+                   class="d-flex justify-content-center align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
+                    <img src="{% static 'core/images/home.png' %}" alt="" width="32" height="32">
+                    <span class="fs-4 fw-bold text-primary mx-2" height="40"
+                          style="background: #27B0FF;
                             background: linear-gradient(to bottom, #27B0FF 0%, #187BFF 75%);
                             -webkit-background-clip: text;
                             -webkit-text-fill-color: transparent;">Main Menu</span>
-                    </a>
-                </div>
-                <div class="accordion accordion-flush" id="accordionFlushExample" style="width: 235px;">
-                    <style>
-                        .menulink{
-                            --bs-btn-color: var(--bs-white);
-                            --bs-btn-bg: blueviolet;
-                            --bs-btn-border-color: blueviolet;
-                            --bs-btn-hover-color: blueviolet;
-                            --bs-btn-hover-bg: white;
-                            --bs-btn-hover-border-color: blueviolet;
-                            font-weight: 500;
-                            --bs-btn-padding-y: .15rem;
-                            --bs-btn-font-size: .9rem;
-                            text-decoration: none;
-                            transition: .2s;
-                            border-width: 1px;
-                            border-color: #0d6efd57!important;
-                            border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)!important;
-                            --bs-border-width: 1px; 
-                        }
-                        .menulink:hover{    
-                            border-color: #084298!important;
-                            color: #084298!important;
-                            background-color: #cfe2ff!important;
-                        }
-                        .accordion-flush .accordion-item:last-child {
-                            border-bottom: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);    
-                        }
-                        .accordion-flush .accordion-item:first-child {
-                            border-top: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
-                        }
-                        .accordion{
-                            --bs-accordion-btn-focus-box-shadow: transparent;
-                        }
-                        .bi-link-45deg::before {
-                            font-weight: 800!important;
-                        }
-                    </style>
-                    {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" %}
+                </a>
+            </div>
+            <div class="accordion accordion-flush" id="accordionFlushExample" style="width: 235px;">
+                <style>
+                    .menulink {
+                        --bs-btn-color: var(--bs-white);
+                        --bs-btn-bg: blueviolet;
+                        --bs-btn-border-color: blueviolet;
+                        --bs-btn-hover-color: blueviolet;
+                        --bs-btn-hover-bg: white;
+                        --bs-btn-hover-border-color: blueviolet;
+                        font-weight: 500;
+                        --bs-btn-padding-y: .15rem;
+                        --bs-btn-font-size: .9rem;
+                        text-decoration: none;
+                        transition: .2s;
+                        border-width: 1px;
+                        border-color: #0d6efd57 !important;
+                        border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+                        --bs-border-width: 1px;
+                    }
+
+                    .menulink:hover {
+                        border-color: #084298 !important;
+                        color: #084298 !important;
+                        background-color: #cfe2ff !important;
+                    }
+
+                    .accordion-flush .accordion-item:last-child {
+                        border-bottom: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
+                    }
+
+                    .accordion-flush .accordion-item:first-child {
+                        border-top: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
+                    }
+
+                    .accordion {
+                        --bs-accordion-btn-focus-box-shadow: transparent;
+                    }
+
+                    .bi-link-45deg::before {
+                        font-weight: 800 !important;
+                    }
+                </style>
+                {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" %}
                     <div class="accordion-item">
                         <h2 class="accordion-header " id="flush-headingOne">
-                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            <button class="accordion-button fw-semibold collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false"
+                                    aria-controls="flush-collapseOne">
                                 Account
                             </button>
-                        </h2>        
-                        <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                        </h2>
+                        <div id="flush-collapseOne" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body p-0">
-                            
+
                                 <div class="d-flex flex-column px-0 m-0">
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'userlist' %}" ><i class="bi bi-link-45deg"></i> User List</a></li>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'register' %}" ><i class="bi bi-link-45deg"></i> User Registration</a></li>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'userlist' %}"><i class="bi bi-link-45deg"></i> User List</a></li>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'register' %}"><i class="bi bi-link-45deg"></i> User
+                                        Registration</a></li>
                                 </div>
                             </div>
                         </div>
@@ -98,29 +113,39 @@
 
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingSetup">
-                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseSetup" aria-expanded="false" aria-controls="flush-collapseSetup">
+                            <button class="accordion-button fw-semibold collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseSetup"
+                                    aria-expanded="false" aria-controls="flush-collapseSetup">
                                 Setups
                             </button>
                         </h2>
-                        <div id="flush-collapseSetup" class="accordion-collapse collapse" aria-labelledby="flush-headingSetup" data-bs-parent="#accordionFlushExample">
+                        <div id="flush-collapseSetup" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingSetup" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body p-0">
-                                    {% comment %} <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
-                                    </div> {% endcomment %}  
+                                {% comment %} <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                                    </div> {% endcomment %}
                                 <div class="d-flex flex-column px-0 m-0">
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'hall_list' %}" ><i class="bi bi-link-45deg"></i> Hall</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'room_list' %}" ><i class="bi bi-link-45deg"></i> Room</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'batch_list' %}" ><i class="bi bi-link-45deg"></i> Batch</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'department_list' %}" ><i class="bi bi-link-45deg"></i> Department</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'session_list' %}" ><i class="bi bi-link-45deg"></i> Session</a> 
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'semester_list' %}" ><i class="bi bi-link-45deg"></i> Semester</a> 
+                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'hall_list' %}"><i
+                                            class="bi bi-link-45deg"></i> Hall</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'room_list' %}"><i
+                                            class="bi bi-link-45deg"></i> Room</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'batch_list' %}"><i class="bi bi-link-45deg"></i> Batch</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'department_list' %}"><i class="bi bi-link-45deg"></i>
+                                        Department</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'session_list' %}"><i class="bi bi-link-45deg"></i> Session</a>
+                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'semester_list' %}"><i class="bi bi-link-45deg"></i> Semester</a>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
-                    {% endif %}
+                {% endif %}
 
-                    {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" or request.user|has_group:"Student" %}
+                {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" or request.user|has_group:"Student" %}
                     {% comment %} <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingTwo">
                             <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
@@ -128,8 +153,8 @@
                             </button>
                         </h2>
                         <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body p-0">  
-                        
+                            <div class="accordion-body p-0">
+
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
                                         <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'provost_notice' %}" ><i class="bi bi-link-45deg"></i> From Hall Provost</a></li>
@@ -141,26 +166,34 @@
                             </div>
                         </div>
                     </div> {% endcomment %}
-                    {% endif %}
+                {% endif %}
 
-                    
-                    {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" or request.user|has_group:"Operator"  %}
+
+                {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" or request.user|has_group:"Operator" %}
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingThree">
-                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                            <button class="accordion-button fw-semibold collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
+                                    aria-expanded="false" aria-controls="flush-collapseThree">
                                 Student Management
                             </button>
                         </h2>
-                       
-                        <div id="flush-collapseThree" class="accordion-collapse collapse" aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body p-0">  
-                        
+
+                        <div id="flush-collapseThree" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body p-0">
+
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'student_list' %}" ><i class="bi bi-link-45deg"></i> Student List</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'student_list' %}"><i class="bi bi-link-45deg"></i> Student List</a></li>
                                         {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li> {% endcomment %}
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'application_create' %}" ><i class="bi bi-link-45deg"></i> Application Form</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'application_list' %}" ><i class="bi bi-link-45deg"></i> Application List</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'application_create' %}"><i class="bi bi-link-45deg"></i>
+                                            Application Form</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'application_list' %}"><i class="bi bi-link-45deg"></i>
+                                            Application List</a></li>
                                     </div>
                                 </div>
                             </div>
@@ -168,20 +201,31 @@
                     </div>
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingFour">
-                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false" aria-controls="flush-collapseFour">
+                            <button class="accordion-button fw-semibold collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false"
+                                    aria-controls="flush-collapseFour">
                                 Fees Management
                             </button>
                         </h2>
-                       
-                        <div id="flush-collapseFour" class="accordion-collapse collapse" aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body p-0">  
-                        
+
+                        <div id="flush-collapseFour" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body p-0">
+
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'feeshead_list' %}" ><i class="bi bi-link-45deg"></i> Fees Head</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'generate_studentfee' %}" ><i class="bi bi-link-45deg"></i> Generate Student Fee</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'studentfeelist' %}" ><i class="bi bi-link-45deg"></i> Student Fee List</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'fee_statement_report' %}" ><i class="bi bi-link-45deg"></i> Fee Statement Report</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'feeshead_list' %}"><i class="bi bi-link-45deg"></i> Fees
+                                            Head</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'generate_studentfee' %}"><i class="bi bi-link-45deg"></i>
+                                            Generate Student Fee</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'studentfeelist' %}"><i class="bi bi-link-45deg"></i> Student
+                                            Fee List</a></li>
+                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'fee_statement_report' %}"><i class="bi bi-link-45deg"></i> Fee
+                                            Statement Report</a></li>
                                         {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'payment_report' %}" ><i class="bi bi-link-45deg"></i> Fee Payment Report</a></li> {% endcomment %}
 
                                     </div>
@@ -189,164 +233,117 @@
                             </div>
                         </div>
                     </div>
-                    {% endif %}
-                    {% comment %} <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingFive">
-                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false" aria-controls="flush-collapseFive">
-                                Dining Management
-                            </button>
-                        </h2>
-                       
-                        <div id="flush-collapseFive" class="accordion-collapse collapse" aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body p-0">  
-                                <div class="d-flex flex-column px-0 m-0">
-                                    <div class="d-flex flex-column px-0 m-0">
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'dining_manager_list' %}" ><i class="bi bi-link-45deg"></i> Dining Managers</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'member_list' %}" ><i class="bi bi-link-45deg"></i> Members</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'add_dining_manager' %}"><i class="bi bi-link-45deg"></i>Add Dining Manager</a>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'add_member' %}"><i class="bi bi-link-45deg"></i>Add Member</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> {% endcomment %}
-                    
+                {% endif %}
 
-                </div>
-            </div>
-            {% endif %}
-            <!-- Page content wrapper-->
-            <div id="page-content-wrapper" style="min-height: 100vh; margin:0; display:flex; flex-direction:column;">
-                <!-- Top navigation-->
-                <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
-                    <div class="container-fluid">
-                        <div class="col-4">
-                            {% if user.is_authenticated %}
-                            <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
-                            {% endif %}
-                        </div>
-                        <div class="col-4 d-flex justify-content-center align-items-center text-center">
-                            <img src="{% static 'core\images\hotel.png' %}" alt="" width="25" height="25">
-                            <a class="navbar-brand mx-2" href="/home/">SEC | Hall Management System</a>
-                        </div>
-                        <button class="col-3 navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
-                        <div class="col-4 collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav ms-auto me-3 mt-2 mt-lg-0">
-                                <li class="nav-item active"><a class="nav-link" href="/home/">Home</a></li>
-                                
-                                {% if user.is_authenticated %}
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@{{user.username}}</a>
-                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                            <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
-                                            <li><a class="dropdown-item" href="/profile/">Settings</a></li>
-                                            <li><a class="dropdown-item" href="{% url 'password_reset' %}">Reset Password</a></li>
-                                            <form id="logout" action="{% url 'logout' %}" method="POST">
-                                                {% csrf_token %}
-                                                <input type ="hidden">
-                                            </form>
-                                            <li><a class="dropdown-item" type="button" onclick="javacript:document.getElementById('logout').submit()">Log Out</a></li>
-                                        </ul>
-                                    </li>
-                                {% else %}
-                                    <!-- <div class="d-flex justify-content-center ">
-                                        <a class="btn btn-warning mx-1" href="{% url 'application_create' %}">Admission<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="padding: 8px;"></span></a>
-                                        <a class="btn btn-success mx-1" href="{% url 'login' %}">Log In</a>
-                                    </div> -->
-                                    <div class="d-flex justify-content-center">
-                                        <a class="btn btn-warning mx-1" href="{% url 'application_create' %}" style="padding: 0.5rem 0.5rem; font-size: 1rem; display: flex; align-items: center; justify-content: center;">
-                                            Admission
-                                            <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="padding: 8px; margin-left: 5px;"></span>
-                                        </a>
-                                        <a class="btn btn-success mx-1" href="{% url 'login' %}">Log In</a>
-                                    </div>
-                                    
-                                {% endif %}
-                            </ul>
-                        </div>
+                {% if request.user|has_group:"Student" or request.user|has_group:"Admin" %}
+                    <div class="accordion-item p-2">
+                        <button class="btn btn-success py-3 fw-semibold w-100 student-fee-payment-btn" type="button"
+                                style="border:none;
+                                background: linear-gradient(to right, #0cbd45, #08d5b1);
+                                transition: background 0.8s;"
+                        >
+                            <i class="bi bi-cash-coin me-2"></i> Student Fee Payment
+                        </button>
+                        <style>
+                            .student-fee-payment-btn {
+                                transition: background 0.8s;
+                            }
+
+                            .student-fee-payment-btn:hover {
+                                background: linear-gradient(to right, #d88114, #d1b31b) !important;
+                            }
+                        </style>
                     </div>
-                </nav>
-                <!-- Page content-->
-                <div class="" style="flex:1;">
-                    {% block body %}{% endblock %}
-                </div>
-                    
-                {% comment %} <!-- Footer-->
-                <div class="" id="footer">
-                    <footer class="" style="background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 36%, rgba(0,212,255,1) 100%)!important;">
-                        <div class="container text-white p-3 text-white">
-                            <div class="row">
-                                <div class="foot col-lg-2 col-md-2 col-sm-6">
-                                    <h4>Company</h4>
-                                    <ul class="list-unstyled">
-                                        <li><a href="#">About Us</a></li>
-                                        <li><a href="#">Our Services</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>
-                                        <li><a href="#">Affiliate Program</a></li>
-                                    </ul>
-                                </div>
-                                <div class="foot col-lg-2 col-md-2 col-sm-6">
-                                    <h4>Support</h4>
-                                    <ul class="list-unstyled">
-                                        <li><a href="#">Guide</a></li>
-                                        <li><a href="#">FAQ</a></li>
-                                    </ul>
-                                </div>
-                                <div class="foot foot2 col-lg-4 col-md-2 col-sm-6">
-                                    <h4>Contact Us</h4>
-                                    <table border="0" class="pt-3">
-                                        <tr>
-                                            <th width="10%"><i class="fa fa-phone" aria-hidden="true"></i></th>
-                                            <td> +880-1858317498, +880-1751689434</td>
-                                        </tr>
-                                        <tr>
-                                            <th width="10%"><i class="fa fa-envelope" aria-hidden="true"></i></th>
-                                            <td> rejwanul7296@gmail.com, nurulislamopu1@gmail.com</td>
-                                        </tr>
-                                        <tr>
-                                            <th width="10%"><i class="fa fa-map-marker" aria-hidden="true"></i></th>
-                                            <td> Tilagorh, Sylhet, Bangladesh</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="foot foot2 col-lg-4 col-md-4 col-sm-6">
-                                    <h4>Follow Us</h4>
-                                    <ul class="social-icons nav justify-content-right mt-3">
-                                        <li class="nav-item"><a class="nav-link social link" href="https://www.facebook.com/"><i class="fab fa-facebook fa-2x mt-2" style="color: #5787e9" aria-hidden="true"></i></a></li>
-                                        <li class="nav-item"><a class="nav-link social link" href="https://twitter.com/"><i class="fab fa-twitter fa-2x mt-2" style="color: #1DA1F2" aria-hidden="true"></i></a></li>
-                                        <li class="nav-item"><a class="nav-link social link" href="https://web.whatsapp.com/"><i class="fab fa-whatsapp fa-2x mt-2" style="color: #25D366" aria-hidden="true"></i></a></li>    
-                                        <li class="nav-item"><a class="nav-link social link" href="https://www.messenger.com/"><i class="fab fa-facebook-messenger fa-2x mt-2" style="color: #00B2FF" aria-hidden="true"></i></a></li>    
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </footer>
-                </div> {% endcomment %}
-
-                <!-- Footer-->
-                <div id="footer">
-                    <footer class="bg-dark text-white py-4">
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-12 text-center">
-                                    <span>© 2024 Hall Management System. All Rights Reserved.</span>
-                                </div>
-                            </div>
-                        </div>
-                    </footer>
-                </div>
-
-
+                {% endif %}
             </div>
         </div>
- 
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="{% static 'core/js/scripts.js' %}"></script> 
-        <!-- JQuery 3.6 -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    {% endif %}
+    <!-- Page content wrapper-->
+    <div id="page-content-wrapper" style="min-height: 100vh; margin:0; display:flex; flex-direction:column;">
+        <!-- Top navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+            <div class="container-fluid">
+                <div class="col-4">
+                    {% if user.is_authenticated %}
+                        <button class="btn btn-primary" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                    {% endif %}
+                </div>
+                <div class="col-4 d-flex justify-content-center align-items-center text-center">
+                    <img src="{% static 'core\images\hotel.png' %}" alt="" width="25" height="25">
+                    <a class="navbar-brand mx-2" href="/home/">SEC | Hall Management System</a>
+                </div>
+                <button class="col-3 navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="col-4 collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ms-auto me-3 mt-2 mt-lg-0">
+                        <li class="nav-item active"><a class="nav-link" href="/home/">Home</a></li>
 
-        {% block site_js %}{% endblock %}
-    </body>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
+                                   data-bs-toggle="dropdown" aria-haspopup="true"
+                                   aria-expanded="false">@{{ user.username }}</a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="{% url 'profile' %}">My Profile</a></li>
+                                    <li><a class="dropdown-item" href="/profile/">Settings</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'password_reset' %}">Reset Password</a>
+                                    </li>
+                                    <form id="logout" action="{% url 'logout' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden">
+                                    </form>
+                                    <li><a class="dropdown-item" type="button"
+                                           onclick="javacript:document.getElementById('logout').submit()">Log Out</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <div class="d-flex justify-content-center">
+                                <a class="btn btn-warning mx-1" href="{% url 'application_create' %}"
+                                   style="padding: 0.5rem 0.5rem; font-size: 1rem; display: flex; align-items: center; justify-content: center;">
+                                    Admission
+                                    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+                                          style="padding: 8px; margin-left: 5px;"></span>
+                                </a>
+                                <a class="btn btn-success mx-1" href="{% url 'login' %}">Log In</a>
+                            </div>
+
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Page content-->
+        <div class="" style="flex:1;">
+            {% block body %}{% endblock %}
+        </div>
+
+        <!-- Footer-->
+        <div id="footer">
+            <footer class="bg-dark text-white py-4">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <span>© 2024 Hall Management System. All Rights Reserved.</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="{% static 'core/js/scripts.js' %}"></script>
+<!-- JQuery 3.6 -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+{% block site_js %}{% endblock %}
+</body>
 </html>
