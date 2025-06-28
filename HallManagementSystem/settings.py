@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     "crispy_forms",
     "crispy_bootstrap5",
     'core',
@@ -141,3 +142,10 @@ EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = env('EMAIL_USE_TLS')
 DEFAULT_FROM_EMAIL = env('EMAIL_DEFAULT_FROM_EMAIL')
+
+# SSLCommerz settings
+SSLCOMMERZ_IS_SANDBOX = env.str('SSLCOMMERZ_IS_SANDBOX')
+SSLCOMMERZ_STORE_ID = env.str('SSLCOMMERZ_STORE_ID')
+SSLCOMMERZ_STORE_PASSWORD = env.str('SSLCOMMERZ_STORE_PASSWORD')
+
+

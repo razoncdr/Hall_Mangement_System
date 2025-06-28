@@ -1,10 +1,13 @@
+import random
 import secrets
+import string
 import uuid
 from enum import Enum
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from django_enum_choices.fields import EnumChoiceField
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -24,6 +27,7 @@ Transaction_Type = (
     ('rocket', 'Rocket'),
     ('nagad', 'Nagad'),
 )
+
 
 class Payment_Status(Enum):
     PAID = 'P'
@@ -205,9 +209,10 @@ class StudentFees(models.Model):
     entryuser = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
     entryDate = models.DateTimeField(null=True, blank=True)
 
+
 class FeeTransaction(models.Model):
     student = models.ForeignKey(Student, on_delete=models.RESTRICT, related_name='fee_transactions')
-    student_fee =  models.ManyToManyField('StudentFees', related_name='fee_transactions')
+    student_fee = models.ManyToManyField('StudentFees', related_name='fee_transactions')
     paid_amount = models.DecimalField(max_digits=10, decimal_places=2)
     transaction_id = models.CharField(
         verbose_name=_('transaction id'),
@@ -221,6 +226,7 @@ class FeeTransaction(models.Model):
         null=True,
         help_text=_('Payment completion timestamp')
     )
+
 
 class SSLCommerzSession(models.Model):
     class SSLCommerzTransactionStatus(models.TextChoices):
@@ -404,7 +410,7 @@ class SSLCommerzSession(models.Model):
 
     def generate_unique_transaction_id(self):
         prefix = 'hms_'
-        product_identifier = str(self.product.product_id).zfill(3)
+        product_identifier = str(self.student.fullName).zfill(3)
         transaction_id = None
         unique = False
 
@@ -420,4 +426,3 @@ class SSLCommerzSession(models.Model):
         if not self.transaction_id:
             self.transaction_id = self.generate_unique_transaction_id()
         super().save(*args, **kwargs)
-
