@@ -3,15 +3,17 @@ from django.db import transaction
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from drf_spectacular.utils import extend_schema, OpenApiResponse, OpenApiExample
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from HallManagementSystem.settings import SSLCOMMERZ_STORE_ID, SSLCOMMERZ_STORE_PASSWORD
+from core.api.permissions import IsStudent
 from core.api.serializer import CreateSSLCommerzCheckoutSessionSerializer, SSLCommerzCheckoutSessionResponseSerializer, \
     SSLCommerzIPNSerializer, SSLCommerzValidationResponseSerializer
-from core.models import SSLCommerzSession
+from core.models import SSLCommerzSession, Student
 
 
 class CreateSSLCommerzCheckoutSessionView(APIView):
@@ -19,45 +21,35 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
     API endpoint for creating a new SSLCommerz checkout session
     """
 
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsStudent]
     serializer_class = CreateSSLCommerzCheckoutSessionSerializer
 
-    # @extend_schema(
-    #     request=CreateSSLCommerzCheckoutSessionSerializer,
-    #     responses={
-    #         200: OpenApiResponse(
-    #             response=SSLCommerzCheckoutSessionResponseSerializer,
-    #             description="Checkout session created successfully"
-    #         ),
-    #         400: OpenApiResponse(
-    #             description="Bad request",
-    #             examples=[
-    #                 OpenApiExample(
-    #                     'SSLCommerz Error',
-    #                     value={'error': 'Invalid request'},
-    #                     status_codes=['400']
-    #                 )
-    #             ]
-    #         ),
-    #         500: OpenApiResponse(
-    #             description="Server error",
-    #             examples=[
-    #                 OpenApiExample(
-    #                     'Server Error',
-    #                     value={'error': 'Internal server error'},
-    #                     status_codes=['500']
-    #                 )
-    #             ]
-    #         )
-    #     },
-    # )
+    @extend_schema(
+        request=CreateSSLCommerzCheckoutSessionSerializer,
+        responses={
+            200: OpenApiResponse(
+                response=SSLCommerzCheckoutSessionResponseSerializer,
+                description="Checkout session created successfully"
+            ),
+            400: OpenApiResponse(
+                description="Bad request",
+                examples=[
+                    OpenApiExample(
+                        'SSLCommerz Error',
+                        value={'error': 'Invalid request'},
+                        status_codes=['400']
+                    )
+                ]
+            ),
+        },
+    )
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         data = serializer.validated_data
         user = request.user
-        amount = 0
+        amount = 10
         currency = "BDT"
 
         if not amount or amount <= 0:
@@ -65,8 +57,9 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
 
         try:
             with transaction.atomic():
-                sslcommerz_transaction = SSLCommerzSession.objects.create(
-                    user=user,
+                student = Student.objects.get(userprofile__user=user)
+                sslcommerz_session = SSLCommerzSession.objects.create(
+                    student=student,
                     currency_type=currency,
                     currency_amount=amount
                 )
@@ -79,55 +72,57 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
                     "total_amount": amount,
                     "currency": currency,
 
-                    "tran_id": sslcommerz_transaction.transaction_id,
-                    "product_category": "digital",
+                    "tran_id": sslcommerz_session.transaction_id,
+                    "product_category": "education",
 
-                    "success_url": data.get('success_url'),
-                    "fail_url": data.get('fail_url'),
-                    "cancel_url": data.get('cancel_url'),
-                    "ipn_url": request.build_absolute_uri(reverse("api:payments:v1:sslcommerz-ipn-capture")),
+                    "success_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
+                    "fail_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
+                    "cancel_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
+                    "ipn_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
 
                     "multi_card_name": data.get('multi_card_name', ''),
 
                     "emi_option": 0,
 
-                    "cus_name": f"{user.first_name} {user.last_name}",
-                    "cus_email": user.email,
+                    "cus_name": student.fullName,
+                    "cus_email": student.email,
                     "cus_add1": "",
                     "cus_city": "",
                     "cus_postcode": "",
                     "cus_country": "Bangladesh",
-                    "cus_phone": "01",
+                    "cus_phone": str(student.phone),
 
                     "shipping_method": "NO",
 
                     "num_of_item": 1,
-                    "product_name": product.name,
+                    "product_name": "Hall Fee",
                     "product_profile": "general",
                 }
 
                 # Make API request to SSLCommerz
-                response = requests.post(SSLCOMMERZ_API_URL, data=post_data)
+                sslcommerz_api_url = "https://sandbox.sslcommerz.com/gwprocess/v4/api.php"
+                response = requests.post(sslcommerz_api_url, data=post_data)
                 response_data = response.json()
 
                 if response_data.get("status") != "SUCCESS":
-                    error_reason = response_data.get('failedreason', 'Unknown error')
+                    error_reason = response_data.get('failed_reason', 'Unknown error')
                     raise ValueError(f"Payment initiation failed: {error_reason}")
 
                 # Validate and prepare response
                 response_serializer = SSLCommerzCheckoutSessionResponseSerializer(data={
-                    'transaction_id': sslcommerz_transaction.transaction_id,
+                    'transaction_id': sslcommerz_session.transaction_id,
                     'gateway_page_url': response_data.get("GatewayPageURL"),
                     'redirect_gateway_url': response_data.get("redirectGatewayURL"),
                     'all_gateway_urls': response_data.get("desc"),
                 })
+                response_serializer.is_valid(raise_exception=True)
 
                 # Update transaction with session data
-                sslcommerz_transaction.session_key = response_data.get("sessionkey")
-                sslcommerz_transaction.status = SSLCommerzSession.SSLCommerzTransactionStatus.INITIATED
-                sslcommerz_transaction.save()
+                sslcommerz_session.session_key = response_data.get("sessionkey")
+                sslcommerz_session.status = SSLCommerzSession.SSLCommerzTransactionStatus.UNATTEMPTED
+                sslcommerz_session.save()
 
-                return Response(response_serializer.data)
+                return Response(response_serializer.data, status=status.HTTP_200_OK)
 
         except requests.RequestException as req_err:
             return Response(
@@ -139,7 +134,14 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
                 {'error': str(val_err)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+        except Student.DoesNotExist:
+            return Response(
+                {'error': _("Student not found")},
+                status=status.HTTP_404_NOT_FOUND
+            )
         except Exception as e:
+            # Log the exception for debugging purposes
+            print(f"Error occurred: {e}")
             return Response(
                 {'error': _("Internal server error")},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR
@@ -181,7 +183,6 @@ class SSLCommerzIPNListenerView(APIView):
                 return Response(status=status.HTTP_200_OK)
 
             # Step 3(Valid): Prepare Validation API request to SSLCOMMERZ
-            # validation_url = SSLCOMMERZ_VALIDATION_URL
             params = {
                 "val_id": ipn_data.get('val_id'),
                 "store_id": SSLCOMMERZ_STORE_ID,
@@ -190,6 +191,7 @@ class SSLCommerzIPNListenerView(APIView):
                 "format": "json"
             }
 
+            validation_url = "https://sandbox.sslcommerz.com/validator/api/validationserver/api/validation"
             response = requests.get(validation_url, params=params)
             if response.status_code != status.HTTP_200_OK:
                 return Response(

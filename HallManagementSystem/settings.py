@@ -42,11 +42,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    "crispy_forms",
-    "crispy_bootstrap5",
+
     'core',
     "DiningManagementApp",
     'Communication',
+
+    'drf_spectacular',
+    'debug_toolbar',
+    "crispy_forms",
+    "crispy_bootstrap5",
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
@@ -60,6 +64,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'HallManagementSystem.urls'
@@ -79,6 +84,13 @@ TEMPLATES = [
         },
     },
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
 
 WSGI_APPLICATION = 'HallManagementSystem.wsgi.application'
 

@@ -4,9 +4,7 @@ from rest_framework import serializers
 
 
 class CreateSSLCommerzCheckoutSessionSerializer(serializers.Serializer):
-    success_url = serializers.URLField(required=True)
-    cancel_url = serializers.URLField(required=True)
-    fail_url = serializers.URLField(required=True)
+    pass
 
 
 class SSLCommerzCheckoutSessionResponseSerializer(serializers.Serializer):

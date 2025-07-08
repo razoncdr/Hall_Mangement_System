@@ -105,10 +105,11 @@ urlpatterns = [
     path('report/fee_payment/', reportviews.feestatementreport, name='fee_payment_report'),
 
     path(
-        'api/payment/sslcommerz/create-checkout-session/',
+        'api/payment/sslcommerz/checkout/',
         CreateSSLCommerzCheckoutSessionView.as_view(),
-        name='sslcommerz-create-checkout-session'
+        name='sslcommerz-checkout'
     ),
+
     path('api/payment/sslcommerz/ipn-listener/', SSLCommerzIPNListenerView.as_view(), name='sslcommerz-ipn-capture'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

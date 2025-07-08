@@ -52,31 +52,22 @@ class Application_Status(Enum):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='userprofile'
+    )
     fullName = models.CharField(max_length=400, blank=True)
     birthDate = models.DateField(null=True, blank=True)
     phone = PhoneNumberField(blank=True)
     email = models.EmailField(blank=True, null=True)
-    picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)  # Added profile picture
+    picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     entryDate = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.fullName
-
-
-# class Address(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
-#     addressName = models.CharField(max_length=400, blank=True)
-#     streetAddress = models.CharField(max_length=100)
-#     area = models.CharField(max_length=100, blank=True)
-#     city = models.CharField(max_length=100)
-#     country = models.CharField(max_length=100)
-
-#     def __str__(self):
-#         return f"{self.streetAddress}, {self.area}, {self.city}, {self.country}"
-
-#     class Meta:
-#         verbose_name_plural = 'Addresses'
 
 
 class Hall(models.Model):
@@ -163,7 +154,13 @@ class DormitoryApplications(models.Model):
 
 class Student(models.Model):
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, blank=True, null=True)
-    userprofile = models.OneToOneField(UserProfile, on_delete=models.SET_NULL, blank=True, null=True)
+    userprofile = models.OneToOneField(
+        UserProfile,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name='student'
+    )
 
     session = models.ForeignKey(Session, on_delete=models.RESTRICT)
     batch = models.ForeignKey(Batch, on_delete=models.RESTRICT)
@@ -289,8 +286,7 @@ class SSLCommerzSession(models.Model):
     )
     created_at = models.DateTimeField(
         verbose_name=_('created at'),
-        blank=True,
-        null=True,
+        auto_now_add=True,
         help_text=_('Transaction creation timestamp')
     )
     validated_on = models.DateTimeField(
