@@ -54,6 +54,22 @@ admin.site.register(Room, RoomAdmin)
 admin.site.register(Hall, HallAdmin)
 admin.site.register(Semester, SemesterAdmin)
 
+@admin.register(FeeTransaction)
+class FeeTransactionAdmin(admin.ModelAdmin):
+    list_display = [
+        'student',
+        'transaction_id',
+        'paid_amount',
+        'transaction_date',
+    ]
+    search_fields = [
+        'transaction_id',
+        'student__fullName',
+    ]
+    readonly_fields = [
+        'transaction_date',
+    ]
+
 @admin.register(SSLCommerzSession)
 class SSLCommerzSessionAdmin(admin.ModelAdmin):
     list_display = [

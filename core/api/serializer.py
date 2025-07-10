@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
+from core.models import SSLCommerzSession
+
 
 class CreateSSLCommerzCheckoutSessionSerializer(serializers.Serializer):
     pass
@@ -14,15 +16,8 @@ class SSLCommerzCheckoutSessionResponseSerializer(serializers.Serializer):
     all_gateway_urls = serializers.JSONField(help_text="List of available payment gateways with their details")
 
 
-class SSLCommerzIPNSerializer(serializers.Serializer):
-    class SSLCommerzIPNStatus(models.TextChoices):
-        VALID = 'VALID', _('Valid')
-        FAILED = 'FAILED', _('Failed')
-        CANCELLED = 'CANCELLED', _('Cancelled')
-        UNATTEMPTED = 'UNATTEMPTED', _('Unattempted')
-        EXPIRED = 'EXPIRED', _('Expired')
-
-    status = serializers.ChoiceField(choices=SSLCommerzIPNStatus.choices)
+class SSLCommerzCaptureSerializer(serializers.Serializer):
+    status = serializers.ChoiceField(choices=SSLCommerzSession.SSLCommerzTransactionStatus.choices)
     tran_date = serializers.DateTimeField()
     tran_id = serializers.CharField()
     val_id = serializers.CharField(required=False, allow_null=True)

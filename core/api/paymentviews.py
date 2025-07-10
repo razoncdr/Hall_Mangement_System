@@ -1,5 +1,5 @@
 import requests
-from django.db import transaction
+from django.db import transaction, models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -12,8 +12,8 @@ from rest_framework.views import APIView
 from HallManagementSystem.settings import SSLCOMMERZ_STORE_ID, SSLCOMMERZ_STORE_PASSWORD
 from core.api.permissions import IsStudent
 from core.api.serializer import CreateSSLCommerzCheckoutSessionSerializer, SSLCommerzCheckoutSessionResponseSerializer, \
-    SSLCommerzIPNSerializer, SSLCommerzValidationResponseSerializer
-from core.models import SSLCommerzSession, Student
+    SSLCommerzCaptureSerializer, SSLCommerzValidationResponseSerializer
+from core.models import SSLCommerzSession, Student, FeeTransaction, StudentFees, Payment_Status
 
 
 class CreateSSLCommerzCheckoutSessionView(APIView):
@@ -46,18 +46,21 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         data = serializer.validated_data
-        user = request.user
-        amount = 10
-        currency = "BDT"
-
-        if not amount or amount <= 0:
-            return Response({'error': _("Invalid product price")}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             with transaction.atomic():
+                user = request.user
                 student = Student.objects.get(userprofile__user=user)
+                amount = StudentFees.objects.filter(
+                    student=student,
+                    paymentStatus=Payment_Status.UNPAID
+                ).aggregate(total=models.Sum('amount'))['total'] or 0
+                currency = "BDT"
+
+                if not amount or amount <= 0:
+                    return Response({'error': _("Invalid product price")}, status=status.HTTP_400_BAD_REQUEST)
+
                 sslcommerz_session = SSLCommerzSession.objects.create(
                     student=student,
                     currency_type=currency,
@@ -75,10 +78,9 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
                     "tran_id": sslcommerz_session.transaction_id,
                     "product_category": "education",
 
-                    "success_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
-                    "fail_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
-                    "cancel_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
-                    "ipn_url": request.build_absolute_uri(reverse("sslcommerz-ipn-capture")),
+                    "success_url": request.build_absolute_uri(reverse("sslcommerz-capture")),
+                    "fail_url": request.build_absolute_uri(reverse("sslcommerz-capture")),
+                    "cancel_url": request.build_absolute_uri(reverse("sslcommerz-capture")),
 
                     "multi_card_name": data.get('multi_card_name', ''),
 
@@ -148,37 +150,35 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
             )
 
 
-class SSLCommerzIPNListenerView(APIView):
+class SSLCommerzPaymentCaptureView(APIView):
     """
-    Handles IPN (Instant Payment Notification) from SSLCOMMERZ and validates the transaction
+    Handles Payment Capture or IPN from SSLCOMMERZ and validates the transaction
     using the SSLCOMMERZ Validation API.
     """
 
     permission_classes = []
-    serializer_class = SSLCommerzIPNSerializer
+    serializer_class = SSLCommerzCaptureSerializer
 
     def post(self, request, *args, **kwargs):
-        # Step 1: Validate IPN data from SSLCOMMERZ
-        ipn_serializer = self.serializer_class(data=request.data)
-        ipn_serializer.is_valid(raise_exception=True)
-
-        ipn_data = ipn_serializer.validated_data
-
         try:
-            # Step 2: Fetch sslcommerz_transaction from DB
+            # Step 1: Validate IPN data from SSLCOMMERZ
+            ipn_serializer = self.serializer_class(data=request.data)
+            ipn_serializer.is_valid(raise_exception=True)
+            ipn_data = ipn_serializer.validated_data
+
+            # Step 2: Fetch sslcommerz_session from DB
             tran_id = ipn_data.get("tran_id")
-            sslcommerz_transaction = SSLCommerzSession.objects.get(transaction_id=tran_id)
+            sslcommerz_session = SSLCommerzSession.objects.get(transaction_id=tran_id)
 
             # Step 3(Invalid): Manage Unsuccessful Transaction
-            if ipn_data.get("status") != SSLCommerzIPNSerializer.SSLCommerzIPNStatus.VALID:
-                sslcommerz_transaction.status = ipn_data.get("status")
-                sslcommerz_transaction.transaction_date = ipn_data.get("tran_date")
-                sslcommerz_transaction.validated_on = timezone.now()
+            if ipn_data.get("status") != SSLCommerzSession.SSLCommerzTransactionStatus.VALID:
+                sslcommerz_session.status = ipn_data.get("status")
+                # sslcommerz_session.validated_on = ipn_data.get("tran_date")
 
-                sslcommerz_transaction.verify_sign = ipn_data.get('verify_sign')
-                sslcommerz_transaction.verify_key = ipn_data.get('verify_key')
+                sslcommerz_session.verify_sign = ipn_data.get('verify_sign')
+                sslcommerz_session.verify_key = ipn_data.get('verify_key')
 
-                sslcommerz_transaction.save()
+                sslcommerz_session.save()
 
                 return Response(status=status.HTTP_200_OK)
 
@@ -187,11 +187,9 @@ class SSLCommerzIPNListenerView(APIView):
                 "val_id": ipn_data.get('val_id'),
                 "store_id": SSLCOMMERZ_STORE_ID,
                 "store_passwd": SSLCOMMERZ_STORE_PASSWORD,
-                "v": 1,
-                "format": "json"
             }
 
-            validation_url = "https://sandbox.sslcommerz.com/validator/api/validationserver/api/validation"
+            validation_url = "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php"
             response = requests.get(validation_url, params=params)
             if response.status_code != status.HTTP_200_OK:
                 return Response(
@@ -201,8 +199,7 @@ class SSLCommerzIPNListenerView(APIView):
 
             # Step 4: Validate the response data from SSLCOMMERZ validation API
             validation_serializer = SSLCommerzValidationResponseSerializer(data=response.json())
-            validation_serializer.is_valid(raise_exception=True)
-
+            validation_serializer.is_valid(raise_exception=False)
             validation_data = validation_serializer.validated_data
 
             if validation_data.get('status') not in [
@@ -214,48 +211,60 @@ class SSLCommerzIPNListenerView(APIView):
             with transaction.atomic():
                 # Step 5: Verify amount and currency match the transaction record
                 if (validation_data.get('currency_amount') is not None
-                        and sslcommerz_transaction.currency_amount != validation_data.get('currency_amount')):
+                        and sslcommerz_session.currency_amount != validation_data.get('currency_amount')):
                     return Response({"error": _("Amount mismatch")}, status=status.HTTP_400_BAD_REQUEST)
 
                 if (validation_data.get('currency_type') != ""
-                        and sslcommerz_transaction.currency_type != validation_data.get('currency_type')):
+                        and sslcommerz_session.currency_type != validation_data.get('currency_type')):
                     return Response({"error": _("Currency mismatch")}, status=status.HTTP_400_BAD_REQUEST)
 
-                # Step 6: Create Sale and Update sslcommerz_transaction record
-                # fee_transaction, created = FeeTransaction.objects.get_or_create(
-                #
-                # )
+                # Step 6: Create FeeTransaction and Update sslcommerz_session record
+                unpaid_fees = StudentFees.objects.filter(
+                    student=sslcommerz_session.student,
+                    paymentStatus=Payment_Status.UNPAID
+                )
+                fee_transaction, created = FeeTransaction.objects.get_or_create(
+                    transaction_id=sslcommerz_session.transaction_id,
+                    defaults={
+                        'student': sslcommerz_session.student,
+                        'paid_amount': sslcommerz_session.currency_amount,
+                        'transaction_date': validation_data.get('tran_date'),
+                    }
+                )
+                if created:
+                    fee_transaction.student_fee.set(unpaid_fees)
+                    unpaid_fees.update(paymentStatus=Payment_Status.PAID)
 
-                sslcommerz_transaction.validation_id = validation_data.get('val_id')
+                sslcommerz_session.validation_id = validation_data.get('val_id')
+                sslcommerz_session.fee_transaction = fee_transaction
 
                 # Transaction status and dates
-                sslcommerz_transaction.status = ipn_data.get('status')
-                sslcommerz_transaction.transaction_date = validation_data.get('tran_date')
-                sslcommerz_transaction.validated_on = timezone.now()
+                sslcommerz_session.status = ipn_data.get('status')
+                sslcommerz_session.validated_on = timezone.now()
 
                 # Amount and currency information
-                sslcommerz_transaction.currency = validation_data.get('currency')
-                sslcommerz_transaction.amount = validation_data.get('amount')
-                sslcommerz_transaction.store_amount = validation_data.get('store_amount')
+                sslcommerz_session.currency = validation_data.get('currency')
+                sslcommerz_session.amount = validation_data.get('amount')
+                sslcommerz_session.store_amount = validation_data.get('store_amount')
 
                 # Payment method details
-                sslcommerz_transaction.card_type = validation_data.get('card_type')
-                sslcommerz_transaction.card_no = validation_data.get('card_no')
-                sslcommerz_transaction.card_brand = validation_data.get('card_brand')
-                sslcommerz_transaction.card_issuer = validation_data.get('card_issuer')
-                sslcommerz_transaction.card_issuer_country = validation_data.get('card_issuer_country')
-                sslcommerz_transaction.card_issuer_country_code = validation_data.get('card_issuer_country_code')
-                sslcommerz_transaction.bank_tran_id = validation_data.get('bank_tran_id')
+                sslcommerz_session.card_type = validation_data.get('card_type')
+                sslcommerz_session.card_no = validation_data.get('card_no')
+                sslcommerz_session.card_brand = validation_data.get('card_brand')
+                sslcommerz_session.card_issuer = validation_data.get('card_issuer')
+                sslcommerz_session.card_issuer_country = validation_data.get('card_issuer_country')
+                sslcommerz_session.card_issuer_country_code = validation_data.get('card_issuer_country_code')
+                sslcommerz_session.bank_tran_id = validation_data.get('bank_tran_id')
 
                 # Security and validation
-                sslcommerz_transaction.verify_sign = ipn_data.get('verify_sign')
-                sslcommerz_transaction.verify_key = ipn_data.get('verify_key')
+                sslcommerz_session.verify_sign = ipn_data.get('verify_sign')
+                sslcommerz_session.verify_key = ipn_data.get('verify_key')
 
                 # Risk assessment
-                sslcommerz_transaction.risk_level = validation_data.get('risk_level')
-                sslcommerz_transaction.risk_title = validation_data.get('risk_title')
+                sslcommerz_session.risk_level = validation_data.get('risk_level')
+                sslcommerz_session.risk_title = validation_data.get('risk_title')
 
-                sslcommerz_transaction.save()
+                sslcommerz_session.save()
 
                 return Response(status=status.HTTP_200_OK)
 
@@ -265,6 +274,7 @@ class SSLCommerzIPNListenerView(APIView):
                 status=status.HTTP_404_NOT_FOUND
             )
         except Exception as e:
+            print("Error in SSLCommerz IPN Listener:", e)
             return Response(
                 {"error": _("Internal server error")},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR

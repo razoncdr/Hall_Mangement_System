@@ -6,7 +6,8 @@ from django.urls import path
 from django.views.generic.base import RedirectView
 
 from core import views, setupviews, reportviews, studentviews
-from core.api.paymentviews import CreateSSLCommerzCheckoutSessionView, SSLCommerzIPNListenerView
+from core.api.paymentviews import CreateSSLCommerzCheckoutSessionView, \
+    SSLCommerzPaymentCaptureView
 from core.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
 
 urlpatterns = [
@@ -110,6 +111,6 @@ urlpatterns = [
         name='sslcommerz-checkout'
     ),
 
-    path('api/payment/sslcommerz/ipn-listener/', SSLCommerzIPNListenerView.as_view(), name='sslcommerz-ipn-capture'),
+    path('api/payment/sslcommerz/capture/', SSLCommerzPaymentCaptureView.as_view(), name='sslcommerz-capture'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
