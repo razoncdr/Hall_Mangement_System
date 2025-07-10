@@ -1,5 +1,6 @@
 import requests
 from django.db import transaction, models
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -78,9 +79,9 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
                     "tran_id": sslcommerz_session.transaction_id,
                     "product_category": "education",
 
-                    "success_url": request.build_absolute_uri(reverse("sslcommerz-capture")),
-                    "fail_url": request.build_absolute_uri(reverse("sslcommerz-capture")),
-                    "cancel_url": request.build_absolute_uri(reverse("sslcommerz-capture")),
+                    "success_url": request.build_absolute_uri(reverse("sslcommerz_capture")),
+                    "fail_url": request.build_absolute_uri(reverse("sslcommerz_capture")),
+                    "cancel_url": request.build_absolute_uri(reverse("sslcommerz_capture")),
 
                     "multi_card_name": data.get('multi_card_name', ''),
 
@@ -152,7 +153,7 @@ class CreateSSLCommerzCheckoutSessionView(APIView):
 
 class SSLCommerzPaymentCaptureView(APIView):
     """
-    Handles Payment Capture or IPN from SSLCOMMERZ and validates the transaction
+    Handles Payment Capture from SSLCOMMERZ and validates the transaction
     using the SSLCOMMERZ Validation API.
     """
 
@@ -180,7 +181,10 @@ class SSLCommerzPaymentCaptureView(APIView):
 
                 sslcommerz_session.save()
 
-                return Response(status=status.HTTP_200_OK)
+                if ipn_data.get("status") == SSLCommerzSession.SSLCommerzTransactionStatus.FAILED:
+                    return redirect('payment_fail')
+                else:
+                    return redirect('payment_cancel')
 
             # Step 3(Valid): Prepare Validation API request to SSLCOMMERZ
             params = {
@@ -192,10 +196,8 @@ class SSLCommerzPaymentCaptureView(APIView):
             validation_url = "https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php"
             response = requests.get(validation_url, params=params)
             if response.status_code != status.HTTP_200_OK:
-                return Response(
-                    {"error": _("Failed to validate transaction with SSLCOMMERZ")},
-                    status=status.HTTP_502_BAD_GATEWAY
-                )
+                print("Failed to validate transaction with SSLCOMMERZ")
+                return redirect('payment_fail')
 
             # Step 4: Validate the response data from SSLCOMMERZ validation API
             validation_serializer = SSLCommerzValidationResponseSerializer(data=response.json())
@@ -206,17 +208,22 @@ class SSLCommerzPaymentCaptureView(APIView):
                 SSLCommerzValidationResponseSerializer.SSLCommerzValidationStatus.VALID,
                 SSLCommerzValidationResponseSerializer.SSLCommerzValidationStatus.VALIDATED
             ]:
-                return Response({"error": _("Transaction is not valid")}, status=status.HTTP_400_BAD_REQUEST)
+                print("Transaction is not valid:", validation_data.get('status'))
+                return redirect('payment_fail')
 
             with transaction.atomic():
                 # Step 5: Verify amount and currency match the transaction record
                 if (validation_data.get('currency_amount') is not None
                         and sslcommerz_session.currency_amount != validation_data.get('currency_amount')):
-                    return Response({"error": _("Amount mismatch")}, status=status.HTTP_400_BAD_REQUEST)
+                    print("Amount mismatch:", sslcommerz_session.currency_amount,
+                          validation_data.get('currency_amount'))
+                    return redirect('payment_fail')
+
 
                 if (validation_data.get('currency_type') != ""
                         and sslcommerz_session.currency_type != validation_data.get('currency_type')):
-                    return Response({"error": _("Currency mismatch")}, status=status.HTTP_400_BAD_REQUEST)
+                    print("Currency mismatch:", sslcommerz_session.currency_type, validation_data.get('currency_type'))
+                    return redirect('payment_fail')
 
                 # Step 6: Create FeeTransaction and Update sslcommerz_session record
                 unpaid_fees = StudentFees.objects.filter(
@@ -266,7 +273,8 @@ class SSLCommerzPaymentCaptureView(APIView):
 
                 sslcommerz_session.save()
 
-                return Response(status=status.HTTP_200_OK)
+                # Step 7: Redirect to success page
+                return redirect('payment_success')
 
         except SSLCommerzSession.DoesNotExist:
             return Response(

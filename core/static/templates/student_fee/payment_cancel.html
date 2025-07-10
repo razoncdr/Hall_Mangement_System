@@ -1,0 +1,17 @@
+{% extends 'core/base/base.html' %}
+
+{% block title %}Payment Cancelled{% endblock %}
+
+{% block body %}
+    <section class="py-5 px-3">
+        <div class="container">
+            <div class="alert alert-warning text-center shadow p-4 rounded">
+                <h2 class="mb-3"><i class="bi bi-exclamation-triangle-fill"></i> Payment Cancelled</h2>
+                <p class="fs-5">You have cancelled the payment process.</p>
+                <p class="text-muted">If this was a mistake, you can try again below.</p>
+                <a href="{% url 'student_fee_payment' %}" class="btn btn-warning mt-3">Retry Payment</a>
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary mt-3 ms-2">Back to Home</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

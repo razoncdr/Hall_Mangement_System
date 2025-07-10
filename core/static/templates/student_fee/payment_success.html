@@ -1,0 +1,17 @@
+{% extends 'core/base/base.html' %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block body %}
+    <section class="py-5 px-3">
+        <div class="container">
+            <div class="alert alert-success text-center shadow p-4 rounded">
+                <h2 class="mb-3"><i class="bi bi-check-circle-fill"></i> Payment Successful</h2>
+                <p class="fs-5">Thank you! Your payment has been processed successfully.</p>
+                <p class="text-muted">You can now view your updated payment history.</p>
+                <a href="{% url 'student_fee_payment' %}" class="btn btn-success mt-3">View My Fees</a>
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary mt-3 ms-2">Back to Home</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

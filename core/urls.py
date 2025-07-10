@@ -5,8 +5,8 @@ from django.contrib.auth.views import LogoutView
 from django.urls import path
 from django.views.generic.base import RedirectView
 
-from core import views, setupviews, reportviews, studentviews
-from core.api.paymentviews import CreateSSLCommerzCheckoutSessionView, \
+from core import views, setupviews, reportviews, studentviews, paymentviews
+from core.api.views import CreateSSLCommerzCheckoutSessionView, \
     SSLCommerzPaymentCaptureView
 from core.views import CustomPasswordResetConfirmView, CustomPasswordResetCompleteView
 
@@ -97,20 +97,26 @@ urlpatterns = [
     path('feeshead/delete/', setupviews.deletefeeshead, name='delete_feeshead'),
     path('feeshead/index/', setupviews.feesheadlist, name='feeshead_list'),
 
-    path('studentfee/index/', setupviews.studentfeelist, name='studentfeelist'),
-    path('studentfee/generate/', setupviews.generatestudentfee, name='generate_studentfee'),
-    path('studentfee/create/', setupviews.createstudentfee, name='create_studentfee'),
-    path('studentfee/delete/', setupviews.deletestudentfee, name='delete_studentfee'),
+                  path('student-fee/index/', setupviews.studentfeelist, name='studentfeelist'),
+                  path('student-fee/generate/', setupviews.generatestudentfee, name='generate_studentfee'),
+                  path('student-fee/create/', setupviews.createstudentfee, name='create_studentfee'),
+                  path('student-fee/delete/', setupviews.deletestudentfee, name='delete_studentfee'),
+                  path('student-fee/payment/', paymentviews.fee_payment, name='student_fee_payment'),
+                  path('student-fee/payment-success/', paymentviews.payment_success, name='payment_success'),
+                  path('student-fee/payment-cancel/', paymentviews.payment_cancel, name='payment_cancel'),
+                  path('student-fee/payment-fail/', paymentviews.payment_fail, name='payment_fail'),
 
-    path('report/fee_statement/', reportviews.feestatementreport, name='fee_statement_report'),
-    path('report/fee_payment/', reportviews.feestatementreport, name='fee_payment_report'),
+                  path('report/fee-statement/', reportviews.feestatementreport, name='fee_statement_report'),
+                  path('report/fee-payment/', reportviews.feestatementreport, name='fee_payment_report'),
 
     path(
         'api/payment/sslcommerz/checkout/',
         CreateSSLCommerzCheckoutSessionView.as_view(),
-        name='sslcommerz-checkout'
+        name='sslcommerz_checkout'
     ),
 
-    path('api/payment/sslcommerz/capture/', SSLCommerzPaymentCaptureView.as_view(), name='sslcommerz-capture'),
+                  path('api/payment/sslcommerz/capture/', SSLCommerzPaymentCaptureView.as_view(),
+                       name='sslcommerz_capture'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

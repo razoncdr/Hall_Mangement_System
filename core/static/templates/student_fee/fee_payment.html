@@ -1,0 +1,123 @@
+{% extends 'core/base/base.html' %}
+
+{% block title %}Student Fee Payment{% endblock %}
+
+{% block site_css %}{% endblock %}
+
+{% block body %}
+    {% load crispy_forms_tags %}
+
+    <section class="py-4 px-4">
+        <div class="container col-sm-12">
+            <div class="pb-3 d-flex justify-content-center align-items-center border-bottom border-secondary border-2">
+                <h3 class="m-0 mx-2">Student Fee Payment</h3>
+            </div>
+
+            <div class="mt-3">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <span>Student Info</span>
+                    </div>
+                    <div class="card-body row gx-3 gy-2">
+                        <div class="col-md-4"><strong>Name:</strong> {{ student.fullName }}</div>
+                        <div class="col-md-4"><strong>Registration No:</strong> {{ student.registration_number }}</div>
+                        <div class="col-md-4"><strong>Status:</strong> {{ student.get_status_display }}</div>
+                        <div class="col-md-4"><strong>Session:</strong> {{ student.session.name }}</div>
+                        <div class="col-md-4"><strong>Department:</strong> {{ student.department.name }}</div>
+                        <div class="col-md-4"><strong>Batch:</strong> {{ student.batch.name }}</div>
+                    </div>
+                </div>
+            </div>
+
+            {% if unpaid_fees %}
+                <div class="mt-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                            <span>Unpaid Fee List</span>
+                        </div>
+                        <div class="card-body table-responsive">
+                            <table class="table table-bordered text-center align-middle" style="font-size: 14px;">
+                                <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Fees Head</th>
+                                    <th>Semester</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Entry Date</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for fee in unpaid_fees %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ fee.feeshead.title }}</td>
+                                        <td>{{ fee.semester.name }}</td>
+                                        <td>{{ fee.amount }}</td>
+                                        <td>{{ fee.paymentStatus.name }}</td>
+                                        <td>{{ fee.entryDate|date:"d/m/Y h:i A" }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr class="table-secondary fw-bold">
+                                    <td colspan="3" class="text-end">Total</td>
+                                    <td colspan="3" class="text-start">{{ total_amount }} BDT</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-3">
+                    <form id="sslcommerz-payment-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success btn-lg">Pay Now with SSLCommerz</button>
+                    </form>
+                </div>
+            {% else %}
+                <div class="alert alert-info mt-4 text-center">
+                    🎉 You have no unpaid fees at the moment.
+                </div>
+            {% endif %}
+
+            <div class="mt-4">
+                <a href="{% url 'home' %}" class="btn btn-outline-primary btn-sm">Back to Home</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block site_js %}
+    <script>
+        document.getElementById('sslcommerz-payment-form').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            try {
+                const response = await fetch('{% url 'sslcommerz_checkout' %}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}'
+                    },
+                    body: JSON.stringify({})
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.gateway_page_url) {
+                        window.location.href = data.gateway_page_url;
+                    } else {
+                        alert('Missing payment URL in response.');
+                    }
+                } else {
+                    const errorData = await response.json();
+                    alert('Failed to initiate payment: ' + (errorData.error || 'Server error'));
+                }
+            } catch (error) {
+                alert('Something went wrong.');
+                console.error(error);
+            }
+
+        });
+    </script>
+{% endblock %}

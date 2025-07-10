@@ -1,0 +1,17 @@
+{% extends 'core/base/base.html' %}
+
+{% block title %}Payment Failed{% endblock %}
+
+{% block body %}
+    <section class="py-5 px-3">
+        <div class="container">
+            <div class="alert alert-danger text-center shadow p-4 rounded">
+                <h2 class="mb-3"><i class="bi bi-x-circle-fill"></i> Payment Failed</h2>
+                <p class="fs-5">Oops! Something went wrong and the payment could not be completed.</p>
+                <p class="text-muted">Please try again or contact support if the issue persists.</p>
+                <a href="{% url 'student_fee_payment' %}" class="btn btn-danger mt-3">Try Again</a>
+                <a href="/home/" class="btn btn-outline-secondary mt-3 ms-2">Back to Home</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

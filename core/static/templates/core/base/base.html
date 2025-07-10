@@ -10,9 +10,8 @@
     <meta name="author" content=""/>
     <title>{% block title %}{% endblock %} | Hall Management System</title>
     <!-- Favicon-->
-    <!--
-        <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-    -->
+    <link rel="icon" type="image/x-icon" href="../../../core/images/bg.jpg"/>
+
     <!-- Bootstrap icons-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
           integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
@@ -199,6 +198,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingFour">
                             <button class="accordion-button fw-semibold collapsed" type="button"
@@ -241,6 +241,8 @@
                                 style="border:none;
                                 background: linear-gradient(to right, #0cbd45, #08d5b1);
                                 transition: background 0.8s;"
+                                onclick="window.location.href='{% url 'student_fee_payment' %}'"
+                                {% if not user.is_authenticated %}disabled{% endif %}
                         >
                             <i class="bi bi-cash-coin me-2"></i> Student Fee Payment
                         </button>

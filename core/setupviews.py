@@ -810,7 +810,7 @@ def generatestudentfee(request):
 
     context['form'] = form
 
-    return render(request, "studentfee/create.html", context)
+    return render(request, "student_fee/create.html", context)
 
 
 @allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
@@ -819,13 +819,6 @@ def createstudentfee(request):
     try:
         context = {}
         if request.method == "POST":
-            # form = CreateUserForm(request.POST)
-            # if request.method.is_valid():
-            # data = request.POST.getlist("studentfees[]")
-            # print(data)
-
-            # studentfee = json.loads(studentfee)
-            # print(studentfee)
             studentFeeInfo = StudentFees()
             studentFeeInfo.student = Student.objects.get(id=request.POST.get("studentid"))
             studentFeeInfo.feeshead = FeesHead.objects.get(id=request.POST.get("feesheadid"))
@@ -836,7 +829,7 @@ def createstudentfee(request):
             studentFeeInfo.entryDate = datetime.datetime.now()
             studentFeeInfo.save()
 
-        # return render(request, "studentfee/create.html", context)
+        # return render(request, "student_fee/create.html", context)
         return JsonResponse({"success": True}, status=200)
 
     except Exception as e:
@@ -847,17 +840,10 @@ def createstudentfee(request):
 @allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
 def studentfeelist(request):
     studentfees = StudentFees.objects.none()
-    # batches = Batch.objects.all()  # Assuming you have a Batch model
-    # halls = Hall.objects.all()  # Assuming you have a Hall model    
-    # feesHeads = FeesHead.objects.all()  # Assuming you have a Hall model
 
     form = StudentFeeFilterForm(request.POST or None)
 
     if request.method == "POST":
-
-        # form = CreateUserForm(request.POST)
-        # if request.method.is_valid():
-
         ToDate = datetime.datetime.strptime(request.POST.get("To_Date"), "%Y-%m-%d") + datetime.timedelta(days=1)
         FromDate = datetime.datetime.strptime(request.POST.get("From_Date"), "%Y-%m-%d")
 
@@ -870,10 +856,6 @@ def studentfeelist(request):
         if request.POST.get("batch") != "":
             # print("batchid: " + request.POST.get("batch")) 
             studentfees = studentfees.filter(student__batch_id=request.POST.get("batch"))
-
-        # if request.POST.get("hall") != "":
-        #     print("hallid: " + request.POST.get("hall")) 
-        #     studentfees = studentfees.filter(student__room__hall_id=request.POST.get("hall"))
 
         if request.POST.get("semester") != "":
             # print("semesterid: " + request.POST.get("semester")) 
@@ -893,13 +875,11 @@ def studentfeelist(request):
         'studentfees': studentfees,
         'form': form,
     }
-    return render(request, 'studentfee/index.html', context)
+    return render(request, 'student_fee/index.html', context)
 
 
 @allowed_users(allowed_roles=['Hall Provost', 'Admin', 'Operator'])
 def deletestudentfee(request):
-    # dictionary for initial data with
-    # field names as keys
     context = {}
 
     if request.method == "POST":
