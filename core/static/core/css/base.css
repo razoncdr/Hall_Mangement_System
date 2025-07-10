@@ -8,17 +8,21 @@ body {
 }
 
 /* header ends */
-.rating { 
+.rating {
     border: none;
     margin-right: 49px;
 }
-.myratings{
+
+.myratings {
     font-size: 85px;
     color: green;
 }
 
-.rating > [id^="star"] { display: none; } 
-.rating > label:before { 
+.rating > [id^="star"] {
+    display: none;
+}
+
+.rating > label:before {
     margin: 5px 2px;
     font-size: 2.25em;
     font-family: FontAwesome;
@@ -26,26 +30,32 @@ body {
     content: "\f005";
 }
 
-.rating > .half:before { 
+.rating > .half:before {
     content: "\f089";
     position: absolute;
 }
 
-.rating > label { 
-    color: #ddd; 
-    float: right; 
+.rating > label {
+    color: #ddd;
+    float: right;
 }
 
 /***** CSS Magic to Highlight Stars on Hover *****/
 
 .rating > [id^="star"]:checked ~ label, /* show gold star when clicked */
 .rating:not(:checked) > label:hover, /* hover current star */
-.rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+.rating:not(:checked) > label:hover ~ label {
+    color: #FFD700;
+}
+
+/* hover previous stars in list */
 
 .rating > [id^="star"]:checked + label:hover, /* hover current star when changing rating */
 .rating > [id^="star"]:checked ~ label:hover,
 .rating > label:hover ~ [id^="star"]:checked ~ label, /* lighten current selection */
-.rating > [id^="star"]:checked ~ label:hover ~ label { color: #FFED85;  }
+.rating > [id^="star"]:checked ~ label:hover ~ label {
+    color: #FFED85;
+}
 
 .reset-option {
     display: none;
@@ -58,20 +68,20 @@ body {
 }
 
 
-
 /* banner starts*/
-#banner-section{
+#banner-section {
     background-position: center;
     background-attachment: fixed;
     background-size: cover;
     background-repeat: no-repeat;
 }
-.banner-contents{
+
+.banner-contents {
     padding: 50px 10px;
     text-align: center;
 }
 
-.banner-contents h1{
+.banner-contents h1 {
     width: 100%;
     margin: 15px auto;
     font-size: 3rem;
@@ -82,7 +92,7 @@ body {
 
 }
 
-.banner-contents p{
+.banner-contents p {
     width: 50%;
     margin: 15px auto;
     background: rgba(18, 201, 12, 0.486);
@@ -93,33 +103,34 @@ body {
     border-radius: 15px;
 }
 
-.banner-contents p:hover{
+.banner-contents p:hover {
     transform: scale(1.1);
 }
 
-#feedback{
+#feedback {
     background: #0d0442;
     padding: 7% 10%;
 }
 
-.carousel-item{
+.carousel-item {
     padding: 5% 15%;
     text-align: center;
     font-style: italic;
 }
 
-.feedback-img{
+.feedback-img {
     width: 120px;
     height: auto;
 }
 
-.carousel-indicators{
+.carousel-indicators {
     bottom: -20px;
 }
+
 /* feedback ends */
 
 /* footer section starts */
-.foot h4{
+.foot h4 {
     position: relative;
     color: white;
     text-decoration: none;
@@ -127,34 +138,40 @@ body {
     letter-spacing: 0.5px;
 
 }
-.foot h4::after{
+
+.foot h4::after {
     content: "";
     position: absolute;
     background-color: #ff3c78;
-    height:3px;
+    height: 3px;
     width: 0;
     left: 0;
     bottom: -5px;
     transition: 0.3s;
 
 }
-.foot h4:hover::after{
+
+.foot h4:hover::after {
     width: 50%;
-}    
-.foot ul li a{
+}
+
+.foot ul li a {
     color: rgb(34, 110, 161);
     text-decoration: none;
     font-size: 14px;
-    transition: o.3s;
+    transition: o .3s;
 }
-.foot ul li a:hover{
+
+.foot ul li a:hover {
     transform: scale(1.2);
     color: white;
 }
-.foot2 ul li{
+
+.foot2 ul li {
     margin: 5px 12px;
 }
-.foot2 ul li a{
+
+.foot2 ul li a {
     position: relative;
     display: block;
     width: 60px;
@@ -164,7 +181,8 @@ body {
     border-radius: 50%;
     background: rgba(27, 12, 112, 0.349);
 }
-.foot2 ul li a::before{
+
+.foot2 ul li a::before {
     content: '';
     position: absolute;
     top: 0;
@@ -177,55 +195,63 @@ body {
     transform: scale(.9);
     z-index: -1;
 }
-.foot2 ul li a:hover::before{
+
+.foot2 ul li a:hover::before {
     transform: scale(1);
     box-shadow: 0 0 5px rgb(255, 255, 255);
 }
-.foot2 ul li a:hover{
+
+.foot2 ul li a:hover {
     color: rgb(255, 255, 255);
     box-shadow: 0 0 15px rgb(255, 254, 254);
     text-shadow: 0 0 0 rgb(255, 255, 255);
 }
+
 /* footer bg-color starts */
-.footer .container{
-    background: rgb(2,0,36);
+.footer .container {
+    background: rgb(2, 0, 36);
 }
+
 /* footer bg-color ends */
 /* footer section ends */
 
 
 /* large devices (portrait tablets and large phones, 992px and up) */
-@media (min-width: 992px){
-    
-    .logo-div{
+@media (min-width: 992px) {
+
+    .logo-div {
         text-align: left;
     }
-    .logo-div p{
+
+    .logo-div p {
         margin-left: 18px;
     }
+
     /* banner start */
-    #banner-section{
+    #banner-section {
         position: relative;
         height: 100vh;
     }
-    .banner-contents{
+
+    .banner-contents {
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%, -50%);
     }
-    .banner-contents h1{
+
+    .banner-contents h1 {
         width: 1500px;
         padding: 60px;
         margin: 50px auto;
         font-size: 3.4rem;
     }
-    .banner-contents p{
+
+    .banner-contents p {
         padding: 90px;
         font-size: 2.5rem;
     }
 }
-
 
 
 /*!
@@ -242,41 +268,91 @@ body {
 
 
 #wrapper {
-  overflow-x: hidden;
+    overflow-x: hidden;
 }
 
 #sidebar-wrapper {
-  min-height: 100vh;
-  margin-left: -235px;
-  transition: margin 0.25s ease-out;
+    min-height: 100vh;
+    margin-left: -235px;
+    transition: margin 0.25s ease-out;
 }
 
 #sidebar-wrapper .sidebar-heading {
-  padding: 0.875rem 1.25rem;
-  font-size: 1.2rem;
+    padding: 0.875rem 1.25rem;
+    font-size: 1.2rem;
 }
 
 #sidebar-wrapper .list-group {
-  width: 235px;
+    width: 235px;
 }
 
 #page-content-wrapper {
-  min-width: 100vw;
+    min-width: 100vw;
 }
 
 body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
-  margin-left: 0;
+    margin-left: 0;
 }
 
 @media (min-width: 768px) {
-  #sidebar-wrapper {
-    margin-left: 0;
-  }
-  #page-content-wrapper {
-    min-width: 0;
-    width: 100%;
-  }
-  body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
-    margin-left: -235px;
-  }
+    #sidebar-wrapper {
+        margin-left: 0;
+    }
+
+    #page-content-wrapper {
+        min-width: 0;
+        width: 100%;
+    }
+
+    body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
+        margin-left: -235px;
+    }
+}
+
+.menu-link {
+    --bs-btn-color: var(--bs-white);
+    --bs-btn-bg: blueviolet;
+    --bs-btn-border-color: blueviolet;
+    --bs-btn-hover-color: blueviolet;
+    --bs-btn-hover-bg: white;
+    --bs-btn-hover-border-color: blueviolet;
+    font-weight: 500;
+    --bs-btn-padding-y: .15rem;
+    --bs-btn-font-size: .9rem;
+    text-decoration: none !important;
+    transition: .2s;
+    border-width: 1px;
+    border-color: #0d6efd57 !important;
+    border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
+    --bs-border-width: 1px;
+}
+
+.menu-link:hover {
+    border-color: #084298 !important;
+    color: #084298 !important;
+    background-color: #cfe2ff !important;
+}
+
+.accordion-flush .accordion-item:last-child {
+    border-bottom: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
+}
+
+.accordion-flush .accordion-item:first-child {
+    border-top: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
+}
+
+.accordion {
+    --bs-accordion-btn-focus-box-shadow: transparent;
+}
+
+.bi-link-45deg::before {
+    font-weight: 800 !important;
+}
+
+.student-fee-payment-btn {
+    transition: background 0.8s;
+}
+
+.student-fee-payment-btn:hover {
+    background: linear-gradient(to right, #d88114, #d1b31b) !important;
 }

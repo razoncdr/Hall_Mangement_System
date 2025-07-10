@@ -115,8 +115,10 @@ urlpatterns = [
         name='sslcommerz_checkout'
     ),
 
-                  path('api/payment/sslcommerz/capture/', SSLCommerzPaymentCaptureView.as_view(),
-                       name='sslcommerz_capture'),
-
+                  path(
+                      'api/payment/sslcommerz/capture/',
+                      SSLCommerzPaymentCaptureView.as_view(),
+                      name='sslcommerz_capture'
+                  ),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

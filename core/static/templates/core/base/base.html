@@ -45,47 +45,6 @@
                 </a>
             </div>
             <div class="accordion accordion-flush" id="accordionFlushExample" style="width: 235px;">
-                <style>
-                    .menulink {
-                        --bs-btn-color: var(--bs-white);
-                        --bs-btn-bg: blueviolet;
-                        --bs-btn-border-color: blueviolet;
-                        --bs-btn-hover-color: blueviolet;
-                        --bs-btn-hover-bg: white;
-                        --bs-btn-hover-border-color: blueviolet;
-                        font-weight: 500;
-                        --bs-btn-padding-y: .15rem;
-                        --bs-btn-font-size: .9rem;
-                        text-decoration: none;
-                        transition: .2s;
-                        border-width: 1px;
-                        border-color: #0d6efd57 !important;
-                        border: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color) !important;
-                        --bs-border-width: 1px;
-                    }
-
-                    .menulink:hover {
-                        border-color: #084298 !important;
-                        color: #084298 !important;
-                        background-color: #cfe2ff !important;
-                    }
-
-                    .accordion-flush .accordion-item:last-child {
-                        border-bottom: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
-                    }
-
-                    .accordion-flush .accordion-item:first-child {
-                        border-top: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
-                    }
-
-                    .accordion {
-                        --bs-accordion-btn-focus-box-shadow: transparent;
-                    }
-
-                    .bi-link-45deg::before {
-                        font-weight: 800 !important;
-                    }
-                </style>
                 {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" %}
                     <div class="accordion-item">
                         <h2 class="accordion-header " id="flush-headingOne">
@@ -100,11 +59,13 @@
                             <div class="accordion-body p-0">
 
                                 <div class="d-flex flex-column px-0 m-0">
-                                    <a class="menulink bg-light border border-1 py-1 ps-4"
-                                       href="{% url 'userlist' %}"><i class="bi bi-link-45deg"></i> User List</a></li>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'userlist' %}"><i class="bi bi-link-45deg"></i> User List
+                                    </a>
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
                                        href="{% url 'register' %}"><i class="bi bi-link-45deg"></i> User
-                                        Registration</a></li>
+                                        Registration
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -124,18 +85,20 @@
                                 {% comment %} <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                     </div> {% endcomment %}
                                 <div class="d-flex flex-column px-0 m-0">
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'hall_list' %}"><i
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'hall_list' %}"><i
                                             class="bi bi-link-45deg"></i> Hall</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'room_list' %}"><i
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
+                                       href="{% url 'room_list' %}"><i
                                             class="bi bi-link-45deg"></i> Room</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
                                        href="{% url 'batch_list' %}"><i class="bi bi-link-45deg"></i> Batch</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
                                        href="{% url 'department_list' %}"><i class="bi bi-link-45deg"></i>
                                         Department</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
                                        href="{% url 'session_list' %}"><i class="bi bi-link-45deg"></i> Session</a>
-                                    <a class="menulink bg-light border border-1 py-1 ps-4"
+                                    <a class="menu-link bg-light border border-1 py-1 ps-4"
                                        href="{% url 'semester_list' %}"><i class="bi bi-link-45deg"></i> Semester</a>
                                 </div>
 
@@ -143,30 +106,6 @@
                         </div>
                     </div>
                 {% endif %}
-
-                {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" or request.user|has_group:"Student" %}
-                    {% comment %} <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingTwo">
-                            <button class="accordion-button fw-semibold collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                                Communication
-                            </button>
-                        </h2>
-                        <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionFlushExample">
-                            <div class="accordion-body p-0">
-
-                                <div class="d-flex flex-column px-0 m-0">
-                                    <div class="d-flex flex-column px-0 m-0">
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'provost_notice' %}" ><i class="bi bi-link-45deg"></i> From Hall Provost</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'provost_notices' %}" ><i class="bi bi-link-45deg"></i> Provost Notices</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'student_notice' %}" ><i class="bi bi-link-45deg"></i> From Student</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'student_messages' %}" ><i class="bi bi-link-45deg"></i> Student's Messages</a></li></a></li>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> {% endcomment %}
-                {% endif %}
-
 
                 {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" or request.user|has_group:"Operator" %}
                     <div class="accordion-item">
@@ -184,15 +123,14 @@
 
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
-                                        <a class="menulink bg-light border border-1 py-1 ps-4"
-                                           href="{% url 'student_list' %}"><i class="bi bi-link-45deg"></i> Student List</a></li>
-                                        {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'create_student' %}" ><i class="bi bi-link-45deg"></i> Create Student</a></li> {% endcomment %}
-                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'student_list' %}"><i class="bi bi-link-45deg"></i> Student List</a>
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'application_create' %}"><i class="bi bi-link-45deg"></i>
-                                            Application Form</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                            Application Form</a>
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'application_list' %}"><i class="bi bi-link-45deg"></i>
-                                            Application List</a></li>
+                                            Application List</a>
                                     </div>
                                 </div>
                             </div>
@@ -214,19 +152,19 @@
 
                                 <div class="d-flex flex-column px-0 m-0">
                                     <div class="d-flex flex-column px-0 m-0">
-                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'feeshead_list' %}"><i class="bi bi-link-45deg"></i> Fees
-                                            Head</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                            Head</a>
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'generate_studentfee' %}"><i class="bi bi-link-45deg"></i>
-                                            Generate Student Fee</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                            Generate Student Fee</a>
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'studentfeelist' %}"><i class="bi bi-link-45deg"></i> Student
-                                            Fee List</a></li>
-                                        <a class="menulink bg-light border border-1 py-1 ps-4"
+                                            Fee List</a>
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'fee_statement_report' %}"><i class="bi bi-link-45deg"></i> Fee
-                                            Statement Report</a></li>
-                                        {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'payment_report' %}" ><i class="bi bi-link-45deg"></i> Fee Payment Report</a></li> {% endcomment %}
+                                            Statement Report</a>
+                                        {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'payment_report' %}" ><i class="bi bi-link-45deg"></i> Fee Payment Report</a> {% endcomment %}
 
                                     </div>
                                 </div>
@@ -246,15 +184,6 @@
                         >
                             <i class="bi bi-cash-coin me-2"></i> Student Fee Payment
                         </button>
-                        <style>
-                            .student-fee-payment-btn {
-                                transition: background 0.8s;
-                            }
-
-                            .student-fee-payment-btn:hover {
-                                background: linear-gradient(to right, #d88114, #d1b31b) !important;
-                            }
-                        </style>
                     </div>
                 {% endif %}
             </div>
@@ -271,7 +200,7 @@
                     {% endif %}
                 </div>
                 <div class="col-4 d-flex justify-content-center align-items-center text-center">
-                    <img src="{% static 'core\images\hotel.png' %}" alt="" width="25" height="25">
+                    <img src="{% static '\core\images\hotel.png' %}" alt="" width="25" height="25">
                     <a class="navbar-brand mx-2" href="/home/">SEC | Hall Management System</a>
                 </div>
                 <button class="col-3 navbar-toggler" type="button" data-bs-toggle="collapse"
