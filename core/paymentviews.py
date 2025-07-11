@@ -1,9 +1,11 @@
 from django.db import models
 from django.shortcuts import render
 
+from core.decorators import allowed_users
 from core.models import StudentFees, Payment_Status, Student
 
 
+@allowed_users(allowed_roles=['Student'])
 def fee_payment(request):
     student = Student.objects.filter(userprofile__user=request.user).first()
     unpaid_fees = StudentFees.objects.filter(student=student, paymentStatus=Payment_Status.UNPAID)
@@ -15,7 +17,7 @@ def fee_payment(request):
         "total_amount": total_amount,
     })
 
-
+@allowed_users(allowed_roles=['Student'])
 def fee_payment_history(request):
     student = Student.objects.get(userprofile__user=request.user)
     paid_fees = (

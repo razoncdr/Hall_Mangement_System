@@ -156,18 +156,20 @@
                                     <div class="d-flex flex-column px-0 m-0">
                                         <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'feeshead_list' %}"><i class="bi bi-link-45deg"></i> Fees
-                                            Head</a>
+                                            Head
+                                        </a>
                                         <a class="menu-link bg-light border border-1 py-1 ps-4"
                                            href="{% url 'generate_studentfee' %}"><i class="bi bi-link-45deg"></i>
-                                            Generate Student Fee</a>
+                                            Generate Student Fee
+                                        </a>
                                         <a class="menu-link bg-light border border-1 py-1 ps-4"
-                                           href="{% url 'studentfeelist' %}"><i class="bi bi-link-45deg"></i> Student
-                                            Fee List</a>
+                                           href="{% url 'studentfeelist' %}"><i class="bi bi-link-45deg"></i>
+                                            Student Fee List
+                                        </a>
                                         <a class="menu-link bg-light border border-1 py-1 ps-4"
-                                           href="{% url 'fee_statement_report' %}"><i class="bi bi-link-45deg"></i> Fee
-                                            Statement Report</a>
-                                        {% comment %} <a class="menulink bg-light border border-1 py-1 ps-4" href="{% url 'payment_report' %}" ><i class="bi bi-link-45deg"></i> Fee Payment Report</a> {% endcomment %}
-
+                                           href="{% url 'fee_transaction_report' %}"><i class="bi bi-link-45deg"></i>
+                                            Fee Transaction Report
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -187,7 +189,7 @@
                     <div class="accordion-item p-2">
                         <button class="btn py-3 fw-semibold w-100 fee-payment-history-btn fee-action-btn"
                                 onclick="window.location.href='{% url 'fee_payment_history' %}'"
-                                style="background: linear-gradient(to right, #1d6ce4, #00d4ff);"
+                                style="background: linear-gradient(to right, #1d6ce4, #34d6c4);"
                         >
                             <i class="bi bi-clock-history me-2"></i> View Payment History
                         </button>

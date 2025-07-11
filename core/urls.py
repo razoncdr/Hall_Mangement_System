@@ -108,8 +108,8 @@ urlpatterns = [
     path('student-fee/payment-cancel/', paymentviews.payment_cancel, name='payment_cancel'),
     path('student-fee/payment-fail/', paymentviews.payment_fail, name='payment_fail'),
 
-    path('report/fee-statement/', reportviews.feestatementreport, name='fee_statement_report'),
-    path('report/fee-payment/', reportviews.feestatementreport, name='fee_payment_report'),
+    path('report/fee-transaction/', reportviews.fee_transaction_report, name='fee_transaction_report'),
+    path('report/fee-payment/', reportviews.fee_transaction_report, name='fee_payment_report'),
 
     path(
         'api/payment/sslcommerz/checkout/',

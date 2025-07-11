@@ -1,0 +1,99 @@
+{% extends 'core/base/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Fee Transaction Report{% endblock %}
+
+{% block body %}
+    <section class="py-4 px-4">
+        <div class="container">
+            <div class="pb-2 d-flex justify-content-center align-items-center border-bottom border-secondary border-2">
+                <h3 class="m-0 mx-2">Fee Transaction Report</h3>
+            </div>
+
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <!-- Filter Form -->
+            <div class="alert alert-primary mt-3">
+                <form id="StudentFeeTransactionForm" method="POST" action="" class="">
+                    {% csrf_token %}
+                    <div class="row gx-3">
+                        <div class="col-md-3">
+                            {{ form.feesHead|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.session|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.batch|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.semester|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.From_Date|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.To_Date|as_crispy_field }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ form.registration_number|as_crispy_field }}
+                        </div>
+
+                        <div class="ms-auto col-md-3 text-start mt-auto mb-3">
+                            <button type="submit" class="btn btn-sm btn-primary px-4">Show</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if dataset %}
+            <!-- Results Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover align-middle text-center" style="font-size: 14px;">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Student</th>
+                            <th>Reg. No.</th>
+                            <th>Session</th>
+                            <th>Batch (Dept.)</th>
+                            <th>Semester</th>
+                            <th>Room</th>
+                            <th>Fees Head</th>
+                            <th>Amount</th>
+                            <th>Payment Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for fee in dataset %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td class="text-start">{{ fee.student.fullName }}</td>
+                            <td>{{ fee.student.registration_number }}</td>
+                            <td>{{ fee.student.session.name }}</td>
+                            <td>{{ fee.student.batch.name }} ({{ fee.student.department.name }})</td>
+                            <td>{{ fee.semester.name }}</td>
+                            <td>{{ fee.student.room }}</td>
+                            <td>{{ fee.feeshead.title }}</td>
+                            <td>{{ fee.amount }}</td>
+                            <td>{{ fee.fee_transactions.first.transaction_date }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                No fee records found for the given filter.
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

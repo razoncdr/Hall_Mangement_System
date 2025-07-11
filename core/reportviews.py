@@ -1,53 +1,53 @@
+from django.db.models import Prefetch
 from django.shortcuts import (render)
 
 from .decorators import *
 from .forms import *
 
 
-@allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
-def feestatementreport(request):
-    studentfees = StudentFees.objects.none()
+@allowed_users(allowed_roles=['Hall Provost', 'Admin', 'Operator'])
+def fee_transaction_report(request):
+    student_fees = StudentFees.objects.none()
+    form = StudentFeeTransactionForm(request.POST or None)
 
-    form = StudentFeeStatementForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        # Extract cleaned form data
+        cd = form.cleaned_data
 
-    # if request.method == "POST":
+        # Filter by Date Range
+        from_date = cd.get("From_Date")
+        to_date = cd.get("To_Date")
+        to_date = to_date + datetime.timedelta(days=1)
+        student_fees = StudentFees.objects.filter(
+            fee_transactions__transaction_date__gte=from_date,
+            fee_transactions__transaction_date__lt=to_date
+        )
 
-    #     # form = CreateUserForm(request.POST)
-    #     # if request.method.is_valid():
+        # Apply optional filters
+        if cd.get("session"):
+            student_fees = student_fees.filter(student__session=cd["session"])
 
-    #     ToDate = datetime.datetime.strptime(request.POST.get("To_Date"), "%Y-%m-%d") + datetime.timedelta(days=1)
-    #     FromDate = datetime.datetime.strptime(request.POST.get("From_Date"), "%Y-%m-%d")
+        if cd.get("batch"):
+            student_fees = student_fees.filter(student__batch=cd["batch"])
 
-    #     studentfees = StudentFees.objects.filter(entryDate__gte=FromDate, 
-    #                                               entryDate__lt=ToDate, ).order_by('-entryDate').all()
-    #     if request.POST.get("feesHead") != "":
-    #         # print("feesHeadid: " + request.POST.get("feesHead")) 
-    #         studentfees = studentfees.filter(feeshead=request.POST.get("feesHead"))
+        if cd.get("semester"):
+            student_fees = student_fees.filter(semester=cd["semester"])
 
-    #     if request.POST.get("batch") != "":
-    #         # print("batchid: " + request.POST.get("batch")) 
-    #         studentfees = studentfees.filter(student__batch_id=request.POST.get("batch"))
+        if cd.get("feesHead"):
+            student_fees = student_fees.filter(feeshead=cd["feesHead"])
 
-    #     # if request.POST.get("hall") != "":
-    #     #     print("hallid: " + request.POST.get("hall")) 
-    #     #     studentfees = studentfees.filter(student__room__hall_id=request.POST.get("hall"))
+        if cd.get("registration_number"):
+            student_fees = student_fees.filter(student__registration_number__icontains=cd["registration_number"])
 
-    #     if request.POST.get("semester") != "":
-    #         # print("semesterid: " + request.POST.get("semester")) 
-    #         studentfees = studentfees.filter(semester_id=request.POST.get("semester"))
-
-    #     if request.POST.get("registration_number") != "":
-    #         # print(request.POST.get("registration_number")) 
-    #         studentfees = studentfees.filter(student__registration_number=request.POST.get("registration_number"))
-
-    #     if request.POST.get("payment_Status") != "":
-    #         print(request.POST.get("payment_Status")) 
-    #         payment_Status = Payment_Status(request.POST.get("payment_Status"))
-    #         print(payment_Status)
-    #         studentfees = studentfees.filter(paymentStatus=payment_Status)
+        student_fees = student_fees.select_related('student').prefetch_related(
+            Prefetch(
+                'fee_transactions',
+                queryset=FeeTransaction.objects.select_related('sslcommerz_session')
+            )
+        ).order_by('-fee_transactions__transaction_date')
 
     context = {
-        'dataset': studentfees,
+        'dataset': student_fees,
         'form': form,
     }
-    return render(request, 'report/Fee_Statement.html', context)
+    return render(request, 'report/fee_transaction_report.html', context)

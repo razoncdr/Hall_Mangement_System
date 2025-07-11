@@ -306,15 +306,43 @@ class StudentFeeFilterForm(forms.Form):
                                        required=False, widget=forms.Select(attrs={'class': 'form-select-sm', }, ))
 
 
-class StudentFeeStatementForm(forms.Form):
-    session = ModelChoiceField(queryset=Session.objects.order_by('-name').all(), required=False,
-                               widget=forms.Select(attrs={'class': 'form-select-sm', }, ))
-    batch = ModelChoiceField(queryset=Batch.objects.order_by('-name').all(), required=False,
-                             widget=forms.Select(attrs={'class': 'form-select-sm', }, ))
-    hall = ModelChoiceField(queryset=Hall.objects.all(), required=False,
-                            widget=forms.Select(attrs={'class': 'form-select-sm', }, ))
-    registration_number = forms.CharField(max_length=150, required=False,
-                                          widget=forms.TextInput(attrs={'class': 'form-select-sm', }, ))
+
+class StudentFeeTransactionForm(forms.Form):
+    From_Date = forms.DateField(
+        required=True,
+        initial=datetime.datetime.now().date(),
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'})
+    )
+    To_Date = forms.DateField(
+        required=True,
+        initial=datetime.datetime.now().date(),
+        widget=DateInput(attrs={'type': 'date', 'class': 'form-control form-control-sm'})
+    )
+    session = ModelChoiceField(
+        queryset=Session.objects.order_by('-name'),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select form-select-sm'})
+    )
+    batch = ModelChoiceField(
+        queryset=Batch.objects.order_by('-name'),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select form-select-sm'})
+    )
+    semester = ModelChoiceField(
+        queryset=Semester.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select form-select-sm'})
+    )
+    feesHead = ModelChoiceField(
+        queryset=FeesHead.objects.all(),
+        required=False,
+        widget=forms.Select(attrs={'class': 'form-select form-select-sm'})
+    )
+    registration_number = forms.CharField(
+        max_length=150,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control form-control-sm'})
+    )
 
 
 class HallListFilterForm(forms.Form):

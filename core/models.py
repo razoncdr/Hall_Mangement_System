@@ -268,7 +268,7 @@ class SSLCommerzSession(models.Model):
         on_delete=models.PROTECT,
         null=True,
         blank=True,
-        related_name='sslcommerz_sessions',
+        related_name='sslcommerz_session',
     )
     student = models.ForeignKey(
         verbose_name=_("student"),
