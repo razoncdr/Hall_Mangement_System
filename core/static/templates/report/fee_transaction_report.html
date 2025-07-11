@@ -69,6 +69,7 @@
                             <th>Room</th>
                             <th>Fees Head</th>
                             <th>Amount</th>
+                            <th>Trx. Info</th>
                             <th>Payment Date</th>
                         </tr>
                     </thead>
@@ -84,6 +85,28 @@
                             <td>{{ fee.student.room }}</td>
                             <td>{{ fee.feeshead.title }}</td>
                             <td>{{ fee.amount }}</td>
+                            <td>
+                                <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#bankTrxModal{{ forloop.counter }}">
+                                    View
+                                </button>
+                                <!-- Modal -->
+                                <div class="modal fade" id="bankTrxModal{{ forloop.counter }}" tabindex="-1" aria-labelledby="bankTrxModalLabel{{ forloop.counter }}" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header px-3 py-2">
+                                                <h5 class="modal-title fs-6" id="bankTrxModalLabel{{ forloop.counter }}">Transaction Details</h5>
+                                                <button type="button" class="btn btn-sm btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-start px-3 py-2">
+                                                <strong>Bank Trx. ID:</strong>
+                                                <div class="text-break">{{ fee.fee_transactions.first.sslcommerz_session.bank_tran_id }}</div>
+                                                <strong>System Trx. ID:</strong>
+                                                <div class="text-break">{{ fee.fee_transactions.first.transaction_id }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                             <td>{{ fee.fee_transactions.first.transaction_date }}</td>
                         </tr>
                     {% endfor %}

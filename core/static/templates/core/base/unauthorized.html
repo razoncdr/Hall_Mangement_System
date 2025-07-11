@@ -1,0 +1,26 @@
+{% extends 'core/base/base.html' %}
+{% load static %}
+
+{% block title %}Access Denied{% endblock %}
+
+{% block body %}
+<section class="py-5">
+    <div class="container text-center">
+        <div class="mb-4">
+            <img src="{% static 'core/images/unauthorized-access.png' %}" alt="Access Denied" style="max-width: 230px;" />
+        </div>
+        <h2 class="text-danger fw-bold">Unauthorized Access</h2>
+        <p class="lead text-muted">You do not have permission to view this page.</p>
+
+        {% if not user.is_authenticated %}
+            <p>Please <a href="{% url 'login' %}">login</a> with the appropriate account to continue.</p>
+        {% else %}
+            <p>If you believe this is a mistake, contact the administrator.</p>
+        {% endif %}
+
+        <a href="{% url 'home' %}" class="btn btn-outline-primary mt-3">
+            <i class="bi bi-arrow-left-circle"></i> Back to Home
+        </a>
+    </div>
+</section>
+{% endblock %}
