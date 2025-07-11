@@ -127,11 +127,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
+TIME_ZONE = 'Asia/Dhaka'
+USE_TZ = True       # Recommended: Use timezone-aware datetimes
+USE_L10N = True     # Optional: Localize formatting (e.g., dates, decimals)
+USE_I18N = True     # Optional: Internationalization (if you're translating)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/

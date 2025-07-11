@@ -1,0 +1,51 @@
+{% extends 'core/base/base.html' %}
+
+{% block title %}Fee Payment History{% endblock %}
+
+{% block body %}
+    <section class="py-4 px-3">
+        <div class="container">
+            <div class="pb-3 border-bottom border-2 border-secondary d-flex justify-content-between align-items-center">
+                <h3 class="m-0 text-dark">Fee Payment History</h3>
+                <a href="{% url 'student_fee_payment' %}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Back to Payment
+                </a>
+            </div>
+
+            {% if paid_fees %}
+                <div class="card shadow-sm mt-3">
+                    <div class="card-body table-responsive">
+                        <table class="table table-bordered table-striped text-center align-middle" style="font-size: 14px;">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Semester</th>
+                                    <th>Fee Head</th>
+                                    <th>Paid Amount</th>
+                                    <th>Transaction ID</th>
+                                    <th>Payment Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for fee in paid_fees %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ fee.semester }}</td>
+                                    <td>{{ fee.feeshead.title }}</td>
+                                    <td>{{ fee.amount }}</td>
+                                    <td>{{ fee.fee_transactions.first.transaction_id }}</td>
+                                    <td>{{ fee.fee_transactions.first.transaction_date }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-info text-center mt-4">
+                    <i class="bi bi-info-circle me-2"></i> No payment history found.
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

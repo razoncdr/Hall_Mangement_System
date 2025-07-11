@@ -9,8 +9,8 @@
     <meta name="description" content=""/>
     <meta name="author" content=""/>
     <title>{% block title %}{% endblock %} | Hall Management System</title>
-    <!-- Favicon-->
-    <link rel="icon" type="image/x-icon" href="../../../core/images/bg.jpg"/>
+
+    <link rel="icon" type="image/png" href="{% static 'core/images/hotel.png' %}">
 
     <!-- Bootstrap icons-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
@@ -33,15 +33,17 @@
     <!-- Sidebar-->
     {% if user.is_authenticated %}
         <div class="border-end bg-white" id="sidebar-wrapper">
-            <div class="sidebar-heading bg-light" style="padding: 8px 0px;">
+            <div class="sidebar-heading bg-light" style="padding: 8px 0;">
                 <a href="/" style="padding: 2px;"
                    class="d-flex justify-content-center align-items-center mb-3 mb-md-0 me-md-auto text-dark text-decoration-none">
                     <img src="{% static 'core/images/home.png' %}" alt="" width="32" height="32">
-                    <span class="fs-4 fw-bold text-primary mx-2" height="40"
+                    <span class="fs-4 fw-bold text-primary mx-2"
                           style="background: #27B0FF;
                             background: linear-gradient(to bottom, #27B0FF 0%, #187BFF 75%);
                             -webkit-background-clip: text;
-                            -webkit-text-fill-color: transparent;">Main Menu</span>
+                            -webkit-text-fill-color: transparent;
+                            height: 40px;">Main Menu
+                    </span>
                 </a>
             </div>
             <div class="accordion accordion-flush" id="accordionFlushExample" style="width: 235px;">
@@ -175,20 +177,26 @@
 
                 {% if request.user|has_group:"Student" or request.user|has_group:"Admin" %}
                     <div class="accordion-item p-2">
-                        <button class="btn btn-success py-3 fw-semibold w-100 student-fee-payment-btn" type="button"
-                                style="border:none;
-                                background: linear-gradient(to right, #0cbd45, #08d5b1);
-                                transition: background 0.8s;"
+                        <button class="btn py-3 fw-semibold w-100 fee-payment-btn fee-action-btn" type="button"
                                 onclick="window.location.href='{% url 'student_fee_payment' %}'"
-                                {% if not user.is_authenticated %}disabled{% endif %}
+                                style="background: linear-gradient(to right, #7b2ff7, #f107a3);"
                         >
                             <i class="bi bi-cash-coin me-2"></i> Student Fee Payment
+                        </button>
+                    </div>
+                    <div class="accordion-item p-2">
+                        <button class="btn py-3 fw-semibold w-100 fee-payment-history-btn fee-action-btn"
+                                onclick="window.location.href='{% url 'fee_payment_history' %}'"
+                                style="background: linear-gradient(to right, #1d6ce4, #00d4ff);"
+                        >
+                            <i class="bi bi-clock-history me-2"></i> View Payment History
                         </button>
                     </div>
                 {% endif %}
             </div>
         </div>
     {% endif %}
+
     <!-- Page content wrapper-->
     <div id="page-content-wrapper" style="min-height: 100vh; margin:0; display:flex; flex-direction:column;">
         <!-- Top navigation-->
@@ -200,8 +208,8 @@
                     {% endif %}
                 </div>
                 <div class="col-4 d-flex justify-content-center align-items-center text-center">
-                    <img src="{% static '\core\images\hotel.png' %}" alt="" width="25" height="25">
-                    <a class="navbar-brand mx-2" href="/home/">SEC | Hall Management System</a>
+                    <img src="{% static 'core/images/hotel.png' %}" alt="" width="25" height="25">
+                    <a class="navbar-brand mx-2" href="{% url 'home' %}">SEC | Hall Management System</a>
                 </div>
                 <button class="col-3 navbar-toggler" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -226,7 +234,7 @@
                                         <input type="hidden">
                                     </form>
                                     <li><a class="dropdown-item" type="button"
-                                           onclick="javacript:document.getElementById('logout').submit()">Log Out</a>
+                                           onclick="document.getElementById('logout').submit()">Log Out</a>
                                     </li>
                                 </ul>
                             </li>

@@ -97,17 +97,19 @@ urlpatterns = [
     path('feeshead/delete/', setupviews.deletefeeshead, name='delete_feeshead'),
     path('feeshead/index/', setupviews.feesheadlist, name='feeshead_list'),
 
-                  path('student-fee/index/', setupviews.studentfeelist, name='studentfeelist'),
-                  path('student-fee/generate/', setupviews.generatestudentfee, name='generate_studentfee'),
-                  path('student-fee/create/', setupviews.createstudentfee, name='create_studentfee'),
-                  path('student-fee/delete/', setupviews.deletestudentfee, name='delete_studentfee'),
-                  path('student-fee/payment/', paymentviews.fee_payment, name='student_fee_payment'),
-                  path('student-fee/payment-success/', paymentviews.payment_success, name='payment_success'),
-                  path('student-fee/payment-cancel/', paymentviews.payment_cancel, name='payment_cancel'),
-                  path('student-fee/payment-fail/', paymentviews.payment_fail, name='payment_fail'),
+    path('student-fee/index/', setupviews.studentfeelist, name='studentfeelist'),
+    path('student-fee/generate/', setupviews.generatestudentfee, name='generate_studentfee'),
+    path('student-fee/create/', setupviews.createstudentfee, name='create_studentfee'),
+    path('student-fee/delete/', setupviews.deletestudentfee, name='delete_studentfee'),
 
-                  path('report/fee-statement/', reportviews.feestatementreport, name='fee_statement_report'),
-                  path('report/fee-payment/', reportviews.feestatementreport, name='fee_payment_report'),
+    path('student-fee/payment/', paymentviews.fee_payment, name='student_fee_payment'),
+    path('student-fee/payment-history/', paymentviews.fee_payment_history, name='fee_payment_history'),
+    path('student-fee/payment-success/', paymentviews.payment_success, name='payment_success'),
+    path('student-fee/payment-cancel/', paymentviews.payment_cancel, name='payment_cancel'),
+    path('student-fee/payment-fail/', paymentviews.payment_fail, name='payment_fail'),
+
+    path('report/fee-statement/', reportviews.feestatementreport, name='fee_statement_report'),
+    path('report/fee-payment/', reportviews.feestatementreport, name='fee_payment_report'),
 
     path(
         'api/payment/sslcommerz/checkout/',
@@ -115,10 +117,10 @@ urlpatterns = [
         name='sslcommerz_checkout'
     ),
 
-                  path(
-                      'api/payment/sslcommerz/capture/',
-                      SSLCommerzPaymentCaptureView.as_view(),
-                      name='sslcommerz_capture'
-                  ),
+    path(
+      'api/payment/sslcommerz/capture/',
+      SSLCommerzPaymentCaptureView.as_view(),
+      name='sslcommerz_capture'
+    ),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

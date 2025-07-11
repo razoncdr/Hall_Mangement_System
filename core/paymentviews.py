@@ -16,6 +16,21 @@ def fee_payment(request):
     })
 
 
+def fee_payment_history(request):
+    student = Student.objects.get(userprofile__user=request.user)
+    paid_fees = (
+        StudentFees.objects
+        .filter(student=student, paymentStatus=Payment_Status.PAID)
+        .prefetch_related('fee_transactions')
+        .order_by('-entryDate')
+    )
+
+    return render(request, 'student_fee/fee_payment_history.html', {
+        "student": student,
+        "paid_fees": paid_fees,
+    })
+
+
 def payment_success(request):
     return render(request, 'student_fee/payment_success.html')
 

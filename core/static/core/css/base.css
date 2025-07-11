@@ -349,10 +349,19 @@ body.sb-sidenav-toggled #wrapper #sidebar-wrapper {
     font-weight: 800 !important;
 }
 
-.student-fee-payment-btn {
+.fee-action-btn {
+    border: none;
+    color: white;
+    font-weight: 600;
     transition: background 0.8s;
 }
 
-.student-fee-payment-btn:hover {
-    background: linear-gradient(to right, #d88114, #d1b31b) !important;
+.fee-payment-btn:hover {
+    color: white !important;
+    background: linear-gradient(to right, #6221d6, #bc0a84) !important;
+}
+
+.fee-payment-history-btn:hover {
+    color: white !important;
+    background: linear-gradient(to right, #004aad, #00a6a6) !important;
 }

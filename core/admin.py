@@ -1,5 +1,7 @@
 from django.contrib import admin
+
 from .models import *
+
 
 # Register your models here.
 class UserProfileAdmin(admin.ModelAdmin):
@@ -62,6 +64,7 @@ class FeeTransactionAdmin(admin.ModelAdmin):
         'paid_amount',
         'transaction_date',
     ]
+    filter_horizontal = ['student_fee',]
     search_fields = [
         'transaction_id',
         'student__fullName',
