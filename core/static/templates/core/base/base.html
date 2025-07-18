@@ -109,18 +109,49 @@
                     </div>
                 {% endif %}
 
+
                 {% if request.user|has_group:"Hall Provost" or request.user|has_group:"Admin" or request.user|has_group:"Operator" %}
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="flush-headingThree">
                             <button class="accordion-button fw-semibold collapsed" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
                                     aria-expanded="false" aria-controls="flush-collapseThree">
-                                Student Management
+                                Communication
                             </button>
                         </h2>
 
                         <div id="flush-collapseThree" class="accordion-collapse collapse"
                              aria-labelledby="flush-headingThree" data-bs-parent="#accordionFlushExample">
+                            <div class="accordion-body p-0">
+
+                                <div class="d-flex flex-column px-0 m-0">
+                                    <div class="d-flex flex-column px-0 m-0">
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'provost_notices' %}"><i class="bi bi-link-45deg"></i> Provost Notices</a>
+                                        <!-- <a class="menu-link bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'provost_notice' %}"><i class="bi bi-link-45deg"></i>Create Notice
+                                            </a> -->
+                                        <a class="menu-link bg-light border border-1 py-1 ps-4"
+                                           href="{% url 'student_messages' %}"><i class="bi bi-link-45deg"></i>
+                                            Student Messages</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingFour">
+                            <button class="accordion-button fw-semibold collapsed" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseFour"
+                                    aria-expanded="false" aria-controls="flush-collapseFour">
+                                Student Management
+                            </button>
+                        </h2>
+
+                        <div id="flush-collapseFour" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body p-0">
 
                                 <div class="d-flex flex-column px-0 m-0">
@@ -140,16 +171,16 @@
                     </div>
 
                     <div class="accordion-item">
-                        <h2 class="accordion-header" id="flush-headingFour">
+                        <h2 class="accordion-header" id="flush-headingFive">
                             <button class="accordion-button fw-semibold collapsed" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseFour" aria-expanded="false"
-                                    aria-controls="flush-collapseFour">
+                                    data-bs-toggle="collapse" data-bs-target="#flush-collapseFive" aria-expanded="false"
+                                    aria-controls="flush-collapseFive">
                                 Fees Management
                             </button>
                         </h2>
 
-                        <div id="flush-collapseFour" class="accordion-collapse collapse"
-                             aria-labelledby="flush-headingFour" data-bs-parent="#accordionFlushExample">
+                        <div id="flush-collapseFive" class="accordion-collapse collapse"
+                             aria-labelledby="flush-headingFive" data-bs-parent="#accordionFlushExample">
                             <div class="accordion-body p-0">
 
                                 <div class="d-flex flex-column px-0 m-0">

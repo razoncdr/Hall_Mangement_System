@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.shortcuts import redirect, get_object_or_404
 from .models import * 
 
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Hall Provost', 'Developer'])
 def submit_notice(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -16,12 +16,12 @@ def submit_notice(request):
         notice.save()
         
         # Redirect to a success page or back to the Provost Notice page
-        return redirect('provost_notice')
+        return redirect('provost_notices')
     
     # If the request method is not POST, redirect back to the Provost Notice page
     return redirect('provost_notice')
 
-@allowed_users(allowed_roles=['Student'])
+@allowed_users(allowed_roles=['Student', 'Developer'])
 def submit_student_notice(request):
     if request.method == 'POST':
         title = request.POST.get('title')
@@ -33,16 +33,16 @@ def submit_student_notice(request):
         notice.save()
         
         # Redirect to a success page or back to the Provost Notice page
-        return redirect('student_notice')
+        return redirect('student_messages')
     
     # If the request method is not POST, redirect back to the Provost Notice page
-    return redirect('provost_notice')
+    return redirect('student_notice')
 
 @allowed_users(allowed_roles=['Hall Provost'])
 def provost_notice(request):
-    return render(request, 'provost_notice.html', )
+    return render(request, 'communication/provost_notice.html', )
 
-@allowed_users(allowed_roles=['Student'])
+@allowed_users(allowed_roles=['Student', 'Developer'])
 def student_notice(request):
     if request.method == 'POST':
         form = StudentNotice(request.POST)
@@ -53,23 +53,23 @@ def student_notice(request):
             return redirect('application_detail', pk=application.pk)
     else:
         form = StudentNotice()
-    return render(request, 'student_notice.html', {'notice': form})
+    return render(request, 'communication/student_notice.html', {'notice': form})
 
 @allowed_users(allowed_roles=['Hall Provost', 'Student'])
 def student_messages(request):
     notices = StudentNotice.objects.all().order_by('-date')
-    return render(request, 'student_messages.html', {'notices': notices})
+    return render(request, 'communication/student_messages.html', {'notices': notices})
 
 
 @allowed_users(allowed_roles=['Hall Provost', 'Student'])
 def provost_notices(request):
     notices = Notice.objects.all().order_by('-date')
-    return render(request, 'provost_notices.html', {'notices': notices})
+    return render(request, 'communication/provost_notices.html', {'notices': notices})
 
 
 # views.py in your Communication app
 
-@allowed_users(allowed_roles=['Hall Provost'])
+@allowed_users(allowed_roles=['Hall Provost', 'Developer'])
 def delete_notice(request, notice_id):
     # Retrieve the notice object
     notice = get_object_or_404(Notice, id=notice_id)
@@ -81,9 +81,9 @@ def delete_notice(request, notice_id):
         return redirect('provost_notices')
 
     # If request method is not POST, render the notice deletion confirmation page
-    return render(request, 'delete_notice_confirmation.html', {'notice': notice})
+    return render(request, 'communication/delete_notice_confirmation.html', {'notice': notice})
 
-@allowed_users(allowed_roles=['Student'])
+@allowed_users(allowed_roles=['Student', 'Developer'])
 def delete_student_notice(request, notice_id):
     # Retrieve the notice object
     notice = get_object_or_404(StudentNotice, id=notice_id)
@@ -95,6 +95,6 @@ def delete_student_notice(request, notice_id):
         return redirect('student_messages')
 
     # If request method is not POST, render the notice deletion confirmation page
-    return render(request, 'delete_notice_confirmation.html', {'notice': notice})
+    return render(request, 'communication/delete_notice_confirmation.html', {'notice': notice})
 
 

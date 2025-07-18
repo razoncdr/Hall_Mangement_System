@@ -896,25 +896,25 @@ def deletestudentfee(request):
 
 # edit by : Rejwanul Haque 
 
-@allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
-def dining_managers(request):
-    # dictionary for initial data with
-    # field names as keys
-    context = {}
+# @allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
+# def dining_managers(request):
+#     # dictionary for initial data with
+#     # field names as keys
+#     context = {}
 
-    # add the dictionary during initialization
-    context["dataset"] = FeesHead.objects.all()
+#     # add the dictionary during initialization
+#     context["dataset"] = FeesHead.objects.all()
 
-    return render(request, "feeshead/index.html", context)
+#     return render(request, "feeshead/index.html", context)
 
 
-@allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
-def members(request):
-    # dictionary for initial data with
-    # field names as keys
-    context = {}
+# @allowed_users(allowed_roles=['Hall Provost', 'Admin', ])
+# def members(request):
+#     # dictionary for initial data with
+#     # field names as keys
+#     context = {}
 
-    # add the dictionary during initialization
-    context["dataset"] = FeesHead.objects.all()
+#     # add the dictionary during initialization
+#     context["dataset"] = FeesHead.objects.all()
 
-    return render(request, "feeshead/index.html", context)
+#     return render(request, "feeshead/index.html", context)
